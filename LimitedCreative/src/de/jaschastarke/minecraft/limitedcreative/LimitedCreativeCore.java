@@ -26,7 +26,7 @@ public class LimitedCreativeCore extends JavaPlugin {
         
         config = new Configuration(this.getConfig());
         Listener.register(this);
-        Commands.register(this);
+        //Commands.register(this);
         try {
             Class.forName("com.sk89q.worldguard.bukkit.WorldGuardPlugin", false, null);
             worldguard = new WorldGuardIntegration(this);

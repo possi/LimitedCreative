@@ -1,9 +1,9 @@
 name: LimitedCreative
 main: de.jaschastarke.minecraft.limitedcreative.LimitedCreativeCore
-version: 0.1-alpha
+version: 0.1-beta
 depend: [WorldGuard]
-commands:
-    limitedcreative:
-        description: Manually control the Creative-Features
-        aliases: lc
-        usage: /<command> load
+#commands:
+#    limitedcreative:
+#        description: Manually control the Creative-Features
+#        aliases: lc
+#        usage: /<command> load
