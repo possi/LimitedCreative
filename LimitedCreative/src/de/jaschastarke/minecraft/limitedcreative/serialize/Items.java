@@ -3,8 +3,6 @@ package de.jaschastarke.minecraft.limitedcreative.serialize;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.PlayerInventory;
 
-import de.jaschastarke.minecraft.limitedcreative.LimitedCreativeCore;
-
 public class Items implements Storeable {
     private PlayerInventory inv;
     public Items(PlayerInventory pi) {

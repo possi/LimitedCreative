@@ -46,9 +46,9 @@ public class Inventory {
     
     private String getFileName(Player player, GameMode gm) {
         if (gm != GameMode.SURVIVAL) {
-            return player.getName()+"_"+gm.toString()+".yml";
+            return LimitedCreativeCore.plugin.config.getInventoryFolder() + File.separator + player.getName()+"_"+gm.toString()+".yml";
         } else {
-            return player.getName()+".yml";
+            return LimitedCreativeCore.plugin.config.getInventoryFolder() + File.separator + player.getName()+".yml";
         }
     }
     

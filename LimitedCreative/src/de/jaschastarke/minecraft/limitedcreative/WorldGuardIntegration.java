@@ -1,7 +1,7 @@
 package de.jaschastarke.minecraft.limitedcreative;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
+//import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 
 public class WorldGuardIntegration {

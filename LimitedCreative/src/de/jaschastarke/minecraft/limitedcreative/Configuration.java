@@ -12,4 +12,10 @@ public class Configuration {
     public boolean getDropInCreative() {
         return false;
     }
+    public String getInventoryFolder() {
+        return "inventories";
+    }
+    public boolean getSignBlock() {
+        return true;
+    }
 }
