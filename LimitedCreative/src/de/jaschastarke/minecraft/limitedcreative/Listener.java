@@ -65,7 +65,7 @@ public final class Listener {
                 event.setCancelled(true);
             }
             if (plugin.config.getSignBlock() && block.getState() instanceof Sign) {
-                event.getPlayer().sendMessage("Access to interact with signs is not allowed in creative mode");
+                event.getPlayer().sendMessage("To interact with signs is not allowed in creative mode");
                 event.setCancelled(true);
             }
         }
