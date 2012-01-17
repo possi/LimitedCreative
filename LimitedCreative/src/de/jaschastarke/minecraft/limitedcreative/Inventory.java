@@ -70,4 +70,9 @@ public class Inventory {
         new Armor(pinv).restore(yml.getConfigurationSection("armor"));
         new Items(pinv).restore(yml.getConfigurationSection("inv"));
     }
+
+    public boolean isStored(GameMode gm) {
+        File f = new File(LimitedCreativeCore.plugin.getDataFolder(), getFileName(player, gm));
+        return f.exists();
+    }
 }

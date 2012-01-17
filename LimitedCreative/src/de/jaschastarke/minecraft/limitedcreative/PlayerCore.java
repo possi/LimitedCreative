@@ -15,7 +15,7 @@ public class PlayerCore {
     public void onSetCreative() {
         Inventory inv = new Inventory(player);
         inv.save();
-        if (plugin.config.getStoreCreative()) {
+        if (plugin.config.getStoreCreative() && inv.isStored(GameMode.CREATIVE)) {
             inv.load(GameMode.CREATIVE);
         } else {
             inv.clear();
@@ -26,6 +26,7 @@ public class PlayerCore {
         if (plugin.config.getStoreCreative()) {
             inv.save();
         }
-        inv.load(GameMode.SURVIVAL);
+        if (inv.isStored(GameMode.SURVIVAL))
+            inv.load(GameMode.SURVIVAL);
     }
 }
