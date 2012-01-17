@@ -1,7 +1,7 @@
 name: LimitedCreative
 main: de.jaschastarke.minecraft.limitedcreative.LimitedCreativeCore
 version: 0.1-beta
-depend: [WorldGuard]
+softdepend: [WorldGuard]
 #commands:
 #    limitedcreative:
 #        description: Manually control the Creative-Features
