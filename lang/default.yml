@@ -3,7 +3,7 @@ command:
     switch:
         survival: Changes the game mode of a player to survival
         creative: Changes the game mode of a player to creative
-    condif:
+    config:
         overview: storecreative|blockpickup|blocksign|permissions|perm_keepinventory
     gamemode:
         changed: "{0}'s game mode has been changed"
