@@ -12,34 +12,34 @@ public class Armor implements Storeable {
     @Override
     public void store(ConfigurationSection section) {
         if (inv.getHelmet() != null && inv.getHelmet().getTypeId() != 0)
-            section.set("helmet", inv.getHelmet());
+            Items.sectionSetItem(section, "helmet", inv.getHelmet());
         if (inv.getChestplate() != null && inv.getChestplate().getTypeId() != 0)
-            section.set("chestplate", inv.getChestplate());
+            Items.sectionSetItem(section, "chestplate", inv.getChestplate());
         if (inv.getLeggings() != null && inv.getLeggings().getTypeId() != 0)
-            section.set("leggins", inv.getLeggings());
+            Items.sectionSetItem(section, "leggins", inv.getLeggings());
         if (inv.getBoots() != null && inv.getBoots().getTypeId() != 0)
-            section.set("boots", inv.getBoots());
+            Items.sectionSetItem(section, "boots", inv.getBoots());
     }
 
     @Override
     public void restore(ConfigurationSection section) {
         if (section.contains("helmet"))
-            inv.setHelmet(section.getItemStack("helmet"));
+            inv.setHelmet(Items.sectionGetItem(section, "helmet"));
         else
             inv.setHelmet(null);
         
         if (section.contains("chestplate"))
-            inv.setChestplate(section.getItemStack("chestplate"));
+            inv.setChestplate(Items.sectionGetItem(section, "chestplate"));
         else
             inv.setChestplate(null);
         
         if (section.contains("leggins"))
-            inv.setLeggings(section.getItemStack("leggins"));
+            inv.setLeggings(Items.sectionGetItem(section, "leggins"));
         else
             inv.setLeggings(null);
         
         if (section.contains("boots"))
-            inv.setBoots(section.getItemStack("boots"));
+            inv.setBoots(Items.sectionGetItem(section, "boots"));
         else
             inv.setBoots(null);
     }
