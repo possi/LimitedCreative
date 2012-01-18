@@ -1,6 +1,6 @@
 name: LimitedCreative
 main: de.jaschastarke.minecraft.limitedcreative.LimitedCreativeCore
-version: 0.1-beta
+version: 0.2-beta
 softdepend: [WorldGuard]
 commands:
     limitedcreative:

@@ -1,6 +1,6 @@
 /*
  * Limited Creative - (Bukkit Plugin)
- * Copyright (C) 2011  Essentials Team
+ * Copyright (C) 2012 jascha@ja-s.de
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ public class Items implements Storeable {
             Map<String, Object> serialize = s.getValues(false);
             if (s.contains("enchantments"))
                 serialize.put("enchantments", s.getConfigurationSection("enchantments").getValues(false));
-            if (s.contains("damage"))
+            if (s.contains("damage") && LimitedCreativeCore.serializeFallBack)
                 serialize.put("damage", new Integer(s.getInt("damage")).shortValue());
             return ItemStack.deserialize(serialize);
         }
