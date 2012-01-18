@@ -1,8 +1,28 @@
+/*
+ * Limited Creative - (Bukkit Plugin)
+ * Copyright (C) 2011  Essentials Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package de.jaschastarke.minecraft.limitedcreative;
 import java.util.logging.Logger;
 
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import static de.jaschastarke.minecraft.utils.Util.versionCompare;
+import de.jaschastarke.minecraft.utils.Locale;
 
 
 public class LimitedCreativeCore extends JavaPlugin {
@@ -15,18 +35,21 @@ public class LimitedCreativeCore extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        Locale.unload();
         logger.info("["+this.getDescription().getName()+"] cleanly unloaded.");
     }
 
     @Override
     public void onEnable() {
         plugin = this;
-        
+        config = new Configuration(this);
         serializeFallBack = versionCompare(getServer().getBukkitVersion().replaceAll("-.*$", ""), "1.1") < 0;
         
-        config = new Configuration(this.getConfig());
+        new Locale(this);
+        
         Listener.register(this);
-        //Commands.register(this);
+        Commands.register(this);
+        
         try {
             Class.forName("com.sk89q.worldguard.bukkit.WorldGuardPlugin", false, null);
             worldguard = new WorldGuardIntegration(this);
@@ -35,19 +58,5 @@ public class LimitedCreativeCore extends JavaPlugin {
         
         PluginDescriptionFile df = this.getDescription();
         logger.info("["+df.getName() + " v" + df.getVersion() + "] done loading.");
-    }
-    
-    public static int versionCompare(String vers1, String vers2) {
-        String[] v1 = vers1.split("\\.");
-        String[] v2 = vers2.split("\\.");
-        int i = 0;
-        while (i < v1.length && i < v2.length && v1[i].equals(v2[i])) {
-            i++;
-        }
-        if (i < v1.length && i < v2.length) {
-            int diff = new Integer(v1[i]).compareTo(new Integer(v2[i]));
-            return diff < 0 ? -1 : (diff == 0 ? 0 : 1);
-        }
-        return v1.length < v2.length ? -1 : (v1.length == v2.length ? 0 : 1);
     }
 }

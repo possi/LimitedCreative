@@ -1,3 +1,20 @@
+/*
+ * Limited Creative - (Bukkit Plugin)
+ * Copyright (C) 2011  Essentials Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package de.jaschastarke.minecraft.limitedcreative;
 
 import org.bukkit.GameMode;
@@ -20,6 +37,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.plugin.PluginManager;
+import static de.jaschastarke.minecraft.utils.Locale.L;
 
 public final class Listener {
     private static LimitedCreativeCore plugin;
@@ -38,14 +56,18 @@ public final class Listener {
 
         @Override
         public void onPlayerDropItem(PlayerDropItemEvent event) {
-            if (event.getPlayer().getGameMode() == GameMode.CREATIVE && !plugin.config.getDropInCreative()) {
+            if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
+                if (plugin.config.getPermissionsEnabled() && event.getPlayer().hasPermission("limitedcreative.nolimit.drop"))
+                    return;
                 event.setCancelled(true);
             }
         }
 
         @Override
         public void onPlayerPickupItem(PlayerPickupItemEvent event) {
-            if (event.getPlayer().getGameMode() == GameMode.CREATIVE && !plugin.config.getDropInCreative()) {
+            if (event.getPlayer().getGameMode() == GameMode.CREATIVE && plugin.config.getBlockPickupInCreative()) {
+                if (plugin.config.getPermissionsEnabled() && event.getPlayer().hasPermission("limitedcreative.nolimit.pickup"))
+                    return;
                 event.setCancelled(true);
             }
         } 
@@ -61,11 +83,15 @@ public final class Listener {
             Block block = event.getClickedBlock();
             
             if (block.getState() instanceof ContainerBlock) {
-                event.getPlayer().sendMessage("Access to chests is not allowed in creative mode");
+                if (plugin.config.getPermissionsEnabled() && event.getPlayer().hasPermission("limitedcreative.nolimit.chest"))
+                    return;
+                event.getPlayer().sendMessage(L("blocked.chest"));
                 event.setCancelled(true);
             }
             if (plugin.config.getSignBlock() && block.getState() instanceof Sign) {
-                event.getPlayer().sendMessage("To interact with signs is not allowed in creative mode");
+                if (plugin.config.getPermissionsEnabled() && event.getPlayer().hasPermission("limitedcreative.nolimit.sign"))
+                    return;
+                event.getPlayer().sendMessage(L("blocked.sign"));
                 event.setCancelled(true);
             }
         }
@@ -78,7 +104,9 @@ public final class Listener {
             Entity entity = event.getRightClicked();
 
             if (entity instanceof StorageMinecart) {
-                event.getPlayer().sendMessage("Access to chests is not allowed in creative mode");
+                if (plugin.config.getPermissionsEnabled() && event.getPlayer().hasPermission("limitedcreative.nolimit.chest"))
+                    return;
+                event.getPlayer().sendMessage(L("blocked.chest"));
                 event.setCancelled(true);
             }
         }
@@ -99,9 +127,17 @@ public final class Listener {
                 EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) meta_event;
                 if (event.getEntity() instanceof Player && event.getDamager() instanceof Player) {
                     // its PVP
-                    if (((Player) event.getEntity()).getGameMode() == GameMode.CREATIVE ||
-                        ((Player) event.getDamager()).getGameMode() == GameMode.CREATIVE) { // one of them is creative
-                        event.setCancelled(true);
+                    Player attacker = (Player) event.getDamager();
+                    Player attacked = (Player) event.getEntity();
+                    if (attacker.getGameMode() == GameMode.CREATIVE) {
+                        if (!plugin.config.getPermissionsEnabled() || !attacker.hasPermission("limitedcreative.nolimit.pvp")) {
+                            event.setCancelled(true);
+                        }
+                    }
+                    if (attacked.getGameMode() == GameMode.CREATIVE) {
+                        if (!plugin.config.getPermissionsEnabled() || !attacked.hasPermission("limitedcreative.nolimit.pvp")) {
+                            event.setCancelled(true);
+                        }
                     }
                 }
             }

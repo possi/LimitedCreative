@@ -2,8 +2,39 @@ name: LimitedCreative
 main: de.jaschastarke.minecraft.limitedcreative.LimitedCreativeCore
 version: 0.1-beta
 softdepend: [WorldGuard]
-#commands:
-#    limitedcreative:
-#        description: Manually control the Creative-Features
-#        aliases: lc
-#        usage: /<command> load
+commands:
+    limitedcreative:
+        description: Main LimitedCreative-Controlling-Commands
+        aliases: lc
+        usage: /<command> - displays LimitedCreative-Help
+permissions:
+    limitedcreative.config:
+        description: Allows enabling/disabling of config options ingame
+        default: op
+    limitedcreative.switch_gamemode:
+        description: Allows switching of own game mode to creative and back
+        default: op
+    limitedcreative.switch_gamemode.backonly:
+        description: Allows switching of own game mode to survival, but not to creative
+        default: true
+    limitedcreative.switch_gamemode.other:
+        description: Allows switching of other users game mode
+        default: op
+    limitedcreative.keepinventory:
+        description: Allows bypassing the inventory separation (if PermissionKeepInventory is enabled in config)
+        default: false
+    limitedcreative.nolimit.drop:
+        description: Allows bypassing the "do not drop anything"-limitation
+        default: false
+    limitedcreative.nolimit.pickup:
+        description: Allows bypassing the "do not pickup anything"-limitation
+        default: false
+    limitedcreative.nolimit.chest:
+        description: Allows bypassing the "do not open a chest"-limitation
+        default: false
+    limitedcreative.nolimit.sign:
+        description: Allows bypassing the "do not interact with signs"-limitation
+        default: false
+    limitedcreative.nolimit.pvp:
+        description: Allows bypassing the "no pvp"-limitation
+        default: false

@@ -1,0 +1,48 @@
+# --------------------------------
+# Limited Creative - Configuration
+# Full Default Configuration at:
+# 
+# --------------------------------
+
+store:
+    # StoreCreative
+    # Should the creative-inventory also be stored on disk, when switching to survival?
+    # If disabled, the inventory gets cleared every time on switching to creative.
+    # default: true
+    creative: true
+    
+    # InventoryFolder
+    # The folder inside the datadir-folder (plugin/LimitedCreative) where the inventories are saved to.
+    # By default the inventories are saved to plugin/LimitedCreative/inventories.
+    # default: "inventories"
+    folder: "inventories"
+
+limit:
+    # BlockPickup
+    # Prevents the pickup of items while in creative mode
+    # default: true
+    pickup: true
+    
+    # BlockSign
+    # Prevents interacting with signs (right-click), while in creative mode, so trading becomes more difficult.
+    # Attention: this will also block useful signs, like Lifts.
+    # default: true
+    sign: true
+
+permissions:
+    # PermissionsEnabled
+    # When enabled, the Permissions will allow selected users to ignore limitations like PvP, Chest-Block, etc.
+    # When not enabled, all users are treated equally.
+    # Note: The Permission needed for commands, are not affected by this option. So you still need the defined
+    #     permissions or op, to use commands, even if this options is disabled!
+    # default: false
+    enabled: false
+    
+    # PermissionKeepInventory
+    # Disables the limitedcreative.keepinventory-Permission, so you can use the separated-inventories-feature, even
+    # if you have a permission plugin that grants ALL permission to you.
+    # If Enabled, only players WITHOUT the limitedcreative.keepinventory-Permission, have separated inventories;
+    # Players with the permission will have the inventory, like this plugin were not installed.
+    # When "PermissionsEnabled" is false, the KeepInventory-Option will act like disabled, even if you set it to true.
+    # default: false
+    keepinventory: false
