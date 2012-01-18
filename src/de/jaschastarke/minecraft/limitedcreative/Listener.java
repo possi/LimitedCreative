@@ -29,6 +29,7 @@ import org.bukkit.event.Event.Priority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
@@ -36,8 +37,8 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.PluginManager;
-import static de.jaschastarke.minecraft.utils.Locale.L;
 
 public final class Listener {
     private static LimitedCreativeCore plugin;
@@ -47,52 +48,41 @@ public final class Listener {
         @Override
         public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
             if (event.getNewGameMode() == GameMode.CREATIVE) {
-                new PlayerCore(plugin, event.getPlayer()).onSetCreative();
+                LCPlayer.get(event.getPlayer()).onSetCreative();
             } else if (event.getNewGameMode() == GameMode.SURVIVAL) {
-                new PlayerCore(plugin, event.getPlayer()).onSetSurvival();
+                LCPlayer.get(event.getPlayer()).onSetSurvival();
             }
         }
         
 
         @Override
+        public void onPlayerRespawn(PlayerRespawnEvent event) {
+            LCPlayer.get(event.getPlayer()).onRespawn(event);
+        }
+
+
+        @Override
         public void onPlayerDropItem(PlayerDropItemEvent event) {
-            if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
-                if (plugin.config.getPermissionsEnabled() && event.getPlayer().hasPermission("limitedcreative.nolimit.drop"))
-                    return;
-                event.setCancelled(true);
-            }
+            LCPlayer.get(event.getPlayer()).onDropItem(event);
         }
 
         @Override
         public void onPlayerPickupItem(PlayerPickupItemEvent event) {
-            if (event.getPlayer().getGameMode() == GameMode.CREATIVE && plugin.config.getBlockPickupInCreative()) {
-                if (plugin.config.getPermissionsEnabled() && event.getPlayer().hasPermission("limitedcreative.nolimit.pickup"))
-                    return;
-                event.setCancelled(true);
-            }
-        } 
+            LCPlayer.get(event.getPlayer()).onPickupItem(event);
+        }
 
         @Override
         public void onPlayerInteract(PlayerInteractEvent event) {
-            if (event.isCancelled() || event.getPlayer().getGameMode() == GameMode.SURVIVAL)
-                return;
-
-            if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
+            if (event.isCancelled() || event.getAction() != Action.RIGHT_CLICK_BLOCK)
                 return;
             
             Block block = event.getClickedBlock();
             
             if (block.getState() instanceof ContainerBlock) {
-                if (plugin.config.getPermissionsEnabled() && event.getPlayer().hasPermission("limitedcreative.nolimit.chest"))
-                    return;
-                event.getPlayer().sendMessage(L("blocked.chest"));
-                event.setCancelled(true);
+                LCPlayer.get(event.getPlayer()).onChestAccess(event);
             }
-            if (plugin.config.getSignBlock() && block.getState() instanceof Sign) {
-                if (plugin.config.getPermissionsEnabled() && event.getPlayer().hasPermission("limitedcreative.nolimit.sign"))
-                    return;
-                event.getPlayer().sendMessage(L("blocked.sign"));
-                event.setCancelled(true);
+            if (block.getState() instanceof Sign) {
+                LCPlayer.get(event.getPlayer()).onSignAccess(event);
             }
         }
 
@@ -104,10 +94,7 @@ public final class Listener {
             Entity entity = event.getRightClicked();
 
             if (entity instanceof StorageMinecart) {
-                if (plugin.config.getPermissionsEnabled() && event.getPlayer().hasPermission("limitedcreative.nolimit.chest"))
-                    return;
-                event.getPlayer().sendMessage(L("blocked.chest"));
-                event.setCancelled(true);
+                LCPlayer.get(event.getPlayer()).onChestAccess(event);
             }
         }
         
@@ -117,6 +104,7 @@ public final class Listener {
             pm.registerEvent(Event.Type.PLAYER_PICKUP_ITEM, this, Priority.Normal, plugin);
             pm.registerEvent(Event.Type.PLAYER_INTERACT, this, Priority.Lowest, plugin);
             pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, this, Priority.Lowest, plugin);
+            pm.registerEvent(Event.Type.PLAYER_RESPAWN, this, Priority.Normal, plugin);
         }
     }
     
@@ -125,26 +113,23 @@ public final class Listener {
         public void onEntityDamage(EntityDamageEvent meta_event) {
             if (meta_event instanceof EntityDamageByEntityEvent) {
                 EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) meta_event;
-                if (event.getEntity() instanceof Player && event.getDamager() instanceof Player) {
-                    // its PVP
-                    Player attacker = (Player) event.getDamager();
-                    Player attacked = (Player) event.getEntity();
-                    if (attacker.getGameMode() == GameMode.CREATIVE) {
-                        if (!plugin.config.getPermissionsEnabled() || !attacker.hasPermission("limitedcreative.nolimit.pvp")) {
-                            event.setCancelled(true);
-                        }
-                    }
-                    if (attacked.getGameMode() == GameMode.CREATIVE) {
-                        if (!plugin.config.getPermissionsEnabled() || !attacked.hasPermission("limitedcreative.nolimit.pvp")) {
-                            event.setCancelled(true);
-                        }
-                    }
+                if (event.getEntity() instanceof Player) {
+                    LCPlayer.get((Player) event.getEntity()).onDamage(event);
                 }
+            }
+        }
+
+        @Override
+        public void onEntityDeath(EntityDeathEvent event) {
+            if (event.getEntity() instanceof Player) {
+                Player player = (Player) event.getEntity();
+                LCPlayer.get(player).onDie(event);
             }
         }
 
         private void register() {
             pm.registerEvent(Event.Type.ENTITY_DAMAGE, this, Priority.Normal, plugin);
+            pm.registerEvent(Event.Type.ENTITY_DEATH, this, Priority.Low, plugin);
         }
     }
     

@@ -17,6 +17,7 @@
  */
 package de.jaschastarke.minecraft.limitedcreative.serialize;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Material;
@@ -70,6 +71,35 @@ public class Items implements Storeable {
             if (s.contains("damage") && LimitedCreativeCore.serializeFallBack)
                 serialize.put("damage", new Integer(s.getInt("damage")).shortValue());
             return ItemStack.deserialize(serialize);
+        }
+    }
+    public static Map<Integer, ItemStack> storeInventory(PlayerInventory inv) {
+        Map<Integer, ItemStack> map = new HashMap<Integer, ItemStack>();
+        for (int i = 0; i < inv.getSize(); i++) {
+            if (inv.getItem(i) != null && inv.getItem(i).getTypeId() != 0) {
+                map.put(i, inv.getItem(i));
+            }
+        }
+        for (int i = 0; i < inv.getArmorContents().length; i++) {
+            map.put((i * -1) - 1, inv.getArmorContents()[i]);
+        }
+        return map;
+    }
+    public static void restoreInventory(PlayerInventory inv, Map<Integer, ItemStack> map) {
+        for (int i = 0; i < inv.getSize(); i++) {
+            if (map.containsKey(i)) {
+                inv.setItem(i, map.get(i));
+            } else {
+                inv.setItem(i, null);
+            }
+        }
+        for (int i = 0; i < inv.getArmorContents().length; i++) {
+            int _i = (i * -1) - 1;
+            if (map.containsKey(_i)) {
+                inv.getArmorContents()[i] = map.get(_i);
+            } else {
+                inv.getArmorContents()[i] = null;
+            }
         }
     }
 }
