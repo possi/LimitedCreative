@@ -21,7 +21,6 @@ import java.util.logging.Logger;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import static de.jaschastarke.minecraft.utils.Util.versionCompare;
 import static de.jaschastarke.minecraft.utils.Locale.L;
 import de.jaschastarke.minecraft.utils.Locale;
 
@@ -44,7 +43,11 @@ public class LimitedCreativeCore extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         config = new Configuration(this);
-        serializeFallBack = versionCompare(getServer().getBukkitVersion().replaceAll("-.*$", ""), "1.1") < 0;
+        try {
+            Class.forName("org.bukkit.configuration.file.YamlConstructor", false, getClassLoader());
+        } catch (ClassNotFoundException e) {
+            serializeFallBack = true;
+        }
         
         new Locale(this);
         
