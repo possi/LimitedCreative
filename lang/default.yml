@@ -9,6 +9,16 @@ command:
         changed: "{0}'s game mode has been changed"
     option:
         done: Option changed.
+    worldguard:
+        alias: Alias for //region-command
+        unknown_flag: Unknown flag specified
+        available_flags: Available flags
+        region_not_found: Could not find a region by that ID
+        world_not_found: Could not find a world by that name
+        no_flag_given: You need to specify a flag to set
+        no_integration: The worldguard-commands are not available, because worldguard wasn't found
+        flag_set: "The flag {0} was set"
+        additional_flags: Additional flags
 exception:
     command:
         lackingpermission: You do not have access to this command
@@ -21,3 +31,4 @@ exception:
 blocked:
     chest: Access to chests is not allowed in creative mode
     sign: To interact with signs is not allowed in creative mode
+    survival_flying: You should stay on ground, when leaving a creative-area

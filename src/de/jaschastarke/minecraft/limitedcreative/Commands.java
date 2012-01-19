@@ -17,6 +17,8 @@
  */
 package de.jaschastarke.minecraft.limitedcreative;
 
+import java.util.Arrays;
+
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
@@ -34,6 +36,7 @@ public class Commands {
             S, SURVIVAL,
             E, ENABLE,
             D, DISABLE,
+            R, REGION,
         };
         
         @Override
@@ -62,6 +65,11 @@ public class Commands {
                             case DISABLE:
                                 this.setOption(sender, args, false);
                                 return true;
+                            case R:
+                            case REGION:
+                                args = Arrays.copyOfRange(args, 1, args.length);
+                                plugin.getCommand("/region").execute(sender, "/region", args);
+                                return true;
                         }
                     } catch (CommandException e) {
                         sender.sendMessage(ChatColor.DARK_RED + e.getLocalizedMessage());
@@ -80,6 +88,8 @@ public class Commands {
                 message += "/"+c+" e[nable] "+L("command.config.overview")+"\n";
             if (sender.hasPermission("limitedcreative.config"))
                 message += "/"+c+" d[isable] "+L("command.config.overview")+"\n";
+            if (sender.hasPermission("limitedcreative.config"))
+                message += "/"+c+" r[egion] "+L("command.worldguard.alias")+"\n";
             if (message.length() > 0) {
                 sender.sendMessage("Usage:");
                 for (String m : message.split("\n")) {
@@ -167,10 +177,23 @@ public class Commands {
         
     }
     
+    public static class NotAvailableCommandExecutor implements CommandExecutor {
+        @Override
+        public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+            sender.sendMessage(ChatColor.DARK_RED + L("command.worldguard.no_integration"));
+            return true;
+        }
+        
+    }
+    
     public static void register(LimitedCreativeCore pplugin) {
         plugin = pplugin;
-        
         plugin.getCommand("limitedcreative").setExecutor(new MainCommandExecutor());
+        if (plugin.worldguard != null) {
+            plugin.getCommand("/region").setExecutor(plugin.worldguard.new WGICommandExecutor()); // very odd syntax, but i liiiikey internal classes :D
+        } else {
+            plugin.getCommand("/region").setExecutor(new NotAvailableCommandExecutor());
+        }
     }
     
     abstract static public class CommandException extends Exception {

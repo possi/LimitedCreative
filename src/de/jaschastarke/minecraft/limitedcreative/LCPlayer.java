@@ -19,16 +19,24 @@ package de.jaschastarke.minecraft.limitedcreative;
 
 import static de.jaschastarke.minecraft.utils.Locale.L;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
@@ -40,9 +48,22 @@ public class LCPlayer {
     private static Map<Player, LCPlayer> players = new HashMap<Player, LCPlayer>();
     private Player player;
     private Map<Integer, ItemStack> tempinv = null;
+    
+    private static File _store_file = new File(plugin.getDataFolder(), "players.yml");
+    public static YamlConfiguration store = YamlConfiguration.loadConfiguration(_store_file);
+    
+    private boolean isPermanentCreative = false;
+    private boolean _isRegionCreative = false;
 
     private LCPlayer(Player pplayer) {
         player = pplayer;
+        _isRegionCreative = store.getBoolean(player.getName()+".region_creative", false);
+        if (player.getGameMode() == GameMode.CREATIVE && !this.getRegionCreative())
+            isPermanentCreative = true;
+    }
+    
+    public Player getRaw() {
+        return player;
     }
     
     public static LCPlayer get(Player pplayer) {
@@ -55,26 +76,52 @@ public class LCPlayer {
         }
     }
     
-    public void onSetCreative() {
-        if (plugin.config.getPermissionToKeepInventory() && player.hasPermission("limitedcreative.keepinventory"))
-            return;
-        Inventory inv = new Inventory(player);
-        inv.save();
-        if (plugin.config.getStoreCreative() && inv.isStored(GameMode.CREATIVE)) {
-            inv.load(GameMode.CREATIVE);
+    public boolean getRegionCreative() {
+        return _isRegionCreative;
+    }
+    public void setRegionCreative(boolean b) {
+        if (b) {
+            store.set(player.getName()+".region_creative", true);
         } else {
-            inv.clear();
+            store.set(player.getName(), null);
+        }
+        try {
+            store.save(_store_file);
+        } catch (IOException e) {
+            plugin.logger.severe("Failed to save players.yml");
+            e.printStackTrace();
+        }
+        _isRegionCreative = b;
+    }
+    
+    public void onSetCreative() {
+        if (!this.getRegionCreative())
+            isPermanentCreative = true;
+        if (plugin.config.getStoreEnabled()) {
+            if (plugin.config.getPermissionToKeepInventory() && player.hasPermission("limitedcreative.keepinventory"))
+                return;
+            Inventory inv = new Inventory(player);
+            inv.save();
+            if (plugin.config.getStoreCreative() && inv.isStored(GameMode.CREATIVE)) {
+                inv.load(GameMode.CREATIVE);
+            } else {
+                inv.clear();
+            }
         }
     }
     public void onSetSurvival() {
-        if (plugin.config.getPermissionToKeepInventory() && player.hasPermission("limitedcreative.keepinventory"))
-            return;
-        Inventory inv = new Inventory(player);
-        if (plugin.config.getStoreCreative()) {
-            inv.save();
+        isPermanentCreative = false;
+        setRegionCreative(false);
+        if (plugin.config.getStoreEnabled()) {
+            if (plugin.config.getPermissionToKeepInventory() && player.hasPermission("limitedcreative.keepinventory"))
+                return;
+            Inventory inv = new Inventory(player);
+            if (plugin.config.getStoreCreative()) {
+                inv.save();
+            }
+            if (inv.isStored(GameMode.SURVIVAL))
+                inv.load(GameMode.SURVIVAL);
         }
-        if (inv.isStored(GameMode.SURVIVAL))
-            inv.load(GameMode.SURVIVAL);
     }
     public void onDropItem(PlayerDropItemEvent event) {
         if (player.getGameMode() == GameMode.CREATIVE) {
@@ -150,5 +197,43 @@ public class LCPlayer {
         event.getPlayer().sendMessage(L("blocked.sign"));
         event.setCancelled(true);
     }
+
+    public void setRegionCreativeAllowed(boolean rcreative, PlayerMoveEvent event) {
+        if (rcreative && player.getGameMode() == GameMode.SURVIVAL) {
+            setRegionCreative(true); // have to be set, before setGameMode
+            player.setGameMode(GameMode.CREATIVE);
+        } else if (!rcreative && player.getGameMode() == GameMode.CREATIVE && !isPermanentCreative) {
+            if (getFloatingHeight() > 3) {
+                player.sendMessage(L("blocked.survival_flying"));
+                event.setTo(event.getFrom());
+            } else {
+                player.setGameMode(GameMode.SURVIVAL); // also unsets isRegionCreative;
+            }
+        }
+    }
     
+    public int getFloatingHeight() {
+        Block b = player.getLocation().getBlock();
+        int steps = 0;
+        while (b.getType() == Material.AIR) {
+            steps++;
+            b = b.getRelative(BlockFace.DOWN);
+        }
+        return steps;
+    }
+    
+    public void goToFloor() {
+        Block b = player.getLocation().getBlock();
+        int steps = 0;
+        while (b.getType() == Material.AIR) {
+            steps++;
+            b = b.getRelative(BlockFace.DOWN);
+        }
+        if (steps > 2) {
+            player.teleport(new Location(player.getWorld(),
+                    player.getLocation().getX(),
+                    b.getY()+1,
+                    player.getLocation().getZ()));
+        }
+    }
 }

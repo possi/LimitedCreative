@@ -1,15 +1,22 @@
 name: LimitedCreative
 main: de.jaschastarke.minecraft.limitedcreative.LimitedCreativeCore
-version: 0.2-beta
+version: 0.5-beta
 softdepend: [WorldGuard]
 commands:
     limitedcreative:
         description: Main LimitedCreative-Controlling-Commands
         aliases: lc
         usage: /<command> - displays LimitedCreative-Help
+    /region:
+        description: Alternate region command, to use for WorldGuard-Integration
+        aliases: lcregion
+        usage: /<command> info|flag [<world>#]<region> - set/get region options
 permissions:
     limitedcreative.config:
         description: Allows enabling/disabling of config options ingame
+        default: op
+    limitedcreative.regions:
+        description: Allows usage of the //region commands
         default: op
     limitedcreative.switch_gamemode:
         description: Allows switching of own game mode to creative and back

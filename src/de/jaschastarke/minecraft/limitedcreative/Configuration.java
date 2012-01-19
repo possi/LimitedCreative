@@ -18,12 +18,10 @@
 package de.jaschastarke.minecraft.limitedcreative;
 
 import java.io.File;
-//import java.io.IOException;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
 import static de.jaschastarke.minecraft.utils.Util.copyFile;
-//import static de.jaschastarke.minecraft.utils.Locale.L;
 
 public class Configuration {
     private FileConfiguration c;
@@ -40,6 +38,17 @@ public class Configuration {
         
         c = plugin.getConfig();
     }
+    
+    public boolean getStoreEnabled() {
+        return c.getBoolean("store.enabled", true);
+    }
+    public boolean getLimitEnabled() {
+        return c.getBoolean("limit.enabled", true);
+    }
+    public boolean getRegionEnabled() {
+        return c.getBoolean("region.enabled", true);
+    }
+    
     public boolean getStoreCreative() {
         return c.getBoolean("store.creative", true);
     }
@@ -58,6 +67,7 @@ public class Configuration {
     public boolean getPermissionToKeepInventory() {
         return this.getPermissionsEnabled() && c.getBoolean("permissions.keepinventory", false);
     }
+    
     
     public void setStoreCreative(boolean value) {
         this.reload();

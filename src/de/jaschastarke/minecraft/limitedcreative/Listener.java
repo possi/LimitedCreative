@@ -100,11 +100,13 @@ public final class Listener {
         
         private void register() {
             pm.registerEvent(Event.Type.PLAYER_GAME_MODE_CHANGE, this, Priority.Normal, plugin);
-            pm.registerEvent(Event.Type.PLAYER_DROP_ITEM, this, Priority.Normal, plugin);
-            pm.registerEvent(Event.Type.PLAYER_PICKUP_ITEM, this, Priority.Normal, plugin);
-            pm.registerEvent(Event.Type.PLAYER_INTERACT, this, Priority.Lowest, plugin);
-            pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, this, Priority.Lowest, plugin);
-            pm.registerEvent(Event.Type.PLAYER_RESPAWN, this, Priority.Normal, plugin);
+            if (plugin.config.getLimitEnabled()) {
+                pm.registerEvent(Event.Type.PLAYER_DROP_ITEM, this, Priority.Normal, plugin);
+                pm.registerEvent(Event.Type.PLAYER_PICKUP_ITEM, this, Priority.Normal, plugin);
+                pm.registerEvent(Event.Type.PLAYER_INTERACT, this, Priority.Lowest, plugin);
+                pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, this, Priority.Lowest, plugin);
+                pm.registerEvent(Event.Type.PLAYER_RESPAWN, this, Priority.Normal, plugin);
+            }
         }
     }
     
@@ -128,8 +130,10 @@ public final class Listener {
         }
 
         private void register() {
-            pm.registerEvent(Event.Type.ENTITY_DAMAGE, this, Priority.Normal, plugin);
-            pm.registerEvent(Event.Type.ENTITY_DEATH, this, Priority.Low, plugin);
+            if (plugin.config.getLimitEnabled()) {
+                pm.registerEvent(Event.Type.ENTITY_DAMAGE, this, Priority.Normal, plugin);
+                pm.registerEvent(Event.Type.ENTITY_DEATH, this, Priority.Low, plugin);
+            }
         }
     }
     

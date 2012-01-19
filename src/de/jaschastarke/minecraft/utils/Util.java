@@ -63,4 +63,19 @@ final public class Util {
             e.printStackTrace();
         }
     }
+    public static String join(String[] list, String sep, int from, int range) {
+        StringBuilder result = new StringBuilder();
+        for (int i = from; i >= 0 && i < from + range && i < list.length; i++) {
+            if (result.length() > 0)
+                result.append(sep);
+            result.append(list[i]);
+        }
+        return result.toString();
+    }
+    public static String join(String[] list, int from, int range) {
+        return join(list, " ", from, range);
+    }
+    public static String join(String[] list, int from) {
+        return join(list, " ", from, from);
+    }
 }

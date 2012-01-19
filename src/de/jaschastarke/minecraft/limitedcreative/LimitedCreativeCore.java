@@ -22,6 +22,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import static de.jaschastarke.minecraft.utils.Util.versionCompare;
+import static de.jaschastarke.minecraft.utils.Locale.L;
 import de.jaschastarke.minecraft.utils.Locale;
 
 
@@ -48,13 +49,15 @@ public class LimitedCreativeCore extends JavaPlugin {
         new Locale(this);
         
         Listener.register(this);
-        Commands.register(this);
         
-        try {
-            Class.forName("com.sk89q.worldguard.bukkit.WorldGuardPlugin", false, null);
+        if (config.getRegionEnabled() && WorldGuardIntegration.available()) {
             worldguard = new WorldGuardIntegration(this);
             worldguard.init();
-        } catch (ClassNotFoundException e) {}
+        } else {
+            logger.info("["+this.getDescription().getName()+"] "+L("warning.no_worldguard_found"));
+        }
+        
+        Commands.register(this);
         
         PluginDescriptionFile df = this.getDescription();
         logger.info("["+df.getName() + " v" + df.getVersion() + "] done loading.");
