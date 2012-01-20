@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.jaschastarke.minecraft.regions;
+package de.jaschastarke.minecraft.worldguard;
 
 import java.util.Iterator;
 import java.util.List;
@@ -24,7 +24,8 @@ import org.bukkit.World;
 
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import de.jaschastarke.minecraft.regions.CRegionManager.CWorld;
+
+import de.jaschastarke.minecraft.worldguard.CRegionManager.CWorld;
 
 public class CRegion {
     private ProtectedRegion region;

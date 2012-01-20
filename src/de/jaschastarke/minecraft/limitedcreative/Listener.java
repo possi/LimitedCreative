@@ -18,19 +18,25 @@
 package de.jaschastarke.minecraft.limitedcreative;
 
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.ContainerBlock;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.StorageMinecart;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
+import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -128,14 +134,85 @@ public final class Listener {
                 LCPlayer.get(player).onDie(event);
             }
         }
+        
+        @Override
+        public void onItemSpawn(ItemSpawnEvent event) {
+            if (event.getEntity() instanceof Item) {
+                if (plugin.spawnblock.isBlocked(event.getLocation().getBlock().getLocation(), ((Item) event.getEntity()).getItemStack().getType())) {
+                    event.setCancelled(true);
+                }
+            }
+        }
 
         private void register() {
             if (plugin.config.getLimitEnabled()) {
+                plugin.getServer().getPluginManager().registerEvent(Event.Type.ITEM_SPAWN, this, Priority.Normal, plugin);
                 pm.registerEvent(Event.Type.ENTITY_DAMAGE, this, Priority.Normal, plugin);
                 pm.registerEvent(Event.Type.ENTITY_DEATH, this, Priority.Low, plugin);
             }
         }
     }
+    
+    public static class BlockListen extends BlockListener {
+        @Override
+        public void onBlockBreak(BlockBreakEvent event) {
+            if (event.isCancelled())
+                return;
+            if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
+                // Prevent dropping of doors and beds when destroying the wrong part
+                if (plugin.config.getPermissionsEnabled() && event.getPlayer().hasPermission("limitedcreative.nolimit.drop"))
+                    return;
+                Block block = event.getBlock();
+                Material mat = block.getType();
+                switch (event.getBlock().getType()) {
+                    case WOODEN_DOOR:
+                        mat = Material.WOOD_DOOR;
+                        plugin.spawnblock.block(block.getRelative(BlockFace.DOWN).getLocation(), mat);
+                        break;
+                    case IRON_DOOR_BLOCK:
+                        mat = Material.IRON_DOOR;
+                        plugin.spawnblock.block(block.getRelative(BlockFace.DOWN).getLocation(), mat);
+                        break;
+                    case BED_BLOCK:
+                        mat = Material.BED;
+                        plugin.spawnblock.block(block.getRelative(BlockFace.NORTH).getLocation(), mat);
+                        plugin.spawnblock.block(block.getRelative(BlockFace.EAST).getLocation(), mat);
+                        plugin.spawnblock.block(block.getRelative(BlockFace.SOUTH).getLocation(), mat);
+                        plugin.spawnblock.block(block.getRelative(BlockFace.WEST).getLocation(), mat);
+                        break;
+                    default:
+                        plugin.spawnblock.block(event.getBlock().getLocation(), mat);
+                }
+            }
+        }
+        private void register() {
+            if (plugin.config.getLimitEnabled()) {
+                pm.registerEvent(Event.Type.BLOCK_BREAK, this, Priority.Normal, plugin);
+            }
+        }
+    }
+    /*
+    public static class VehicleListen extends VehicleListener {
+        @Override
+        public void onVehicleDestroy(VehicleDestroyEvent event) {
+            if (event.isCancelled())
+                return;
+            if (event.getAttacker() instanceof Player) {
+                Player player = (Player) event.getAttacker();
+                if (player.getGameMode() == GameMode.CREATIVE) {
+                    if (plugin.config.getPermissionsEnabled() && player.hasPermission("limitedcreative.nolimit.drop"))
+                        return;
+                    plugin.logger.info("Vehicle destroy: "+event.getVehicle() + " - "+event.getVehicle().getEntityId());
+                }
+            }
+        }
+        
+        private void register() {
+            if (plugin.config.getLimitEnabled()) {
+                pm.registerEvent(Event.Type.VEHICLE_DESTROY, this, Priority.Normal, plugin);
+            }
+        }
+    }*/
     
     public static void register(LimitedCreativeCore pplugin) {
         plugin = pplugin;
@@ -143,5 +220,7 @@ public final class Listener {
         
         new PlayerListen().register();
         new EntityListen().register();
+        new BlockListen().register();
+        //new VehicleListen().register();
     }
 }

@@ -57,7 +57,7 @@ public class LCPlayer {
 
     private LCPlayer(Player pplayer) {
         player = pplayer;
-        _isRegionCreative = store.getBoolean(player.getName()+".region_creative", false);
+        _isRegionCreative = store.getBoolean(player.getName()+".region_creative", false) && player.getGameMode() == GameMode.CREATIVE;
         if (player.getGameMode() == GameMode.CREATIVE && !this.getRegionCreative())
             isPermanentCreative = true;
     }
@@ -197,6 +197,8 @@ public class LCPlayer {
         event.getPlayer().sendMessage(L("blocked.sign"));
         event.setCancelled(true);
     }
+    
+    private long lastFloatingTimeWarning = 0;
 
     public void setRegionCreativeAllowed(boolean rcreative, PlayerMoveEvent event) {
         if (rcreative && player.getGameMode() == GameMode.SURVIVAL) {
@@ -204,7 +206,10 @@ public class LCPlayer {
             player.setGameMode(GameMode.CREATIVE);
         } else if (!rcreative && player.getGameMode() == GameMode.CREATIVE && !isPermanentCreative) {
             if (getFloatingHeight() > 3) {
-                player.sendMessage(L("blocked.survival_flying"));
+                if (System.currentTimeMillis() - lastFloatingTimeWarning > 10000) {// 10 sec. limit
+                    player.sendMessage(L("blocked.survival_flying"));
+                    lastFloatingTimeWarning = System.currentTimeMillis();
+                }
                 event.setTo(event.getFrom());
             } else {
                 player.setGameMode(GameMode.SURVIVAL); // also unsets isRegionCreative;

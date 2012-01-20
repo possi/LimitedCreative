@@ -25,6 +25,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import de.jaschastarke.minecraft.worldguard.CCommand;
 import static de.jaschastarke.minecraft.utils.Locale.L;
 
 public class Commands {
@@ -190,7 +192,7 @@ public class Commands {
         plugin = pplugin;
         plugin.getCommand("limitedcreative").setExecutor(new MainCommandExecutor());
         if (plugin.worldguard != null) {
-            plugin.getCommand("/region").setExecutor(plugin.worldguard.new WGICommandExecutor()); // very odd syntax, but i liiiikey internal classes :D
+            plugin.getCommand("/region").setExecutor(new CCommand(plugin, plugin.worldguard.getRegionManager()));
         } else {
             plugin.getCommand("/region").setExecutor(new NotAvailableCommandExecutor());
         }

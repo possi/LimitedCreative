@@ -22,6 +22,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import static de.jaschastarke.minecraft.utils.Locale.L;
+import de.jaschastarke.minecraft.limitedcreative.regions.WorldGuardIntegration;
 import de.jaschastarke.minecraft.utils.Locale;
 
 
@@ -30,6 +31,7 @@ public class LimitedCreativeCore extends JavaPlugin {
     public Configuration config;
     public WorldGuardIntegration worldguard;
     public static LimitedCreativeCore plugin;
+    public NoBlockItemSpawn spawnblock;
     
     public static boolean serializeFallBack = false;
 
@@ -50,6 +52,8 @@ public class LimitedCreativeCore extends JavaPlugin {
         }
         
         new Locale(this);
+
+        spawnblock = new NoBlockItemSpawn();
         
         Listener.register(this);
         

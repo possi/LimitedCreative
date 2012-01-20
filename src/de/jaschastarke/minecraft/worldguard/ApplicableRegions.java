@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.jaschastarke.minecraft.regions;
+package de.jaschastarke.minecraft.worldguard;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.Flag;
@@ -23,7 +23,7 @@ import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import de.jaschastarke.minecraft.limitedcreative.LCPlayer;
-import de.jaschastarke.minecraft.limitedcreative.WorldGuardIntegration;
+import de.jaschastarke.minecraft.limitedcreative.regions.WorldGuardIntegration;
 
 public class ApplicableRegions {
     private ApplicableRegionSet regions;

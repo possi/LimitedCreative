@@ -32,3 +32,4 @@ blocked:
     chest: Access to chests is not allowed in creative mode
     sign: To interact with signs is not allowed in creative mode
     survival_flying: You should stay on ground, when leaving a creative-area
+    outside_creative: You can not place blocks outside of the creative-area
