@@ -20,6 +20,7 @@ package de.jaschastarke.minecraft.limitedcreative;
 import java.io.File;
 import java.io.IOException;
 
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -28,6 +29,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import de.jaschastarke.minecraft.limitedcreative.serialize.Armor;
 import de.jaschastarke.minecraft.limitedcreative.serialize.Items;
+import static de.jaschastarke.minecraft.utils.Locale.L;
 
 public class Inventory {
     protected Player player;
@@ -45,7 +47,15 @@ public class Inventory {
     
     public void load(GameMode gm) {
         File f = new File(LimitedCreativeCore.plugin.getDataFolder(), getFileName(player, gm));
-        restoreInventory(inv, f);
+        try {
+            restoreInventory(inv, f);
+        } catch (IllegalArgumentException e) {
+            if (LimitedCreativeCore.plugin.config.getUnsafeStorage()) {
+                throw e;
+            } else {
+                player.sendMessage(ChatColor.DARK_RED + L("exception.storage.load"));
+            }
+        }
     }
     public void load() {
         load(player.getGameMode());

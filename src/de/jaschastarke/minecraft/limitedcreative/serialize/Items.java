@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -51,7 +52,7 @@ public class Items implements Storeable {
     }
 
     public static void sectionSetItem(ConfigurationSection section, String path, ItemStack item) {
-        if (!LimitedCreativeCore.serializeFallBack) {
+        if (!LimitedCreativeCore.serializeFallBack && !LimitedCreativeCore.plugin.config.getUnsafeStorage()) {
             section.set(path, item);
         } else { // compatibility fallback
             Map<String, Object> serialize = item.serialize();
@@ -63,14 +64,24 @@ public class Items implements Storeable {
     public static ItemStack sectionGetItem(ConfigurationSection section, String path) {
         if (section.isItemStack(path)) {
             return section.getItemStack(path);
-        } else { // compatibility fallback
+        } else {
             ConfigurationSection s = section.getConfigurationSection(path);
             Map<String, Object> serialize = s.getValues(false);
-            if (s.contains("enchantments"))
-                serialize.put("enchantments", s.getConfigurationSection("enchantments").getValues(false));
+            serialize.remove("enchantments");
             if (s.contains("damage") && LimitedCreativeCore.serializeFallBack)
                 serialize.put("damage", new Integer(s.getInt("damage")).shortValue());
-            return ItemStack.deserialize(serialize);
+            ItemStack result = ItemStack.deserialize(serialize);
+            Map<String, Object> item = section.getConfigurationSection(path).getValues(false);
+            item.remove("enchantments");
+            if (s.contains("enchantments")) {
+                for (Map.Entry<String, Object> entry : s.getConfigurationSection("enchantments").getValues(false).entrySet()) {
+                    Enchantment enchantment = Enchantment.getByName(entry.getKey().toString());
+                    if ((enchantment != null) && (entry.getValue() instanceof Integer)) {
+                        result.addUnsafeEnchantment(enchantment, (Integer) entry.getValue());
+                    }
+                }
+            }
+            return result;
         }
     }
     public static Map<Integer, ItemStack> storeInventory(PlayerInventory inv) {

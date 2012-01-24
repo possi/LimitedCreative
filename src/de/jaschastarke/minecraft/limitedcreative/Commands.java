@@ -81,20 +81,18 @@ public class Commands {
             }
             
             String c = label;
-            String message = "";
-            if (sender.hasPermission("limitedcreative.switch_gamemode") || sender.hasPermission("limitedcreative.switch_gamemode.backonly"))
-                message += "/"+c+" s[urvival] ["+L("command.player")+"] - "+L("command.switch.survival")+"\n";
-            if (sender.hasPermission("limitedcreative.switch_gamemode"))
-                message += "/"+c+" c[reative] ["+L("command.player")+"] - "+L("command.switch.creative")+"\n";
+            StringBuilder message = new StringBuilder();
+            message.append("/"+c+" s[urvival] ["+L("command.player")+"] - "+L("command.switch.survival")+"\n");
+            message.append("/"+c+" c[reative] ["+L("command.player")+"] - "+L("command.switch.creative")+"\n");
             if (sender.hasPermission("limitedcreative.config"))
-                message += "/"+c+" e[nable] "+L("command.config.overview")+"\n";
+                message.append("/"+c+" e[nable] "+L("command.config.overview")+"\n");
             if (sender.hasPermission("limitedcreative.config"))
-                message += "/"+c+" d[isable] "+L("command.config.overview")+"\n";
-            if (sender.hasPermission("limitedcreative.config"))
-                message += "/"+c+" r[egion] "+L("command.worldguard.alias")+"\n";
+                message.append("/"+c+" d[isable] "+L("command.config.overview")+"\n");
+            if (sender.hasPermission("limitedcreative.regions"))
+                message.append("/"+c+" r[egion] "+L("command.worldguard.alias")+"\n");
             if (message.length() > 0) {
                 sender.sendMessage("Usage:");
-                for (String m : message.split("\n")) {
+                for (String m : message.toString().split("\n")) {
                     sender.sendMessage(m);
                 }
                 return true;
@@ -155,25 +153,22 @@ public class Commands {
                 target = plugin.getServer().getPlayer(args[1]);
             else if (sender instanceof Player)
                 target = (Player) sender;
-            
-            if (sender instanceof Player && !sender.isOp()) {
-                if (!sender.hasPermission("limitedcreative.switch_gamemode")) {
-                    if (gm != GameMode.SURVIVAL || !sender.hasPermission("limitedcreative.switch_gamemode.backonly")) {
-                        throw new LackingPermissionException();
-                    }
-                }
-                if (sender != target && !sender.hasPermission("limitedcreative.switch_gamemode.other")) {
-                    throw new LackingPermissionException();
-                }
-            }
+
             if (target == null) {
                 throw new InvalidCommandException("exception.command.playernotfound");
-            }
-            if (target.getGameMode() != gm) {
-                target.setGameMode(gm);
-                if (target != sender) {
-                    sender.sendMessage(L("commands.gamemode.changed", target.getName()));
+            } else if (sender instanceof Player && sender != target && !sender.hasPermission("limitedcreative.switch_gamemode.other")) {
+                throw new LackingPermissionException();
+            } else if (target.getGameMode() != gm) {
+                if (sender == target) {
+                    LCPlayer.get(target).changeGameMode(gm);
+                } else {
+                    target.setGameMode(gm);
                 }
+                if (target != sender) {
+                    sender.sendMessage(L("command.gamemode.changed", target.getName()));
+                }
+            } else {
+                sender.sendMessage(L("command.gamemode.no_change"));
             }
         }
         

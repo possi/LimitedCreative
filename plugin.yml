@@ -1,7 +1,8 @@
 name: LimitedCreative
 main: de.jaschastarke.minecraft.limitedcreative.LimitedCreativeCore
-version: 0.5.1-alpha
+version: 0.6-beta
 softdepend: [WorldGuard]
+dev-url: http://dev.bukkit.org/server-mods/limited-creative/
 commands:
     limitedcreative:
         description: Main LimitedCreative-Controlling-Commands
@@ -44,4 +45,10 @@ permissions:
         default: false
     limitedcreative.nolimit.pvp:
         description: Allows bypassing the "no pvp"-limitation
+        default: false
+    limitedcreative.nolimit.use:
+        description: Allows bypassing the "block place/item use"-limitation
+        default: false
+    limitedcreative.nolimit.break:
+        description: Allows bypassing the "block break"-limitation
         default: false

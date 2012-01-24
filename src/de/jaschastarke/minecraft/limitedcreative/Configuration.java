@@ -18,10 +18,14 @@
 package de.jaschastarke.minecraft.limitedcreative;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import static de.jaschastarke.minecraft.utils.Util.copyFile;
+import static de.jaschastarke.minecraft.utils.Locale.L;
 
 public class Configuration {
     private FileConfiguration c;
@@ -52,6 +56,9 @@ public class Configuration {
     public boolean getStoreCreative() {
         return c.getBoolean("store.creative", true);
     }
+    public boolean getUnsafeStorage() {
+        return c.getBoolean("store.unsafe", false);
+    }
     public String getInventoryFolder() {
         return c.getString("store.folder", "inventories");
     }
@@ -66,6 +73,9 @@ public class Configuration {
     }
     public boolean getPermissionToKeepInventory() {
         return this.getPermissionsEnabled() && c.getBoolean("permissions.keepinventory", false);
+    }
+    public boolean getRegionOptional() {
+        return c.getBoolean("region.optional", true);
     }
     
     
@@ -96,17 +106,49 @@ public class Configuration {
         c.set("permissions.keepinventory", value);
         this.save();
     }
+    
     protected void reload() {
+        _block_break = null;
+        _block_use = null;
         plugin.reloadConfig();
         c = plugin.getConfig();
     }
     protected void save() {
         plugin.saveConfig();
-        /*try {
-            c.save(file);
-        } catch (IOException e) {
-            plugin.logger.severe(L("exception.config.savefail"));
-            e.printStackTrace();
-        }*/
     }
+    
+    private List<Material> _block_break = null;
+    private List<Material> _block_use = null;
+    
+    public List<Material> getBlockedBreaks() {
+        if (_block_break == null)
+            _block_break = parseMaterialList(c.getStringList("limit.break"));
+        return _block_break;
+    }
+    public List<Material> getBlockedUse() {
+        if (_block_use == null)
+            _block_use = parseMaterialList(c.getStringList("limit.use"));
+        return _block_use;
+    }
+    
+    private List<Material> parseMaterialList(List<String> s) {
+        List<Material> list = new ArrayList<Material>();
+        if (s != null) {
+            for (String m : s) {
+                Material e = null;
+                try {
+                    e = Material.getMaterial(Integer.parseInt(m));
+                } catch (NumberFormatException ex) {
+                    e = Material.matchMaterial(m);
+                }
+                if (e == null) {
+                    plugin.logger.warning("["+plugin.getDescription().getName()+"] "+L("exception.config.material_not_found", m));
+                } else {
+                    list.add(e);
+                }
+            }
+        }
+        return list;
+    }
+    
 }

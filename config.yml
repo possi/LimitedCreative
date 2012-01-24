@@ -17,6 +17,14 @@ store:
     # default: true
     creative: true
     
+    # UnsafeStore (for storing invalid enchants)
+    # By default the new and upgrade-safe storage method for items is used. This method doesn't allow the use
+    # of "invalid" enchants, like given by different plugins. Enable it, to allow invalid enchants (not recommended).
+    # This option can only changed by reloading the plugin (not via ingame commands).
+    # default: false
+    unsafe: false
+    
+    
     # InventoryFolder
     # The folder inside the datadir-folder (plugin/LimitedCreative) where the inventories are saved to.
     # By default the inventories are saved to "plugin/LimitedCreative/inventories".
@@ -41,6 +49,25 @@ limit:
     # Attention: this will also block useful signs, like Lifts.
     # default: true
     sign: true
+    
+    # UseBlackList
+    # Prevents using or placing of the given blocks in creative mode (and only in creative).
+    # You can use the technical name (see http://jd.bukkit.org/doxygen/d7/dd9/namespaceorg_1_1bukkit.html#ab7fa290bb19b9a830362aa88028ec80a)
+    # or the id of the block/item (better use the id, if you're not sure).
+    # To prevent Lava you need to add "LAVA_BUCKET", because lava-blocks aren't "placed", therefore Lava-Buckets are
+    # "used".
+    # This option can only changed by reloading the plugin (not via ingame commands).
+    # default: []
+    use: []
+    
+    # BreakBlackList
+    # Prevents destroying of the given blocks in creative mode (and only in creative).
+    # You can use the technical name (see http://jd.bukkit.org/doxygen/d7/dd9/namespaceorg_1_1bukkit.html#ab7fa290bb19b9a830362aa88028ec80a)
+    # or the id of the block/item (better use the id, if you're not sure).
+    # This option can only changed by reloading the plugin (not via ingame commands).
+    # default: [bedrock]
+    break:
+     - bedrock
 
 region:
     # RegionsEnabled
@@ -49,13 +76,19 @@ region:
     # This option can only changed by reloading the plugin (not via ingame commands).
     # default: true 
     enabled: true
+    
+    # RegionOptional
+    # Allows Players to use /lc creative|survival to switch between GameModes in creative-regions, even if they
+    # have no global permission to those commands
+    # default: true
+    optional: true
 
 permissions:
     # PermissionsEnabled
     # When enabled, the Permissions will allow selected users to ignore limitations like PvP, Chest-Block, etc.
     # When not enabled, all users are treated equally.
-    # Note: The Permission needed for commands, are not affected by this option. So you still need the defined
-    #     permissions or op, to use commands, even if this options is disabled!
+    # Note: Not all Permission, are affected by this option. So you still need the defined permissions or op, to use
+    #       commands, even if this options is disabled!
     # default: false
     enabled: false
     

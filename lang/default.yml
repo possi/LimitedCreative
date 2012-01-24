@@ -7,6 +7,7 @@ command:
         overview: storecreative|blockpickup|blocksign|permissions|perm_keepinventory
     gamemode:
         changed: "{0}'s game mode has been changed"
+        no_change: Already in that game mode.
     option:
         done: Option changed.
     worldguard:
@@ -28,8 +29,14 @@ exception:
         invalidoption: Unknown option
     config:
         savefail: Failed to write modified configuration to disk
+        material_not_found: (Config) Material with name/id "{0}" was not found.
+    storage:
+        load: Failed to load your Inventory. Ask your Admin to enable "UnsafeStorage" for LimitedCreative to allow invalid enchants on items
+    region:
+        no_survival: You can not be survival in an creative area
 blocked:
     chest: Access to chests is not allowed in creative mode
     sign: To interact with signs is not allowed in creative mode
     survival_flying: You should stay on ground, when leaving a creative-area
     outside_creative: You can not place blocks outside of the creative-area
+    outside_creative_break: You can not destroy blocks outside of the creative-area

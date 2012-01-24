@@ -32,6 +32,7 @@ import org.bukkit.event.Event.Priority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockListener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -54,9 +55,11 @@ public final class Listener {
         @Override
         public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
             if (event.getNewGameMode() == GameMode.CREATIVE) {
-                LCPlayer.get(event.getPlayer()).onSetCreative();
+                if (!LCPlayer.get(event.getPlayer()).onSetCreative())
+                    event.setCancelled(true);
             } else if (event.getNewGameMode() == GameMode.SURVIVAL) {
-                LCPlayer.get(event.getPlayer()).onSetSurvival();
+                if (!LCPlayer.get(event.getPlayer()).onSetSurvival())
+                    event.setCancelled(true);
             }
         }
         
@@ -79,7 +82,18 @@ public final class Listener {
 
         @Override
         public void onPlayerInteract(PlayerInteractEvent event) {
-            if (event.isCancelled() || event.getAction() != Action.RIGHT_CLICK_BLOCK)
+            if (isCancelled(event) || event.getPlayer().getGameMode() != GameMode.CREATIVE)
+                return;
+            
+            if (!plugin.config.getPermissionsEnabled() || event.getPlayer().hasPermission("limitedcreative.nolimit.use")) {
+                if (event.getItem() != null && plugin.config.getBlockedUse().contains(event.getItem().getType())) {
+                    event.setCancelled(true);
+                    event.setUseItemInHand(Event.Result.DENY);
+                    return;
+                }
+            }
+            
+            if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
                 return;
             
             Block block = event.getClickedBlock();
@@ -91,11 +105,27 @@ public final class Listener {
                 LCPlayer.get(event.getPlayer()).onSignAccess(event);
             }
         }
+        /**
+         * The isCancelled in PlayerInteractEvent doesn't check useItemInHand, even this decides (when clicking on
+         * entity with e.g. a bucket)
+         * @param event
+         * @return The relevant "isCancelled"
+         */
+        public static boolean isCancelled(PlayerInteractEvent event) {
+            return event.useInteractedBlock() == Event.Result.DENY && event.useItemInHand() == Event.Result.DENY;
+        }
 
         @Override
         public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-            if (event.isCancelled() || event.getPlayer().getGameMode() == GameMode.SURVIVAL)
+            if (event.isCancelled() || event.getPlayer().getGameMode() != GameMode.CREATIVE)
                 return;
+            
+            if (!plugin.config.getPermissionsEnabled() || event.getPlayer().hasPermission("limitedcreative.nolimit.use")) {
+                if (event.getPlayer().getItemInHand() != null && plugin.config.getBlockedUse().contains(event.getPlayer().getItemInHand().getType())) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
             
             Entity entity = event.getRightClicked();
 
@@ -145,8 +175,10 @@ public final class Listener {
         }
 
         private void register() {
+            if (plugin.config.getLimitEnabled() || plugin.worldguard != null) {
+                pm.registerEvent(Event.Type.ITEM_SPAWN, this, Priority.Normal, plugin);
+            }
             if (plugin.config.getLimitEnabled()) {
-                plugin.getServer().getPluginManager().registerEvent(Event.Type.ITEM_SPAWN, this, Priority.Normal, plugin);
                 pm.registerEvent(Event.Type.ENTITY_DAMAGE, this, Priority.Normal, plugin);
                 pm.registerEvent(Event.Type.ENTITY_DEATH, this, Priority.Low, plugin);
             }
@@ -159,9 +191,15 @@ public final class Listener {
             if (event.isCancelled())
                 return;
             if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
-                // Prevent dropping of doors and beds when destroying the wrong part
+                if (!plugin.config.getPermissionsEnabled() || event.getPlayer().hasPermission("limitedcreative.nolimit.break")) {
+                    if (plugin.config.getBlockedBreaks().contains(event.getBlock().getType())) {
+                        event.setCancelled(true);
+                    }
+                }
+                
                 if (plugin.config.getPermissionsEnabled() && event.getPlayer().hasPermission("limitedcreative.nolimit.drop"))
                     return;
+                // Prevent dropping of doors and beds when destroying the wrong part
                 Block block = event.getBlock();
                 Material mat = block.getType();
                 switch (event.getBlock().getType()) {
@@ -185,9 +223,22 @@ public final class Listener {
                 }
             }
         }
+        @Override
+        public void onBlockPlace(BlockPlaceEvent event) {
+            if (event.isCancelled())
+                return;
+            if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
+                if (!plugin.config.getPermissionsEnabled() || event.getPlayer().hasPermission("limitedcreative.nolimit.use")) {
+                    if (plugin.config.getBlockedUse().contains(event.getBlock().getType())) {
+                        event.setCancelled(true);
+                    }
+                }
+            }
+        }
         private void register() {
             if (plugin.config.getLimitEnabled()) {
                 pm.registerEvent(Event.Type.BLOCK_BREAK, this, Priority.Normal, plugin);
+                pm.registerEvent(Event.Type.BLOCK_PLACE, this, Priority.Normal, plugin);
             }
         }
     }

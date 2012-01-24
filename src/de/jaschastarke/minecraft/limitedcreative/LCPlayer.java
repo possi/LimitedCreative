@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -41,6 +42,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
+import de.jaschastarke.minecraft.limitedcreative.Commands.LackingPermissionException;
 import de.jaschastarke.minecraft.limitedcreative.serialize.Items;
 
 public class LCPlayer {
@@ -52,14 +54,14 @@ public class LCPlayer {
     private static File _store_file = new File(plugin.getDataFolder(), "players.yml");
     public static YamlConfiguration store = YamlConfiguration.loadConfiguration(_store_file);
     
-    private boolean isPermanentCreative = false;
+    private boolean _isPermanentCreative = false;
     private boolean _isRegionCreative = false;
 
     private LCPlayer(Player pplayer) {
         player = pplayer;
         _isRegionCreative = store.getBoolean(player.getName()+".region_creative", false) && player.getGameMode() == GameMode.CREATIVE;
-        if (player.getGameMode() == GameMode.CREATIVE && !this.getRegionCreative())
-            isPermanentCreative = true;
+        if (player.getGameMode() == GameMode.CREATIVE && !this.isRegionCreative())
+            setPermanentCreative(true);
     }
     
     public Player getRaw() {
@@ -76,8 +78,17 @@ public class LCPlayer {
         }
     }
     
-    public boolean getRegionCreative() {
+    public boolean isRegionCreative() {
         return _isRegionCreative;
+    }
+
+    public void changeGameMode(GameMode gm) throws LackingPermissionException {
+        if (!isRegionCreative() && !getRaw().hasPermission("limitedcreative.switch_gamemode")) {
+            if (gm != GameMode.SURVIVAL || !getRaw().hasPermission("limitedcreative.switch_gamemode.backonly")) {
+                throw new Commands.LackingPermissionException();
+            }
+        }
+        getRaw().setGameMode(gm);
     }
     public void setRegionCreative(boolean b) {
         if (b) {
@@ -93,13 +104,21 @@ public class LCPlayer {
         }
         _isRegionCreative = b;
     }
+    public boolean isPermanentCreative() {
+        return _isPermanentCreative;
+    }
+    public void setPermanentCreative(boolean b) {
+        _isPermanentCreative = b;
+        if (b)
+            setRegionCreative(false);
+    }
     
-    public void onSetCreative() {
-        if (!this.getRegionCreative())
-            isPermanentCreative = true;
+    public boolean onSetCreative() {
+        if (!this.isRegionCreative())
+            setPermanentCreative(true);
         if (plugin.config.getStoreEnabled()) {
             if (plugin.config.getPermissionToKeepInventory() && player.hasPermission("limitedcreative.keepinventory"))
-                return;
+                return true;
             Inventory inv = new Inventory(player);
             inv.save();
             if (plugin.config.getStoreCreative() && inv.isStored(GameMode.CREATIVE)) {
@@ -108,13 +127,19 @@ public class LCPlayer {
                 inv.clear();
             }
         }
+        return true;
     }
-    public void onSetSurvival() {
-        isPermanentCreative = false;
-        setRegionCreative(false);
+    public boolean onSetSurvival() {
+        if (isRegionCreative()) {
+            if (!plugin.config.getRegionOptional()) {
+                getRaw().sendMessage(ChatColor.RED + L("exception.region.no_survival"));
+                return false;
+            }
+        }
+        setPermanentCreative(false);
         if (plugin.config.getStoreEnabled()) {
             if (plugin.config.getPermissionToKeepInventory() && player.hasPermission("limitedcreative.keepinventory"))
-                return;
+                return true;
             Inventory inv = new Inventory(player);
             if (plugin.config.getStoreCreative()) {
                 inv.save();
@@ -122,6 +147,7 @@ public class LCPlayer {
             if (inv.isStored(GameMode.SURVIVAL))
                 inv.load(GameMode.SURVIVAL);
         }
+        return true;
     }
     public void onDropItem(PlayerDropItemEvent event) {
         if (player.getGameMode() == GameMode.CREATIVE) {
@@ -201,19 +227,27 @@ public class LCPlayer {
     private long lastFloatingTimeWarning = 0;
 
     public void setRegionCreativeAllowed(boolean rcreative, PlayerMoveEvent event) {
-        if (rcreative && player.getGameMode() == GameMode.SURVIVAL) {
+        if (rcreative && player.getGameMode() == GameMode.SURVIVAL && !isRegionCreative()) {
             setRegionCreative(true); // have to be set, before setGameMode
             player.setGameMode(GameMode.CREATIVE);
-        } else if (!rcreative && player.getGameMode() == GameMode.CREATIVE && !isPermanentCreative) {
+        } else if (!rcreative && player.getGameMode() == GameMode.CREATIVE && !isPermanentCreative()) {
             if (getFloatingHeight() > 3) {
                 if (System.currentTimeMillis() - lastFloatingTimeWarning > 10000) {// 10 sec. limit
                     player.sendMessage(L("blocked.survival_flying"));
                     lastFloatingTimeWarning = System.currentTimeMillis();
                 }
-                event.setTo(event.getFrom());
+                
+                Location newloc = event.getTo().clone();
+                newloc.setX(event.getFrom().getX());
+                //newloc.setY(event.getFrom().getY());
+                newloc.setZ(event.getFrom().getZ());
+                event.setTo(newloc);
             } else {
+                setRegionCreative(false);
                 player.setGameMode(GameMode.SURVIVAL); // also unsets isRegionCreative;
             }
+        } else if (!rcreative && isRegionCreative()) {
+            setRegionCreative(false); // we have left, while in optional survival
         }
     }
     

@@ -42,6 +42,8 @@ final public class Util {
     
     public static void copyFile(InputStream is, File to) {
         try {
+            if (to.getParentFile() != null && !to.getParentFile().exists())
+                to.getParentFile().mkdirs();
             OutputStream os;
                 os = new FileOutputStream(to);
             byte[] buffer = new byte[512];

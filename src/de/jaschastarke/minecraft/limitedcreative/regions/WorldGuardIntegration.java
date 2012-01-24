@@ -23,11 +23,11 @@ import org.bukkit.GameMode;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 
 import com.sk89q.worldedit.Vector;
@@ -88,10 +88,11 @@ public class WorldGuardIntegration {
             RegionManager mgr = wg.getGlobalRegionManager().get(event.getPlayer().getWorld());
             Vector pt = new Vector(event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ());
             ApplicableRegions set = new ApplicableRegions(mgr.getApplicableRegions(pt), rm.world(event.getPlayer().getWorld()));
-            
-            boolean creative_region = set.allows(CREATIVE);
-            plugin.logger.info("in creative region: "+Boolean.toString(creative_region)+" - "+event.getBlock().getLocation());
-            if (creative_region && player.getRaw().getGameMode() != GameMode.CREATIVE) {
+
+            if (player.isRegionCreative() && !set.allows(CREATIVE, player)) { 
+                event.getPlayer().sendMessage(L("blocked.outside_creative_break"));
+                event.setCancelled(true);
+            } else if (set.allows(CREATIVE) && player.getRaw().getGameMode() != GameMode.CREATIVE) {
                 plugin.spawnblock.block(event.getBlock(), player);
             }
         }
@@ -101,7 +102,7 @@ public class WorldGuardIntegration {
             if (event.isCancelled())
                 return;
             LCPlayer player = LCPlayer.get(event.getPlayer());
-            if (player.getRegionCreative()) {
+            if (player.isRegionCreative()) {
                 // do not build outside of creative regions, when in the region
                 RegionManager mgr = wg.getGlobalRegionManager().get(event.getPlayer().getWorld());
                 Vector pt = new Vector(event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ());
@@ -113,15 +114,9 @@ public class WorldGuardIntegration {
             }
         }
 
-        @Override
-        public void onBlockDispense(BlockDispenseEvent event) {
-            plugin.logger.info("Block dispense: "+event.getBlock().getType()+" - "+event.getItem().getType());
-        }
-
         private void register() {
             plugin.getServer().getPluginManager().registerEvent(Event.Type.BLOCK_BREAK, this, Priority.Normal, plugin);
             plugin.getServer().getPluginManager().registerEvent(Event.Type.BLOCK_PLACE, this, Priority.Normal, plugin);
-            plugin.getServer().getPluginManager().registerEvent(Event.Type.BLOCK_DISPENSE, this, Priority.Normal, plugin);
         }
     }
     public class WGIPlayerListen extends PlayerListener {
@@ -142,8 +137,26 @@ public class WorldGuardIntegration {
             }
         }
         
+        @Override
+        public void onPlayerTeleport(PlayerTeleportEvent event) {
+            if (event.isCancelled())
+                return;
+            if (event.getFrom().getBlockX() != event.getTo().getBlockX()
+                    || event.getFrom().getBlockY() != event.getTo().getBlockY()
+                    || event.getFrom().getBlockZ() != event.getTo().getBlockZ()) {
+
+                LCPlayer player = LCPlayer.get(event.getPlayer());
+                RegionManager mgr = wg.getGlobalRegionManager().get(event.getPlayer().getWorld());
+                Vector pt = new Vector(event.getTo().getBlockX(), event.getTo().getBlockY(), event.getTo().getBlockZ());
+                ApplicableRegions set = new ApplicableRegions(mgr.getApplicableRegions(pt), rm.world(event.getPlayer().getWorld()));
+                
+                player.setRegionCreativeAllowed(set.allows(CREATIVE, player), event);
+            }
+        }
+
         private void register() {
             plugin.getServer().getPluginManager().registerEvent(Event.Type.PLAYER_MOVE, this, Priority.Normal, plugin);
+            plugin.getServer().getPluginManager().registerEvent(Event.Type.PLAYER_TELEPORT, this, Priority.Normal, plugin);
         }
     }
 }
