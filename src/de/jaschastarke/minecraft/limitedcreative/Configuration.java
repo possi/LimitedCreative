@@ -42,6 +42,13 @@ public class Configuration {
         
         c = plugin.getConfig();
     }
+
+    /**
+     * Intended to be undocumented ;)
+     */
+    public boolean getDebug() {
+        return c.getBoolean("debug", false);
+    }
     
     public boolean getStoreEnabled() {
         return c.getBoolean("store.enabled", true);
@@ -150,5 +157,4 @@ public class Configuration {
         }
         return list;
     }
-    
 }

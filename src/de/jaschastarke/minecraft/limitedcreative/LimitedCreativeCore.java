@@ -22,6 +22,8 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import static de.jaschastarke.minecraft.utils.Locale.L;
+import de.jaschastarke.minecraft.limitedcreative.listeners.LimitListener;
+import de.jaschastarke.minecraft.limitedcreative.listeners.MainListener;
 import de.jaschastarke.minecraft.limitedcreative.regions.WorldGuardIntegration;
 import de.jaschastarke.minecraft.utils.Locale;
 
@@ -32,41 +34,53 @@ public class LimitedCreativeCore extends JavaPlugin {
     public WorldGuardIntegration worldguard;
     public static LimitedCreativeCore plugin;
     public NoBlockItemSpawn spawnblock;
-    
-    public static boolean serializeFallBack = false;
 
     @Override
     public void onDisable() {
+        plugin = null;
+        worldguard = null;
+        config = null;
+        spawnblock = null;
         Locale.unload();
-        logger.info("["+this.getDescription().getName()+"] cleanly unloaded.");
+        //info("cleanly unloaded.");
     }
 
     @Override
     public void onEnable() {
         plugin = this;
         config = new Configuration(this);
-        try {
-            Class.forName("org.bukkit.configuration.file.YamlConstructor", false, getClassLoader());
-        } catch (ClassNotFoundException e) {
-            serializeFallBack = true;
-        }
         
         new Locale(this);
 
         spawnblock = new NoBlockItemSpawn();
         
-        Listener.register(this);
+        getServer().getPluginManager().registerEvents(new MainListener(this), this);
+        if (config.getLimitEnabled())
+            getServer().getPluginManager().registerEvents(new LimitListener(this), this);
         
         if (config.getRegionEnabled() && WorldGuardIntegration.available()) {
             worldguard = new WorldGuardIntegration(this);
-            worldguard.init();
-        } else {
-            logger.info("["+this.getDescription().getName()+"] "+L("warning.no_worldguard_found"));
+        } else if(config.getRegionEnabled()) {
+            warn(L("warning.no_worldguard_found"));
         }
         
         Commands.register(this);
         
         PluginDescriptionFile df = this.getDescription();
-        logger.info("["+df.getName() + " v" + df.getVersion() + "] done loading.");
+        if (worldguard != null)
+            logger.info("["+df.getName() + " v" + df.getVersion() + "] "+L("basic.loaded.worldguard"));
+        else
+            logger.info("["+df.getName() + " v" + df.getVersion() + "] "+L("basic.loaded.no_worldguard"));
+    }
+    
+    public void info(String s) {
+        logger.info("["+this.getDescription().getName()+"] " + s);
+    }
+    public void warn(String s) {
+        logger.warning("["+this.getDescription().getName()+"] " + s);
+    }
+    public static void debug(String s) {
+        if (plugin.config.getDebug())
+            plugin.info("DEBUG: " + s);
     }
 }

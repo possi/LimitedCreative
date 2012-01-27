@@ -17,6 +17,7 @@
  */
 package de.jaschastarke.minecraft.utils;
 
+import java.io.File;
 import java.text.MessageFormat;
 
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -27,8 +28,16 @@ public class Locale {
     private static Locale inst = null;
     
     public Locale(JavaPlugin plugin) {
-        lang = YamlConfiguration.loadConfiguration(plugin.getResource("lang/default.yml"));
+        String fn = getFilename("default");
+        File localefile = new File(plugin.getDataFolder(), fn);
+        if (localefile.exists())
+            lang = YamlConfiguration.loadConfiguration(localefile);
+        else
+            lang = YamlConfiguration.loadConfiguration(plugin.getResource(fn));
         inst = this;
+    }
+    private String getFilename(String locale) {
+        return "lang/"+locale+".yml";
     }
     public String get(String msg) {
         if (lang.contains(msg))

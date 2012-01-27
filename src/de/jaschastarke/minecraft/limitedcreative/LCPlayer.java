@@ -17,8 +17,6 @@
  */
 package de.jaschastarke.minecraft.limitedcreative;
 
-import static de.jaschastarke.minecraft.utils.Locale.L;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -44,6 +42,7 @@ import org.bukkit.inventory.ItemStack;
 
 import de.jaschastarke.minecraft.limitedcreative.Commands.LackingPermissionException;
 import de.jaschastarke.minecraft.limitedcreative.serialize.Items;
+import static de.jaschastarke.minecraft.utils.Locale.L;
 
 public class LCPlayer {
     private static LimitedCreativeCore plugin = LimitedCreativeCore.plugin;
@@ -153,7 +152,7 @@ public class LCPlayer {
         if (player.getGameMode() == GameMode.CREATIVE) {
             if (plugin.config.getPermissionsEnabled() && event.getPlayer().hasPermission("limitedcreative.nolimit.drop"))
                 return;
-            event.setCancelled(true);
+            event.getItemDrop().remove();
         }
     }
     public void onPickupItem(PlayerPickupItemEvent event) {
@@ -239,7 +238,7 @@ public class LCPlayer {
                 
                 Location newloc = event.getTo().clone();
                 newloc.setX(event.getFrom().getX());
-                //newloc.setY(event.getFrom().getY());
+                newloc.setY(event.getFrom().getY()); // well, otherwise flying high out of the region is possible
                 newloc.setZ(event.getFrom().getZ());
                 event.setTo(newloc);
             } else {

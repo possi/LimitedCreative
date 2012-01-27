@@ -52,9 +52,9 @@ public class Items implements Storeable {
     }
 
     public static void sectionSetItem(ConfigurationSection section, String path, ItemStack item) {
-        if (!LimitedCreativeCore.serializeFallBack && !LimitedCreativeCore.plugin.config.getUnsafeStorage()) {
+        if (!LimitedCreativeCore.plugin.config.getUnsafeStorage()) {
             section.set(path, item);
-        } else { // compatibility fallback
+        } else { // unsafe enchants fallback
             Map<String, Object> serialize = item.serialize();
             if (serialize.containsKey("type") && serialize.get("type") instanceof Material)
                 serialize.put("type", serialize.get("type").toString());
@@ -68,8 +68,6 @@ public class Items implements Storeable {
             ConfigurationSection s = section.getConfigurationSection(path);
             Map<String, Object> serialize = s.getValues(false);
             serialize.remove("enchantments");
-            if (s.contains("damage") && LimitedCreativeCore.serializeFallBack)
-                serialize.put("damage", new Integer(s.getInt("damage")).shortValue());
             ItemStack result = ItemStack.deserialize(serialize);
             Map<String, Object> item = section.getConfigurationSection(path).getValues(false);
             item.remove("enchantments");

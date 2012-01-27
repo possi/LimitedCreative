@@ -63,7 +63,7 @@ public class CCommand implements CommandExecutor {
             return false;
         }
         if (!sender.hasPermission("limitedcreative.regions")) {
-            sender.sendMessage(ChatColor.DARK_RED + "exception.command.lackingpermission");
+            sender.sendMessage(ChatColor.DARK_RED + L("exception.command.lackingpermission"));
             return true;
         }
         Player player = sender instanceof Player ? (Player) sender : null;
@@ -117,7 +117,7 @@ public class CCommand implements CommandExecutor {
     
     private void onInfo(CommandSender sender, Player player, CRegion region) {
         String[] args = new String[]{"info", region.getWorld().getName(), region.getProtectedRegion().getId()};
-        wg.onCommand(sender, wg.getCommand("region"), "/region", args);
+        wg.onCommand(sender, wg.getCommand("region"), "region", args);
         
         StringBuilder list = new StringBuilder();
         for (FlagValue data : region.getFlags()) {

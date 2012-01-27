@@ -25,10 +25,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
 
 
 public class NoBlockItemSpawn {
-    public final static long TIME_OFFSET = 1000;
+    public final static long TIME_OFFSET = 250;
     
     private List<BlockItemDrop> list = new ArrayList<BlockItemDrop>();
     
@@ -70,12 +71,14 @@ public class NoBlockItemSpawn {
     }
     
     public void block(Block block, LCPlayer player) {
-        Material mat = block.getType();
-        if (player == null || !player.getRaw().getItemInHand().containsEnchantment(Enchantment.SILK_TOUCH)) { // different drop type prevention
-            net.minecraft.server.Block type = net.minecraft.server.Block.byId[mat.getId()];
-            mat = Material.getMaterial(type.getDropType(block.getData(), null, 0));
+        if (player.getRaw().getItemInHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
+            block(block.getLocation(), block.getType());
+        } else {
+            // doesn't include silktouch
+            for (ItemStack i : block.getDrops(player.getRaw().getItemInHand())) {
+                block(block.getLocation(), i.getType());
+            }
         }
-        block(block.getLocation(), mat);
     }
 
     public void block(Block block) {

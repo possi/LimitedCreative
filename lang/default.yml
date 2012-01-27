@@ -1,3 +1,7 @@
+basic:
+    loaded:
+        worldguard: Successfully loaded with WorldGuard-Integration
+        no_worldguard: Successfully loaded (without WorldGuard)
 command:
     player: player
     switch:
@@ -40,3 +44,6 @@ blocked:
     survival_flying: You should stay on ground, when leaving a creative-area
     outside_creative: You can not place blocks outside of the creative-area
     outside_creative_break: You can not destroy blocks outside of the creative-area
+    use: You are not allowed to use this type of item
+    place: You are not allowed to place this type of block
+    break: You are not allowed to break this type of block
