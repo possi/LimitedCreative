@@ -28,6 +28,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.StorageMinecart;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -67,12 +68,13 @@ public class LimitListener implements Listener {
         LCPlayer.get(event.getPlayer()).onPickupItem(event);
     }
 
-    @EventHandler
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (MainListener.isCancelled(event) || event.getPlayer().getGameMode() != GameMode.CREATIVE)
             return;
         
-        if (!plugin.config.getPermissionsEnabled() || !event.getPlayer().hasPermission("limitedcreative.nolimit.use")) {
+        LCPlayer player = LCPlayer.get(event.getPlayer());
+        if (!plugin.config.getPermissionsEnabled() || !player.hasPermission("limitedcreative.nolimit.use")) {
             if (event.getItem() != null && plugin.config.getBlockedUse().contains(event.getItem().getType())) {
                 event.setCancelled(true);
                 event.setUseItemInHand(Event.Result.DENY);
@@ -87,19 +89,20 @@ public class LimitListener implements Listener {
         Block block = event.getClickedBlock();
         
         if (block.getState() instanceof ContainerBlock) {
-            LCPlayer.get(event.getPlayer()).onChestAccess(event);
+            player.onChestAccess(event);
         }
         if (block.getState() instanceof Sign) {
-            LCPlayer.get(event.getPlayer()).onSignAccess(event);
+            player.onSignAccess(event);
         }
     }
 
-    @EventHandler
+    @EventHandler(priority=EventPriority.LOWEST)
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
         if (event.isCancelled() || event.getPlayer().getGameMode() != GameMode.CREATIVE)
             return;
-        
-        if (!plugin.config.getPermissionsEnabled() || !event.getPlayer().hasPermission("limitedcreative.nolimit.use")) {
+
+        LCPlayer player = LCPlayer.get(event.getPlayer());
+        if (!plugin.config.getPermissionsEnabled() || !player.hasPermission("limitedcreative.nolimit.use")) {
             if (event.getPlayer().getItemInHand() != null && plugin.config.getBlockedUse().contains(event.getPlayer().getItemInHand().getType())) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(L("blocked.use"));
@@ -110,7 +113,7 @@ public class LimitListener implements Listener {
         Entity entity = event.getRightClicked();
 
         if (entity instanceof StorageMinecart) {
-            LCPlayer.get(event.getPlayer()).onChestAccess(event);
+            player.onChestAccess(event);
         }
     }
 
@@ -124,7 +127,7 @@ public class LimitListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority=EventPriority.LOW)
     public void onEntityDeath(EntityDeathEvent event) {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
@@ -137,14 +140,15 @@ public class LimitListener implements Listener {
         if (event.isCancelled())
             return;
         if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
-            if (!plugin.config.getPermissionsEnabled() || !event.getPlayer().hasPermission("limitedcreative.nolimit.break")) {
+            LCPlayer player = LCPlayer.get(event.getPlayer());
+            if (!plugin.config.getPermissionsEnabled() || !player.hasPermission("limitedcreative.nolimit.break")) {
                 if (plugin.config.getBlockedBreaks().contains(event.getBlock().getType())) {
                     event.setCancelled(true);
                     event.getPlayer().sendMessage(L("blocked.break"));
                 }
             }
             
-            if (plugin.config.getPermissionsEnabled() && event.getPlayer().hasPermission("limitedcreative.nolimit.drop"))
+            if (plugin.config.getPermissionsEnabled() && player.hasPermission("limitedcreative.nolimit.drop"))
                 return;
             // Prevent dropping of doors and beds when destroying the wrong part
             Block block = event.getBlock();
@@ -175,7 +179,8 @@ public class LimitListener implements Listener {
         if (event.isCancelled())
             return;
         if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
-            if (!plugin.config.getPermissionsEnabled() || !event.getPlayer().hasPermission("limitedcreative.nolimit.use")) {
+            LCPlayer player = LCPlayer.get(event.getPlayer());
+            if (!plugin.config.getPermissionsEnabled() || !player.hasPermission("limitedcreative.nolimit.use")) {
                 if (plugin.config.getBlockedUse().contains(event.getBlock().getType())) {
                     event.setCancelled(true);
                     event.getPlayer().sendMessage(L("blocked.place"));

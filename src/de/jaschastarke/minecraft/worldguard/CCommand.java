@@ -62,7 +62,7 @@ public class CCommand implements CommandExecutor {
         if (args.length < 2) {
             return false;
         }
-        if (!sender.hasPermission("limitedcreative.regions")) {
+        if (!wg.hasPermission(sender, "limitedcreative.regions")) {
             sender.sendMessage(ChatColor.DARK_RED + L("exception.command.lackingpermission"));
             return true;
         }

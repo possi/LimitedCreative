@@ -78,6 +78,9 @@ final public class Util {
         return join(list, " ", from, range);
     }
     public static String join(String[] list, int from) {
-        return join(list, " ", from, from);
+        return join(list, " ", from, list.length - from);
+    }
+    public static String join(String[] list) {
+        return join(list, " ", 0, list.length);
     }
 }

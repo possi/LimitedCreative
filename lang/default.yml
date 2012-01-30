@@ -2,6 +2,14 @@ basic:
     loaded:
         worldguard: Successfully loaded with WorldGuard-Integration
         no_worldguard: Successfully loaded (without WorldGuard)
+    feature:
+        store: separated inventories
+        limit: creative restrictions
+        region: creative regions
+    conflict: Due to conflict with the plugin {0}, the feature {1} is disabled
+    warning:
+        worldguard_not_found: WorldGuard isn''t found, the feature {0} is disabled
+        # double single-quote '' because of MessageFormater to insert {0} 
 command:
     player: player
     switch:

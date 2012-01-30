@@ -42,10 +42,6 @@ public class WorldGuardIntegration {
         plugin.getServer().getPluginManager().registerEvents(new RegionListener(this), plugin);
     }
     
-    public static boolean available() {
-        return LimitedCreativeCore.plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null;
-    }
-    
     public CRegionManager getRegionManager() {
         return rm;
     }

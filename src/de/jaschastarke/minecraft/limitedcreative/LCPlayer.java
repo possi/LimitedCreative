@@ -59,8 +59,10 @@ public class LCPlayer {
     private LCPlayer(Player pplayer) {
         player = pplayer;
         _isRegionCreative = store.getBoolean(player.getName()+".region_creative", false) && player.getGameMode() == GameMode.CREATIVE;
-        if (player.getGameMode() == GameMode.CREATIVE && !this.isRegionCreative())
+        if (player.getGameMode() == GameMode.CREATIVE && !this.isRegionCreative()) {
+            LimitedCreativeCore.debug(player.getName() + " was already creative");
             setPermanentCreative(true);
+        }
     }
     
     public Player getRaw() {
@@ -82,14 +84,16 @@ public class LCPlayer {
     }
 
     public void changeGameMode(GameMode gm) throws LackingPermissionException {
-        if (!isRegionCreative() && !getRaw().hasPermission("limitedcreative.switch_gamemode")) {
-            if (gm != GameMode.SURVIVAL || !getRaw().hasPermission("limitedcreative.switch_gamemode.backonly")) {
+        if (!isRegionCreative() && !hasPermission("limitedcreative.switch_gamemode")) {
+            if (gm != GameMode.SURVIVAL || !hasPermission("limitedcreative.switch_gamemode.backonly")) {
+                LimitedCreativeCore.debug(player.getName() + " lacking permission /lc [cs]");
                 throw new Commands.LackingPermissionException();
             }
         }
         getRaw().setGameMode(gm);
     }
     public void setRegionCreative(boolean b) {
+        LimitedCreativeCore.debug(player.getName() + " region creative: " + b);
         if (b) {
             store.set(player.getName()+".region_creative", true);
         } else {
@@ -107,16 +111,18 @@ public class LCPlayer {
         return _isPermanentCreative;
     }
     public void setPermanentCreative(boolean b) {
+        LimitedCreativeCore.debug(player.getName() + " permanent creative: " + b);
         _isPermanentCreative = b;
         if (b)
             setRegionCreative(false);
     }
     
     public boolean onSetCreative() {
+        LimitedCreativeCore.debug(player.getName() + " going into creative");
         if (!this.isRegionCreative())
             setPermanentCreative(true);
         if (plugin.config.getStoreEnabled()) {
-            if (plugin.config.getPermissionToKeepInventory() && player.hasPermission("limitedcreative.keepinventory"))
+            if (plugin.config.getPermissionToKeepInventory() && hasPermission("limitedcreative.keepinventory"))
                 return true;
             Inventory inv = new Inventory(player);
             inv.save();
@@ -129,15 +135,17 @@ public class LCPlayer {
         return true;
     }
     public boolean onSetSurvival() {
+        LimitedCreativeCore.debug(player.getName() + " going into survival");
         if (isRegionCreative()) {
             if (!plugin.config.getRegionOptional()) {
                 getRaw().sendMessage(ChatColor.RED + L("exception.region.no_survival"));
+                LimitedCreativeCore.debug("... denied");
                 return false;
             }
         }
         setPermanentCreative(false);
         if (plugin.config.getStoreEnabled()) {
-            if (plugin.config.getPermissionToKeepInventory() && player.hasPermission("limitedcreative.keepinventory"))
+            if (plugin.config.getPermissionToKeepInventory() && hasPermission("limitedcreative.keepinventory"))
                 return true;
             Inventory inv = new Inventory(player);
             if (plugin.config.getStoreCreative()) {
@@ -150,14 +158,14 @@ public class LCPlayer {
     }
     public void onDropItem(PlayerDropItemEvent event) {
         if (player.getGameMode() == GameMode.CREATIVE) {
-            if (plugin.config.getPermissionsEnabled() && event.getPlayer().hasPermission("limitedcreative.nolimit.drop"))
+            if (plugin.config.getPermissionsEnabled() && hasPermission("limitedcreative.nolimit.drop"))
                 return;
             event.getItemDrop().remove();
         }
     }
     public void onPickupItem(PlayerPickupItemEvent event) {
         if (player.getGameMode() == GameMode.CREATIVE && plugin.config.getBlockPickupInCreative()) {
-            if (plugin.config.getPermissionsEnabled() && event.getPlayer().hasPermission("limitedcreative.nolimit.pickup"))
+            if (plugin.config.getPermissionsEnabled() && hasPermission("limitedcreative.nolimit.pickup"))
                 return;
             event.setCancelled(true);
         }
@@ -165,7 +173,7 @@ public class LCPlayer {
     
     public void onDie(EntityDeathEvent event) {
         if (player.getGameMode() == GameMode.CREATIVE) {
-            if (!plugin.config.getPermissionsEnabled() || !player.hasPermission("limitedcreative.nolimit.drop")) {
+            if (!plugin.config.getPermissionsEnabled() || !hasPermission("limitedcreative.nolimit.drop")) {
                 event.getDrops().clear();
                 tempinv = Items.storeInventory(player.getInventory());
             }
@@ -173,7 +181,7 @@ public class LCPlayer {
     }
     public void onRespawn(PlayerRespawnEvent event) {
         if (player.getGameMode() == GameMode.CREATIVE) {
-            if (!plugin.config.getPermissionsEnabled() || !player.hasPermission("limitedcreative.nolimit.drop")) {
+            if (!plugin.config.getPermissionsEnabled() || !hasPermission("limitedcreative.nolimit.drop")) {
                 if (tempinv != null) {
                     Items.restoreInventory(player.getInventory(), tempinv);
                 }
@@ -187,12 +195,13 @@ public class LCPlayer {
             // its PVP
             Player attacker = (Player) event.getDamager();
             if (attacker.getGameMode() == GameMode.CREATIVE) {
-                if (!plugin.config.getPermissionsEnabled() || !attacker.hasPermission("limitedcreative.nolimit.pvp")) {
+                if (!plugin.config.getPermissionsEnabled() || !get(attacker).hasPermission("limitedcreative.nolimit.pvp")) {
                     event.setCancelled(true);
+                    return; // skip next check
                 }
             }
             if (player.getGameMode() == GameMode.CREATIVE) {
-                if (!plugin.config.getPermissionsEnabled() || !player.hasPermission("limitedcreative.nolimit.pvp")) {
+                if (!plugin.config.getPermissionsEnabled() || !hasPermission("limitedcreative.nolimit.pvp")) {
                     event.setCancelled(true);
                 }
             }
@@ -201,7 +210,7 @@ public class LCPlayer {
     public void onChestAccess(PlayerInteractEvent event) {
         if (player.getGameMode() != GameMode.CREATIVE)
             return;
-        if (plugin.config.getPermissionsEnabled() && event.getPlayer().hasPermission("limitedcreative.nolimit.chest"))
+        if (plugin.config.getPermissionsEnabled() && hasPermission("limitedcreative.nolimit.chest"))
             return;
         event.getPlayer().sendMessage(L("blocked.chest"));
         event.setCancelled(true);
@@ -209,7 +218,7 @@ public class LCPlayer {
     public void onChestAccess(PlayerInteractEntityEvent event) { // chest-minecarts are different events
         if (player.getGameMode() != GameMode.CREATIVE)
             return;
-        if (plugin.config.getPermissionsEnabled() && event.getPlayer().hasPermission("limitedcreative.nolimit.chest"))
+        if (plugin.config.getPermissionsEnabled() && hasPermission("limitedcreative.nolimit.chest"))
             return;
         event.getPlayer().sendMessage(L("blocked.chest"));
         event.setCancelled(true);
@@ -217,7 +226,7 @@ public class LCPlayer {
     public void onSignAccess(PlayerInteractEvent event) {
         if (!plugin.config.getSignBlock() || player.getGameMode() != GameMode.CREATIVE)
             return;
-        if (plugin.config.getPermissionsEnabled() && event.getPlayer().hasPermission("limitedcreative.nolimit.sign"))
+        if (plugin.config.getPermissionsEnabled() && hasPermission("limitedcreative.nolimit.sign"))
             return;
         event.getPlayer().sendMessage(L("blocked.sign"));
         event.setCancelled(true);
@@ -273,5 +282,9 @@ public class LCPlayer {
                     b.getY()+1,
                     player.getLocation().getZ()));
         }
+    }
+    
+    public boolean hasPermission(String permission) {
+        return plugin.perm.hasPermission(this.getRaw(), permission);
     }
 }

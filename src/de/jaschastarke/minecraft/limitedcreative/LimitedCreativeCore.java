@@ -26,11 +26,13 @@ import de.jaschastarke.minecraft.limitedcreative.listeners.LimitListener;
 import de.jaschastarke.minecraft.limitedcreative.listeners.MainListener;
 import de.jaschastarke.minecraft.limitedcreative.regions.WorldGuardIntegration;
 import de.jaschastarke.minecraft.utils.Locale;
+import de.jaschastarke.minecraft.utils.Permissions;
 
 
 public class LimitedCreativeCore extends JavaPlugin {
     public final Logger logger = Logger.getLogger("Minecraft");
     public Configuration config;
+    public Permissions perm;
     public WorldGuardIntegration worldguard;
     public static LimitedCreativeCore plugin;
     public NoBlockItemSpawn spawnblock;
@@ -41,28 +43,42 @@ public class LimitedCreativeCore extends JavaPlugin {
         worldguard = null;
         config = null;
         spawnblock = null;
-        Locale.unload();
-        //info("cleanly unloaded.");
+        try {
+            Locale.unload();
+        } catch (NoClassDefFoundError e) {} // prevent unload issue
     }
 
     @Override
     public void onEnable() {
         plugin = this;
         config = new Configuration(this);
+        perm = new Permissions(this);
         
         new Locale(this);
 
         spawnblock = new NoBlockItemSpawn();
         
+        // 1st Feature: Separated Inventories Storage
+        if (config.getStoreEnabled() && getServer().getPluginManager().isPluginEnabled("MultiInv")) {
+            warn(L("basic.conflict", "MultiInv", L("basic.feature.store")));
+            config.setTempStoreEnabled(false);
+        }
         getServer().getPluginManager().registerEvents(new MainListener(this), this);
+        
+        // 2nd Feature: Creative Limitations (Restrictions)
         if (config.getLimitEnabled())
             getServer().getPluginManager().registerEvents(new LimitListener(this), this);
         
-        if (config.getRegionEnabled() && WorldGuardIntegration.available()) {
+        // 3rd Feature: WorldGuard Region-Support
+        if (config.getRegionEnabled() && getServer().getPluginManager().isPluginEnabled("WorldGuard")) {
             worldguard = new WorldGuardIntegration(this);
         } else if(config.getRegionEnabled()) {
-            warn(L("warning.no_worldguard_found"));
+            warn(L("basic.warning.worldguard_not_found", L("basic.feature.region")));
         }
+        
+        debug("Store: " + config.getStoreEnabled());
+        debug("Limit: " + config.getLimitEnabled());
+        debug("Region: " + (worldguard != null));
         
         Commands.register(this);
         

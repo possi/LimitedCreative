@@ -26,6 +26,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import de.jaschastarke.minecraft.utils.Util;
 import de.jaschastarke.minecraft.worldguard.CCommand;
 import static de.jaschastarke.minecraft.utils.Locale.L;
 
@@ -43,6 +44,7 @@ public class Commands {
         
         @Override
         public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+            LimitedCreativeCore.debug(sender.getName() + ": /" + label + " " + Util.join(args));
             if (args.length > 0) {
                 Action act = null;
                 try {
@@ -74,6 +76,7 @@ public class Commands {
                                 return true;
                         }
                     } catch (CommandException e) {
+                        LimitedCreativeCore.debug("CommandException: "+e.getMessage());
                         sender.sendMessage(ChatColor.DARK_RED + e.getLocalizedMessage());
                         return true;
                     }
@@ -84,11 +87,11 @@ public class Commands {
             StringBuilder message = new StringBuilder();
             message.append("/"+c+" s[urvival] ["+L("command.player")+"] - "+L("command.switch.survival")+"\n");
             message.append("/"+c+" c[reative] ["+L("command.player")+"] - "+L("command.switch.creative")+"\n");
-            if (sender.hasPermission("limitedcreative.config"))
+            if (plugin.perm.hasPermission(sender, "limitedcreative.config"))
                 message.append("/"+c+" e[nable] "+L("command.config.overview")+"\n");
-            if (sender.hasPermission("limitedcreative.config"))
+            if (plugin.perm.hasPermission(sender, "limitedcreative.config"))
                 message.append("/"+c+" d[isable] "+L("command.config.overview")+"\n");
-            if (sender.hasPermission("limitedcreative.regions"))
+            if (plugin.perm.hasPermission(sender, "limitedcreative.regions"))
                 message.append("/"+c+" r[egion] "+L("command.worldguard.alias")+"\n");
             if (message.length() > 0) {
                 sender.sendMessage("Usage:");
@@ -107,10 +110,11 @@ public class Commands {
             BLOCKSIGN,
             PERMISSIONS,
             PERM_KEEPINVENTORY,
+            DEBUG,
         };
         
         private void setOption(CommandSender sender, String[] args, boolean b) throws CommandException {
-            if (sender instanceof Player && !sender.hasPermission("limitedcreative.config") && !sender.isOp()) {
+            if (sender instanceof Player && !plugin.perm.hasPermission(sender, "limitedcreative.config")) {
                 throw new LackingPermissionException();
             }
             if (args.length > 2)
@@ -156,7 +160,7 @@ public class Commands {
 
             if (target == null) {
                 throw new InvalidCommandException("exception.command.playernotfound");
-            } else if (sender instanceof Player && sender != target && !sender.hasPermission("limitedcreative.switch_gamemode.other")) {
+            } else if (sender instanceof Player && sender != target && !plugin.perm.hasPermission(sender, "limitedcreative.switch_gamemode.other")) {
                 throw new LackingPermissionException();
             } else if (target.getGameMode() != gm) {
                 if (sender == target) {

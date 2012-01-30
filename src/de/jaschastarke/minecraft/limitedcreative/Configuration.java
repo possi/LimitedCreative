@@ -51,7 +51,7 @@ public class Configuration {
     }
     
     public boolean getStoreEnabled() {
-        return c.getBoolean("store.enabled", true);
+        return getTempStoreEnabled() && c.getBoolean("store.enabled", true);
     }
     public boolean getLimitEnabled() {
         return c.getBoolean("limit.enabled", true);
@@ -85,7 +85,12 @@ public class Configuration {
         return c.getBoolean("region.optional", true);
     }
     
-    
+
+    public void setDebug(boolean value) {
+        this.reload();
+        c.set("debug", value);
+        this.save();
+    }
     public void setStoreCreative(boolean value) {
         this.reload();
         c.set("store.creative", value);
@@ -156,5 +161,13 @@ public class Configuration {
             }
         }
         return list;
+    }
+    
+    private boolean _store_enabled = true;
+    public void setTempStoreEnabled(boolean b) {
+        _store_enabled = b;
+    }
+    public boolean getTempStoreEnabled() {
+        return _store_enabled;
     }
 }
