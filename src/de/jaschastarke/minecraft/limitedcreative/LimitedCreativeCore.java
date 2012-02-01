@@ -39,6 +39,7 @@ public class LimitedCreativeCore extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        plugin.getServer().getScheduler().cancelTasks(this);
         plugin = null;
         worldguard = null;
         config = null;
@@ -81,6 +82,13 @@ public class LimitedCreativeCore extends JavaPlugin {
         debug("Region: " + (worldguard != null));
         
         Commands.register(this);
+        
+        plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+                LCPlayer.cleanUp();
+            }
+        }, LCPlayer.CLEANUP_TIMEOUT / 50L, LCPlayer.CLEANUP_TIMEOUT / 50L); // 50 = 1000ms / 20ticks
         
         PluginDescriptionFile df = this.getDescription();
         if (worldguard != null)

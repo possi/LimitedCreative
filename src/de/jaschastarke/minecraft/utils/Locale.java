@@ -19,6 +19,7 @@ package de.jaschastarke.minecraft.utils;
 
 import java.io.File;
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -40,8 +41,16 @@ public class Locale {
         return "lang/"+locale+".yml";
     }
     public String get(String msg) {
-        if (lang.contains(msg))
-            return lang.getString(msg);
+        if (lang.contains(msg)) {
+            if (lang.isList(msg)) {
+                List<String> list = lang.getStringList(msg);
+                String[] lines = new String[list.size()];
+                list.toArray(lines);
+                return Util.join(lines, "\n");
+            } else {
+                return lang.getString(msg);
+            }
+        }
         return msg;
     }
 

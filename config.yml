@@ -24,7 +24,6 @@ store:
     # default: false
     unsafe: false
     
-    
     # InventoryFolder
     # The folder inside the datadir-folder (plugin/LimitedCreative) where the inventories are saved to.
     # By default the inventories are saved to "plugin/LimitedCreative/inventories".
@@ -39,10 +38,23 @@ limit:
     # default: true
     enabled: true
 
+    # RemoveDrops
+    # When player not allowed to drop items, remove the item instead of putting it back to inventory/quickbar.
+    # You may disable this to get rid of the server.log-message: "Fetching addPacket for removed entity: CraftItem"
+    # default: true
+    remove_drops: true
+    
     # BlockPickup
     # Prevents the pickup of items while in creative mode
     # default: false
     pickup: false
+    
+    # RemovePickup
+    # Instead of blocking the pickup, you may want to disappear the item from world (good when destroying walls with
+    # signs or playing with minecarts). Only works when BlockPickup: false.
+    # The permission nolimit.pickup bypasses the removing.
+    # default: false
+    remove_pickup: true
     
     # BlockSign
     # Prevents interacting with signs (right-click), while in creative mode, so trading becomes more difficult.

@@ -47,6 +47,10 @@ public class MainListener implements Listener {
     
     @EventHandler
     public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
+        LimitedCreativeCore.debug("onPlayerGameModeChange: "+event.getPlayer().getName());
+        LimitedCreativeCore.debug("Current GameMode: "+event.getPlayer().getGameMode());
+        LimitedCreativeCore.debug("New GameMode: "+event.getNewGameMode());
+        LimitedCreativeCore.debug("isCancelled: "+event.isCancelled());
         if (event.getNewGameMode() == GameMode.CREATIVE) {
             if (!LCPlayer.get(event.getPlayer()).onSetCreative())
                 event.setCancelled(true);

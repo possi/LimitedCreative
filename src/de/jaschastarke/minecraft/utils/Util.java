@@ -83,4 +83,7 @@ final public class Util {
     public static String join(String[] list) {
         return join(list, " ", 0, list.length);
     }
+    public static String join(String[] list, String sep) {
+        return join(list, sep, 0, list.length);
+    }
 }

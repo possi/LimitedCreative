@@ -1,15 +1,15 @@
 name: LimitedCreative
 main: de.jaschastarke.minecraft.limitedcreative.LimitedCreativeCore
-version: 0.8.1-beta
+version: 0.8.2-beta
 softdepend: [WorldGuard, WorldEdit, MultiInv]
 dev-url: http://dev.bukkit.org/server-mods/limited-creative/
 commands:
     limitedcreative:
-        description: Main LimitedCreative-Controlling-Commands
+        description: "LimitedCreative: GameMode-Switch, Creative-Regions, Config"
         aliases: lc
         usage: /<command> - displays LimitedCreative-Help
     /region:
-        description: Alternate region command, to use for WorldGuard-Integration
+        description: "LimitedCreative-Region-Command: configure creative regions"
         aliases: lcregion
         usage: /<command> info|flag [<world>#]<region> - set/get region options
 permissions:

@@ -20,6 +20,7 @@ package de.jaschastarke.minecraft.limitedcreative;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
@@ -46,37 +47,69 @@ import static de.jaschastarke.minecraft.utils.Locale.L;
 
 public class LCPlayer {
     private static LimitedCreativeCore plugin = LimitedCreativeCore.plugin;
-    private static Map<Player, LCPlayer> players = new HashMap<Player, LCPlayer>();
+    private static Map<String, LCPlayer> players = new HashMap<String, LCPlayer>();
     private Player player;
     private Map<Integer, ItemStack> tempinv = null;
+    private Inventory _inv;
+    private boolean _isPermanentCreative = false;
+    private boolean _isRegionCreative = false;
+    private long _timestamp;
+    public static final long CLEANUP_TIMEOUT = 90000; // 90s * 20ticks
     
     private static File _store_file = new File(plugin.getDataFolder(), "players.yml");
     public static YamlConfiguration store = YamlConfiguration.loadConfiguration(_store_file);
     
-    private boolean _isPermanentCreative = false;
-    private boolean _isRegionCreative = false;
-
-    private LCPlayer(Player pplayer) {
-        player = pplayer;
+    private LCPlayer(Player player) {
+        this.player = player;
         _isRegionCreative = store.getBoolean(player.getName()+".region_creative", false) && player.getGameMode() == GameMode.CREATIVE;
         if (player.getGameMode() == GameMode.CREATIVE && !this.isRegionCreative()) {
             LimitedCreativeCore.debug(player.getName() + " was already creative");
             setPermanentCreative(true);
         }
     }
+    private void updatePlayer(Player player) {
+        this.player = player;
+        _inv = null;
+    }
     
     public Player getRaw() {
         return player;
     }
     
-    public static LCPlayer get(Player pplayer) {
-        if (!players.containsKey(pplayer)) {
-            LCPlayer p = new LCPlayer(pplayer);
-            players.put(pplayer, p);
+    public void touch() {
+        _timestamp = System.currentTimeMillis();
+    }
+    
+    public boolean isOutdated() {
+        return !getRaw().isOnline() && _timestamp < (System.currentTimeMillis() - CLEANUP_TIMEOUT);
+    }
+    
+    public static LCPlayer get(Player player) {
+        LimitedCreativeCore.debug("player: " + player.getName() + " - " + ((Object)player).hashCode() + " - " + player.getEntityId() + " - " + player.getUniqueId());
+        if (!players.containsKey(player.getName())) {
+            LCPlayer p = new LCPlayer(player);
+            players.put(player.getName(), p);
+            p.touch();
             return p;
         } else {
-            return players.get(pplayer);
+            LCPlayer p = players.get(player.getName());
+            if (player != p.getRaw())
+                p.updatePlayer(player);
+            p.touch();
+            return p;
         }
+    }
+    public static void cleanUp() {
+        int count = players.size();
+        Iterator<Map.Entry<String, LCPlayer>> i = players.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry<String, LCPlayer> entry = i.next();
+            if (entry.getValue().isOutdated()) {
+                LimitedCreativeCore.debug("removing "+entry.getValue().getRaw().getName());
+                i.remove();
+            }
+        }
+        LimitedCreativeCore.debug("cleanup done: player count: "+count+" / "+players.size());
     }
     
     public boolean isRegionCreative() {
@@ -124,16 +157,21 @@ public class LCPlayer {
         if (plugin.config.getStoreEnabled()) {
             if (plugin.config.getPermissionToKeepInventory() && hasPermission("limitedcreative.keepinventory"))
                 return true;
-            Inventory inv = new Inventory(player);
-            inv.save();
-            if (plugin.config.getStoreCreative() && inv.isStored(GameMode.CREATIVE)) {
-                inv.load(GameMode.CREATIVE);
+            inv().save();
+            if (plugin.config.getStoreCreative() && inv().isStored(GameMode.CREATIVE)) {
+                inv().load(GameMode.CREATIVE);
             } else {
-                inv.clear();
+                inv().clear();
             }
         }
         return true;
     }
+    private Inventory inv() {
+        if (_inv == null)
+            _inv = new Inventory(player);
+        return _inv;
+    }
+    
     public boolean onSetSurvival() {
         LimitedCreativeCore.debug(player.getName() + " going into survival");
         if (isRegionCreative()) {
@@ -147,27 +185,36 @@ public class LCPlayer {
         if (plugin.config.getStoreEnabled()) {
             if (plugin.config.getPermissionToKeepInventory() && hasPermission("limitedcreative.keepinventory"))
                 return true;
-            Inventory inv = new Inventory(player);
             if (plugin.config.getStoreCreative()) {
-                inv.save();
+                inv().save();
             }
-            if (inv.isStored(GameMode.SURVIVAL))
-                inv.load(GameMode.SURVIVAL);
+            if (inv().isStored(GameMode.SURVIVAL))
+                inv().load(GameMode.SURVIVAL);
         }
         return true;
     }
     public void onDropItem(PlayerDropItemEvent event) {
+        LimitedCreativeCore.debug(player.getName() + " ("+player.getGameMode()+")  drops items " + event.getItemDrop().getItemStack().getType());
         if (player.getGameMode() == GameMode.CREATIVE) {
             if (plugin.config.getPermissionsEnabled() && hasPermission("limitedcreative.nolimit.drop"))
                 return;
-            event.getItemDrop().remove();
+            LimitedCreativeCore.debug("removed");
+            if (plugin.config.getRemoveDrop())
+                event.getItemDrop().remove();
+            else
+                event.setCancelled(true);
         }
     }
     public void onPickupItem(PlayerPickupItemEvent event) {
-        if (player.getGameMode() == GameMode.CREATIVE && plugin.config.getBlockPickupInCreative()) {
+        if (player.getGameMode() == GameMode.CREATIVE) {
             if (plugin.config.getPermissionsEnabled() && hasPermission("limitedcreative.nolimit.pickup"))
                 return;
-            event.setCancelled(true);
+            if (plugin.config.getBlockPickupInCreative()) {
+                event.setCancelled(true);
+            } else if(plugin.config.getRemovePickup()) {
+                event.getItem().remove();
+                event.setCancelled(true);
+            }
         }
     }
     

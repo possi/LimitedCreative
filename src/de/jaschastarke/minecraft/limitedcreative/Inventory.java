@@ -37,18 +37,23 @@ public class Inventory {
     
     public Inventory(Player p) {
         player = p;
-        inv = p.getInventory();
+    }
+    
+    private PlayerInventory inv() {
+        return player.getInventory();
     }
     
     public void save() {
+        LimitedCreativeCore.debug(player.getName() + " storing inventory "+player.getGameMode().toString());
         File f = new File(LimitedCreativeCore.plugin.getDataFolder(), getFileName(player, player.getGameMode()));
-        storeInventory(inv, f);
+        storeInventory(inv(), f);
     }
     
     public void load(GameMode gm) {
+        LimitedCreativeCore.debug(player.getName() + " loading inventory "+gm.toString());
         File f = new File(LimitedCreativeCore.plugin.getDataFolder(), getFileName(player, gm));
         try {
-            restoreInventory(inv, f);
+            restoreInventory(inv(), f);
         } catch (IllegalArgumentException e) {
             if (LimitedCreativeCore.plugin.config.getUnsafeStorage()) {
                 throw e;
@@ -62,13 +67,13 @@ public class Inventory {
     }
     
     public void clear() {
-        inv.setArmorContents(new ItemStack[]{
+        inv().setArmorContents(new ItemStack[]{
             new ItemStack(0),
             new ItemStack(0),
             new ItemStack(0),
             new ItemStack(0),
         });
-        inv.clear();
+        inv().clear();
     }
     
     private String getFileName(Player player, GameMode gm) {

@@ -16,7 +16,12 @@ command:
         survival: Changes the game mode of a player to survival
         creative: Changes the game mode of a player to creative
     config:
-        overview: storecreative|blockpickup|blocksign|permissions|perm_keepinventory
+        overview: "[setting] - empty for list of settings"
+        settings:
+            - "Available Settings: storecreative,"
+            - "removedrop, removepickup, blockpickup, blocksign,"
+            - "permissions, perm_keepinventory"
+        reload: Reloads plugin (doesn't work on update!)
     gamemode:
         changed: "{0}'s game mode has been changed"
         no_change: Already in that game mode.

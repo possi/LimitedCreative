@@ -75,6 +75,13 @@ public class Configuration {
     public boolean getSignBlock() {
         return c.getBoolean("limit.sign", true);
     }
+    public boolean getRemoveDrop() {
+        return c.getBoolean("limit.remove_drops", true);
+    }
+    public boolean getRemovePickup() {
+        return c.getBoolean("limit.remove_pickup", false);
+    }
+    
     public boolean getPermissionsEnabled() {
         return c.getBoolean("permissions.enabled", false);
     }
@@ -116,6 +123,16 @@ public class Configuration {
         if (value == true)
             this.setPermissionsEnabled(true);
         c.set("permissions.keepinventory", value);
+        this.save();
+    }
+    public void setRemoveDrop(boolean value) {
+        this.reload();
+        c.set("limit.remove_drops", value);
+        this.save();
+    }
+    public void setRemovePickup(boolean value) {
+        this.reload();
+        c.set("limit.remove_pickup", value);
         this.save();
     }
     

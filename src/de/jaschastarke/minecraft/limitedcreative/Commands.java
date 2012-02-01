@@ -40,6 +40,7 @@ public class Commands {
             E, ENABLE,
             D, DISABLE,
             R, REGION,
+            RELOAD
         };
         
         @Override
@@ -74,6 +75,10 @@ public class Commands {
                                 args = Arrays.copyOfRange(args, 1, args.length);
                                 plugin.getCommand("/region").execute(sender, "/region", args);
                                 return true;
+                            case RELOAD:
+                                plugin.getServer().getPluginManager().disablePlugin(plugin);
+                                plugin.getServer().getPluginManager().enablePlugin(plugin);
+                                return true;
                         }
                     } catch (CommandException e) {
                         LimitedCreativeCore.debug("CommandException: "+e.getMessage());
@@ -87,10 +92,11 @@ public class Commands {
             StringBuilder message = new StringBuilder();
             message.append("/"+c+" s[urvival] ["+L("command.player")+"] - "+L("command.switch.survival")+"\n");
             message.append("/"+c+" c[reative] ["+L("command.player")+"] - "+L("command.switch.creative")+"\n");
-            if (plugin.perm.hasPermission(sender, "limitedcreative.config"))
+            if (plugin.perm.hasPermission(sender, "limitedcreative.config")) {
                 message.append("/"+c+" e[nable] "+L("command.config.overview")+"\n");
-            if (plugin.perm.hasPermission(sender, "limitedcreative.config"))
                 message.append("/"+c+" d[isable] "+L("command.config.overview")+"\n");
+                message.append("/"+c+" reload "+L("command.config.reload")+"\n");
+            }
             if (plugin.perm.hasPermission(sender, "limitedcreative.regions"))
                 message.append("/"+c+" r[egion] "+L("command.worldguard.alias")+"\n");
             if (message.length() > 0) {
@@ -110,6 +116,8 @@ public class Commands {
             BLOCKSIGN,
             PERMISSIONS,
             PERM_KEEPINVENTORY,
+            REMOVEDROP,
+            REMOVEPICKUP,
             DEBUG,
         };
         
@@ -119,8 +127,11 @@ public class Commands {
             }
             if (args.length > 2)
                 throw new InvalidCommandException("exception.command.tomuchparameter");
-            if (args.length < 2)
-                throw new InvalidCommandException("exception.command.missingparameter");
+            if (args.length < 2) {
+                for (String l : L("command.config.settings").split("\n"))
+                    sender.sendMessage(l);
+                return;
+            }
             
             Option opt = null;
             try {
@@ -144,6 +155,15 @@ public class Commands {
                     break;
                 case PERM_KEEPINVENTORY:
                     plugin.config.setPermissionToKeepInventory(b);
+                    break;
+                case REMOVEDROP:
+                    plugin.config.setRemoveDrop(b);
+                    break;
+                case REMOVEPICKUP:
+                    plugin.config.setRemovePickup(b);
+                    break;
+                case DEBUG:
+                    plugin.config.setDebug(b);
                     break;
             }
             sender.sendMessage(L("command.option.done"));
