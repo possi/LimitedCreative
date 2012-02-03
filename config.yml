@@ -79,8 +79,8 @@ limit:
     # To prevent Lava you need to add "LAVA_BUCKET", because lava-blocks aren't "placed", therefore Lava-Buckets are
     # "used".
     # You may add the data separated with a colon e.g.: "35:11" blocks blue wool. But be sure to put it in quotes, to
-    # not break yml-configuration! Also supporting Eggs (e.g: "MONSTER_EGG:56" blocks Ghasts-Eggs). Named data values aren't
-    # supported yet.
+    # not break yml-configuration! Also supporting Eggs (e.g: "MONSTER_EGG:56" blocks Ghasts-Eggs). If you don't add a
+    # data-value, all items/blocks of this material are blocked.
     # This option can only changed by reloading the plugin (not via ingame commands).
     # default: []
     use: []
@@ -91,8 +91,8 @@ limit:
     # or the id of the block/item (better use the id, if you're not sure).
     # This option can only changed by reloading the plugin (not via ingame commands).
     # You may add the data separated with a colon e.g.: "WOOL:11" blocks blue wool. But be sure to put it in quotes, to
-    # not break yml-configuration!
-    # supported yet.
+    # not break yml-configuration! Named data values aren't supported yet. If you don't add a data-value, all blocks
+    # of this material are blocked.
     # default: [bedrock]
     break:
      - bedrock
