@@ -30,9 +30,11 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -40,6 +42,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Lever;
 
 import de.jaschastarke.minecraft.limitedcreative.Commands.LackingPermissionException;
 import de.jaschastarke.minecraft.limitedcreative.serialize.Items;
@@ -54,7 +57,7 @@ public class LCPlayer {
     private boolean _isPermanentCreative = false;
     private boolean _isRegionCreative = false;
     private long _timestamp;
-    public static final long CLEANUP_TIMEOUT = 90000; // 90s * 20ticks
+    public static final long CLEANUP_TIMEOUT = 300000; // 300s = 5m
     
     private static File _store_file = new File(plugin.getDataFolder(), "players.yml");
     public static YamlConfiguration store = YamlConfiguration.loadConfiguration(_store_file);
@@ -237,7 +240,7 @@ public class LCPlayer {
         tempinv = null;
     }
     
-    public void onDamage(EntityDamageByEntityEvent event) {
+    public void onDamage(EntityDamageByEntityEvent event) { // receives damage
         if (event.getDamager() instanceof Player) {
             // its PVP
             Player attacker = (Player) event.getDamager();
@@ -254,6 +257,29 @@ public class LCPlayer {
             }
         }
     }
+    public void onDealDamage(EntityDamageByEntityEvent event) { // deals damage
+        if (event.getEntity() instanceof Creature) {
+            if (player.getGameMode() == GameMode.CREATIVE && plugin.config.getMobDamageBlock()) {
+                if (!plugin.config.getPermissionsEnabled() || !hasPermission("limitedcreative.nolimit.mob_damage")) {
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
+    
+    /**
+     * don't let the player be target by creatures he can't kill
+     */
+    public void onTarget(EntityTargetEvent event) {
+        if (event.getEntity() instanceof Creature) {
+            if (player.getGameMode() == GameMode.CREATIVE && plugin.config.getMobDamageBlock()) {
+                if (!plugin.config.getPermissionsEnabled() || !hasPermission("limitedcreative.nolimit.mob_damage")) {
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
+    
     public void onChestAccess(PlayerInteractEvent event) {
         if (player.getGameMode() != GameMode.CREATIVE)
             return;
@@ -277,6 +303,21 @@ public class LCPlayer {
             return;
         event.getPlayer().sendMessage(L("blocked.sign"));
         event.setCancelled(true);
+    }
+    public void onButtonAccess(PlayerInteractEvent event) {
+        if (!plugin.config.getButtonBlock() || player.getGameMode() != GameMode.CREATIVE)
+            return;
+        if (event.getClickedBlock().getState() instanceof Lever) {
+            if (plugin.config.getPermissionsEnabled() && hasPermission("limitedcreative.nolimit.lever"))
+                return;
+            event.getPlayer().sendMessage(L("blocked.lever"));
+            event.setCancelled(true);
+        } else {
+            if (plugin.config.getPermissionsEnabled() && hasPermission("limitedcreative.nolimit.button"))
+                return;
+            event.getPlayer().sendMessage(L("blocked.button"));
+            event.setCancelled(true);
+        }
     }
     
     private long lastFloatingTimeWarning = 0;

@@ -36,12 +36,16 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.material.Button;
+import org.bukkit.material.Lever;
 
+import de.jaschastarke.minecraft.limitedcreative.BlackList;
 import de.jaschastarke.minecraft.limitedcreative.LCPlayer;
 import de.jaschastarke.minecraft.limitedcreative.LimitedCreativeCore;
 import static de.jaschastarke.minecraft.utils.Locale.L;
@@ -75,7 +79,7 @@ public class LimitListener implements Listener {
         
         LCPlayer player = LCPlayer.get(event.getPlayer());
         if (!plugin.config.getPermissionsEnabled() || !player.hasPermission("limitedcreative.nolimit.use")) {
-            if (event.getItem() != null && plugin.config.getBlockedUse().contains(event.getItem().getType())) {
+            if (event.getItem() != null && BlackList.isBlackListed(plugin.config.getBlockedUse(), event.getItem())) {
                 event.setCancelled(true);
                 event.setUseItemInHand(Event.Result.DENY);
                 event.getPlayer().sendMessage(L("blocked.use"));
@@ -90,9 +94,10 @@ public class LimitListener implements Listener {
         
         if (block.getState() instanceof ContainerBlock) {
             player.onChestAccess(event);
-        }
-        if (block.getState() instanceof Sign) {
+        } else if (block.getState() instanceof Sign) {
             player.onSignAccess(event);
+        } else if (block.getState() instanceof Lever || block.getState() instanceof Button) {
+            player.onButtonAccess(event);
         }
     }
 
@@ -103,7 +108,7 @@ public class LimitListener implements Listener {
 
         LCPlayer player = LCPlayer.get(event.getPlayer());
         if (!plugin.config.getPermissionsEnabled() || !player.hasPermission("limitedcreative.nolimit.use")) {
-            if (event.getPlayer().getItemInHand() != null && plugin.config.getBlockedUse().contains(event.getPlayer().getItemInHand().getType())) {
+            if (event.getPlayer().getItemInHand() != null && BlackList.isBlackListed(plugin.config.getBlockedUse(), event.getPlayer().getItemInHand())) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(L("blocked.use"));
                 return;
@@ -119,11 +124,24 @@ public class LimitListener implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent meta_event) {
+        if (meta_event.isCancelled())
+            return;
         if (meta_event instanceof EntityDamageByEntityEvent) {
             EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) meta_event;
             if (event.getEntity() instanceof Player) {
                 LCPlayer.get((Player) event.getEntity()).onDamage(event);
             }
+            if (!event.isCancelled() && event.getDamager() instanceof Player){
+                LCPlayer.get((Player) event.getDamager()).onDealDamage(event);
+            }
+        }
+    }
+    @EventHandler
+    public void onEntityTarget(EntityTargetEvent event) {
+        if (event.isCancelled())
+            return;
+        if (event.getTarget() instanceof Player) {
+            LCPlayer.get((Player) event.getTarget()).onTarget(event);
         }
     }
 
@@ -142,7 +160,7 @@ public class LimitListener implements Listener {
         if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
             LCPlayer player = LCPlayer.get(event.getPlayer());
             if (!plugin.config.getPermissionsEnabled() || !player.hasPermission("limitedcreative.nolimit.break")) {
-                if (plugin.config.getBlockedBreaks().contains(event.getBlock().getType())) {
+                if (BlackList.isBlackListed(plugin.config.getBlockedBreaks(), event.getBlock())) {
                     event.setCancelled(true);
                     event.getPlayer().sendMessage(L("blocked.break"));
                 }
@@ -181,7 +199,7 @@ public class LimitListener implements Listener {
         if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
             LCPlayer player = LCPlayer.get(event.getPlayer());
             if (!plugin.config.getPermissionsEnabled() || !player.hasPermission("limitedcreative.nolimit.use")) {
-                if (plugin.config.getBlockedUse().contains(event.getBlock().getType())) {
+                if (BlackList.isBlackListed(plugin.config.getBlockedUse(), event.getBlock())) {
                     event.setCancelled(true);
                     event.getPlayer().sendMessage(L("blocked.place"));
                 }

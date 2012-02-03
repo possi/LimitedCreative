@@ -18,6 +18,7 @@
 package de.jaschastarke.minecraft.limitedcreative;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -108,18 +109,6 @@ public class Commands {
             }
             return false;
         }
-
-
-        public enum Option {
-            STORECREATIVE,
-            BLOCKPICKUP,
-            BLOCKSIGN,
-            PERMISSIONS,
-            PERM_KEEPINVENTORY,
-            REMOVEDROP,
-            REMOVEPICKUP,
-            DEBUG,
-        };
         
         private void setOption(CommandSender sender, String[] args, boolean b) throws CommandException {
             if (sender instanceof Player && !plugin.perm.hasPermission(sender, "limitedcreative.config")) {
@@ -128,44 +117,30 @@ public class Commands {
             if (args.length > 2)
                 throw new InvalidCommandException("exception.command.tomuchparameter");
             if (args.length < 2) {
-                for (String l : L("command.config.settings").split("\n"))
-                    sender.sendMessage(l);
+                StringBuilder str = new StringBuilder(L("command.config.settings"));
+                List<Configuration.Option> options = Configuration.Option.getAvailableOptions();
+                for (int i = 0; i < options.size(); i++) {
+                    str.append(options.get(i).name().toLowerCase());
+                    if (i < options.size() - 1)
+                        str.append(", ");
+                    if ((i - 1) % 5 == 0) {
+                        sender.sendMessage(str.toString());
+                        str = new StringBuilder();
+                    }
+                }
+                if (str.length() > 0)
+                    sender.sendMessage(str.toString());
                 return;
             }
             
-            Option opt = null;
+            Configuration.Option opt = null;
             try {
-                opt = Option.valueOf(args[1].toUpperCase());
+                opt = Configuration.Option.valueOf(args[1].toUpperCase());
             } catch (IllegalArgumentException e) {
                 throw new InvalidCommandException("exception.command.invalidoption");
             }
             
-            switch (opt) {
-                case STORECREATIVE:
-                    plugin.config.setStoreCreative(b);
-                    break;
-                case BLOCKPICKUP:
-                    plugin.config.setBlockPickupInCreative(b);
-                    break;
-                case BLOCKSIGN:
-                    plugin.config.setSignBlock(b);
-                    break;
-                case PERMISSIONS:
-                    plugin.config.setPermissionsEnabled(b);
-                    break;
-                case PERM_KEEPINVENTORY:
-                    plugin.config.setPermissionToKeepInventory(b);
-                    break;
-                case REMOVEDROP:
-                    plugin.config.setRemoveDrop(b);
-                    break;
-                case REMOVEPICKUP:
-                    plugin.config.setRemovePickup(b);
-                    break;
-                case DEBUG:
-                    plugin.config.setDebug(b);
-                    break;
-            }
+            plugin.config.set(opt, b);
             sender.sendMessage(L("command.option.done"));
         }
 

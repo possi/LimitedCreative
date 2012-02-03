@@ -9,7 +9,7 @@ basic:
     conflict: Due to conflict with the plugin {0}, the feature {1} is disabled
     warning:
         worldguard_not_found: WorldGuard isn''t found, the feature {0} is disabled
-        # double single-quote '' because of MessageFormater to insert {0} 
+        # double single-quote '' because of MessageFormater to insert {0}
 command:
     player: player
     switch:
@@ -17,10 +17,7 @@ command:
         creative: Changes the game mode of a player to creative
     config:
         overview: "[setting] - empty for list of settings"
-        settings:
-            - "Available Settings: storecreative,"
-            - "removedrop, removepickup, blockpickup, blocksign,"
-            - "permissions, perm_keepinventory"
+        settings: "Available Settings: "
         reload: Reloads plugin (doesn't work on update!)
     gamemode:
         changed: "{0}'s game mode has been changed"
@@ -54,9 +51,13 @@ exception:
 blocked:
     chest: Access to chests is not allowed in creative mode
     sign: To interact with signs is not allowed in creative mode
+    button: To interact with buttons is not allowed in creative mode
+    lever: To interact with levers is not allowed in creative mode
     survival_flying: You should stay on ground, when leaving a creative-area
     outside_creative: You can not place blocks outside of the creative-area
     outside_creative_break: You can not destroy blocks outside of the creative-area
     use: You are not allowed to use this type of item
     place: You are not allowed to place this type of block
     break: You are not allowed to break this type of block
+    piston: Moving {0} block out of creative area was blocked at {1}
+    piston_in: Moving {0} block into creative area was blocked at {1}

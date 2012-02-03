@@ -19,6 +19,7 @@ package de.jaschastarke.minecraft.limitedcreative;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Material;
@@ -32,6 +33,38 @@ public class Configuration {
     private File file;
     public static LimitedCreativeCore plugin;
     
+    public enum Option {
+        STORECREATIVE("store.creative", true),
+        REGION_OPTIONAL("region.optional", true),
+        BLOCKPICKUP("limit.pickup", true),
+        BLOCKSIGN("limit.sign", true),
+        BLOCKBUTTON("limit.button", false),
+        BLOCKDAMAGEMOB("limit.damagemob", false),
+        REMOVEDROP("limit.remove_drops", true),
+        REMOVEPICKUP("limit.remove_pickup", false),
+        PERMISSIONS("permissions.enabled", false),
+        PERM_KEEPINVENTORY("permissions.keepinventory", false),
+        DEBUG("debug", false);
+        
+        private String key;
+        private boolean _default;
+        private Option(String key, boolean def) {
+            this.key = key;
+            this._default = def;
+        }
+        public String getKey() {
+            return key;
+        }
+        public boolean getDefault() {
+            return _default;
+        }
+        public static List<Option> getAvailableOptions() {
+            List<Option> ret = new ArrayList<Option>(Arrays.asList(Option.values()));
+            ret.remove(Option.DEBUG); // keep it undocumented ;)
+            return ret;
+        }
+    }
+    
     public Configuration(LimitedCreativeCore pplugin) {
         plugin = pplugin;
         
@@ -42,12 +75,26 @@ public class Configuration {
         
         c = plugin.getConfig();
     }
+    
+    public void set(Option opt, boolean value) {
+        /*if (!opt.isSetAble())
+            throw new IllegalArgumentException("Setting this option is not allowed");*/
+        this.reload();
+        c.set(opt.getKey(), value);
+        if (value && opt == Option.PERM_KEEPINVENTORY && !this.getPermissionsEnabled())
+            c.set(Option.PERMISSIONS.getKey(), true);
+        this.save();
+    }
+    
+    public boolean getBoolean(Option opt) {
+        return c.getBoolean(opt.getKey(), opt.getDefault());
+    }
 
     /**
      * Intended to be undocumented ;)
      */
     public boolean getDebug() {
-        return c.getBoolean("debug", false);
+        return this.getBoolean(Option.DEBUG);
     }
     
     public boolean getStoreEnabled() {
@@ -61,7 +108,7 @@ public class Configuration {
     }
     
     public boolean getStoreCreative() {
-        return c.getBoolean("store.creative", true);
+        return this.getBoolean(Option.STORECREATIVE);
     }
     public boolean getUnsafeStorage() {
         return c.getBoolean("store.unsafe", false);
@@ -70,72 +117,35 @@ public class Configuration {
         return c.getString("store.folder", "inventories");
     }
     public boolean getBlockPickupInCreative() {
-        return c.getBoolean("limit.pickup", true);
+        return this.getBoolean(Option.BLOCKPICKUP);
     }
     public boolean getSignBlock() {
-        return c.getBoolean("limit.sign", true);
+        return this.getBoolean(Option.BLOCKSIGN);
+    }
+    public boolean getButtonBlock() {
+        return this.getBoolean(Option.BLOCKBUTTON);
     }
     public boolean getRemoveDrop() {
-        return c.getBoolean("limit.remove_drops", true);
+        return this.getBoolean(Option.REMOVEDROP);
     }
     public boolean getRemovePickup() {
-        return c.getBoolean("limit.remove_pickup", false);
+        return this.getBoolean(Option.REMOVEPICKUP);
+    }
+    public boolean getMobDamageBlock() {
+        return this.getBoolean(Option.BLOCKDAMAGEMOB);
     }
     
     public boolean getPermissionsEnabled() {
-        return c.getBoolean("permissions.enabled", false);
+        return this.getBoolean(Option.PERMISSIONS);
     }
     public boolean getPermissionToKeepInventory() {
-        return this.getPermissionsEnabled() && c.getBoolean("permissions.keepinventory", false);
+        return this.getPermissionsEnabled() && this.getBoolean(Option.PERM_KEEPINVENTORY);
     }
     public boolean getRegionOptional() {
-        return c.getBoolean("region.optional", true);
+        return this.getBoolean(Option.REGION_OPTIONAL);
     }
     
 
-    public void setDebug(boolean value) {
-        this.reload();
-        c.set("debug", value);
-        this.save();
-    }
-    public void setStoreCreative(boolean value) {
-        this.reload();
-        c.set("store.creative", value);
-        this.save();
-    }
-    public void setBlockPickupInCreative(boolean value) {
-        this.reload();
-        c.set("limit.pickup", value);
-        this.save();
-    }
-    public void setSignBlock(boolean value) {
-        this.reload();
-        c.set("limit.sign", value);
-        this.save();
-    }
-    public void setPermissionsEnabled(boolean value) {
-        this.reload();
-        c.set("permissions.enabled", value);
-        this.save();
-    }
-    public void setPermissionToKeepInventory(boolean value) {
-        this.reload();
-        if (value == true)
-            this.setPermissionsEnabled(true);
-        c.set("permissions.keepinventory", value);
-        this.save();
-    }
-    public void setRemoveDrop(boolean value) {
-        this.reload();
-        c.set("limit.remove_drops", value);
-        this.save();
-    }
-    public void setRemovePickup(boolean value) {
-        this.reload();
-        c.set("limit.remove_pickup", value);
-        this.save();
-    }
-    
     protected void reload() {
         _block_break = null;
         _block_use = null;
@@ -146,24 +156,37 @@ public class Configuration {
         plugin.saveConfig();
     }
     
-    private List<Material> _block_break = null;
-    private List<Material> _block_use = null;
+    private List<BlackList> _block_break = null;
+    private List<BlackList> _block_use = null;
     
-    public List<Material> getBlockedBreaks() {
+    public List<BlackList> getBlockedBreaks() {
         if (_block_break == null)
             _block_break = parseMaterialList(c.getStringList("limit.break"));
         return _block_break;
     }
-    public List<Material> getBlockedUse() {
+    
+    public List<BlackList> getBlockedUse() {
         if (_block_use == null)
             _block_use = parseMaterialList(c.getStringList("limit.use"));
         return _block_use;
     }
     
-    private List<Material> parseMaterialList(List<String> s) {
-        List<Material> list = new ArrayList<Material>();
+    private List<BlackList> parseMaterialList(List<String> s) {
+        List<BlackList> list = new ArrayList<BlackList>();
         if (s != null) {
             for (String m : s) {
+                int d = -1;
+                if (m.contains(":")) {
+                    String[] t = m.split(":");
+                    m = t[0];
+                    try {
+                        d = Integer.parseInt(t[1]);
+                    } catch (NumberFormatException ex) {
+                        // TODO: try to find the data value by 
+                        if (d == -1)
+                            plugin.warn(L("exception.config.materiak_data_not_found", t[1]));
+                    }
+                }
                 Material e = null;
                 try {
                     e = Material.getMaterial(Integer.parseInt(m));
@@ -171,9 +194,9 @@ public class Configuration {
                     e = Material.matchMaterial(m);
                 }
                 if (e == null) {
-                    plugin.logger.warning("["+plugin.getDescription().getName()+"] "+L("exception.config.material_not_found", m));
+                    plugin.warn(L("exception.config.material_not_found", m));
                 } else {
-                    list.add(e);
+                    list.add(new BlackList(e, d));
                 }
             }
         }

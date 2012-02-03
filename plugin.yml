@@ -1,6 +1,6 @@
 name: LimitedCreative
 main: de.jaschastarke.minecraft.limitedcreative.LimitedCreativeCore
-version: 0.8.2-beta
+version: 0.9-beta
 softdepend: [WorldGuard, WorldEdit, MultiInv]
 dev-url: http://dev.bukkit.org/server-mods/limited-creative/
 commands:
@@ -43,8 +43,17 @@ permissions:
     limitedcreative.nolimit.sign:
         description: Allows bypassing the "do not interact with signs"-limitation
         default: false
+    limitedcreative.nolimit.button:
+        description: Allows bypassing the "do not interact with buttons"-limitation
+        default: false
+    limitedcreative.nolimit.lever:
+        description: Allows bypassing the "do not interact with levers"-limitation
+        default: false
     limitedcreative.nolimit.pvp:
         description: Allows bypassing the "no pvp"-limitation
+        default: false
+    limitedcreative.nolimit.mob_damage:
+        description: Allows bypassing the "no dealing damage to creatures"-limitation
         default: false
     limitedcreative.nolimit.use:
         description: Allows bypassing the "block place/item use"-limitation

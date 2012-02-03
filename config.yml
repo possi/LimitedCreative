@@ -62,12 +62,25 @@ limit:
     # default: true
     sign: true
     
+    # BlockButtons
+    # When enabled also blocks usage of Buttons & Levers while in creative mode.
+    # default: false
+    button: false
+    
+    # BlockDamageToMobs
+    # Prevents dealing damage to all creatures in creative (friendly sheeps as well as hostile creepers).
+    # default: false
+    damagemob: false
+    
     # UseBlackList
     # Prevents using or placing of the given blocks in creative mode (and only in creative).
     # You can use the technical name (see http://jd.bukkit.org/doxygen/d7/dd9/namespaceorg_1_1bukkit.html#ab7fa290bb19b9a830362aa88028ec80a)
     # or the id of the block/item (better use the id, if you're not sure).
     # To prevent Lava you need to add "LAVA_BUCKET", because lava-blocks aren't "placed", therefore Lava-Buckets are
     # "used".
+    # You may add the data separated with a colon e.g.: "35:11" blocks blue wool. But be sure to put it in quotes, to
+    # not break yml-configuration! Also supporting Eggs (e.g: "MONSTER_EGG:56" blocks Ghasts-Eggs). Named data values aren't
+    # supported yet.
     # This option can only changed by reloading the plugin (not via ingame commands).
     # default: []
     use: []
@@ -77,6 +90,9 @@ limit:
     # You can use the technical name (see http://jd.bukkit.org/doxygen/d7/dd9/namespaceorg_1_1bukkit.html#ab7fa290bb19b9a830362aa88028ec80a)
     # or the id of the block/item (better use the id, if you're not sure).
     # This option can only changed by reloading the plugin (not via ingame commands).
+    # You may add the data separated with a colon e.g.: "WOOL:11" blocks blue wool. But be sure to put it in quotes, to
+    # not break yml-configuration!
+    # supported yet.
     # default: [bedrock]
     break:
      - bedrock

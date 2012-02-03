@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.bukkit.Location;
+
 final public class Util {
     public static int versionCompare(String vers1, String vers2) {
         String[] v1 = vers1.split("\\.");
@@ -85,5 +87,8 @@ final public class Util {
     }
     public static String join(String[] list, String sep) {
         return join(list, sep, 0, list.length);
+    }
+    public static String toString(Location loc) {
+        return "{X: "+loc.getBlockX()+", Y: "+loc.getBlockY()+", Z: "+loc.getBlockZ()+"}";
     }
 }
