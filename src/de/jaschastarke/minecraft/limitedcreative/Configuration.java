@@ -176,27 +176,33 @@ public class Configuration {
         if (s != null) {
             for (String m : s) {
                 int d = -1;
-                if (m.contains(":")) {
-                    String[] t = m.split(":");
-                    m = t[0];
-                    try {
-                        d = Integer.parseInt(t[1]);
-                    } catch (NumberFormatException ex) {
-                        // TODO: try to find the data value by 
-                        if (d == -1)
-                            plugin.warn(L("exception.config.materiak_data_not_found", t[1]));
-                    }
-                }
-                Material e = null;
-                try {
-                    e = Material.getMaterial(Integer.parseInt(m));
-                } catch (NumberFormatException ex) {
-                    e = Material.matchMaterial(m);
-                }
-                if (e == null) {
-                    plugin.warn(L("exception.config.material_not_found", m));
+                if (m.equals("*")) {
+                    list.clear();
+                    list.add(new BlackList.All());
+                    break;
                 } else {
-                    list.add(new BlackList(e, d));
+                    if (m.contains(":")) {
+                        String[] t = m.split(":");
+                        m = t[0];
+                        try {
+                            d = Integer.parseInt(t[1]);
+                        } catch (NumberFormatException ex) {
+                            // TODO: try to find the data value by 
+                            if (d == -1)
+                                plugin.warn(L("exception.config.materiak_data_not_found", t[1]));
+                        }
+                    }
+                    Material e = null;
+                    try {
+                        e = Material.getMaterial(Integer.parseInt(m));
+                    } catch (NumberFormatException ex) {
+                        e = Material.matchMaterial(m);
+                    }
+                    if (e == null) {
+                        plugin.warn(L("exception.config.material_not_found", m));
+                    } else {
+                        list.add(new BlackList.Some(e, d));
+                    }
                 }
             }
         }

@@ -38,6 +38,7 @@ public class WorldGuardIntegration {
         
         FlagList.addFlag(Flags.CREATIVE);
         FlagList.addFlag(Flags.CREATIVE_GROUP);
+        FlagList.addFlag(Flags.SPAWNDROPS);
         
         plugin.getServer().getPluginManager().registerEvents(new RegionListener(this), plugin);
     }

@@ -22,6 +22,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import static de.jaschastarke.minecraft.utils.Locale.L;
+import de.jaschastarke.minecraft.integration.Communicator;
 import de.jaschastarke.minecraft.limitedcreative.listeners.LimitListener;
 import de.jaschastarke.minecraft.limitedcreative.listeners.MainListener;
 import de.jaschastarke.minecraft.limitedcreative.regions.WorldGuardIntegration;
@@ -34,6 +35,7 @@ public class LimitedCreativeCore extends JavaPlugin {
     public Configuration config;
     public Permissions perm;
     public WorldGuardIntegration worldguard;
+    public Communicator com;
     public static LimitedCreativeCore plugin;
     public NoBlockItemSpawn spawnblock;
 
@@ -44,6 +46,7 @@ public class LimitedCreativeCore extends JavaPlugin {
         worldguard = null;
         config = null;
         spawnblock = null;
+        com = null;
         try {
             Locale.unload();
         } catch (NoClassDefFoundError e) {} // prevent unload issue
@@ -54,6 +57,7 @@ public class LimitedCreativeCore extends JavaPlugin {
         plugin = this;
         config = new Configuration(this);
         perm = new Permissions(this);
+        com = new Communicator(this);
         
         new Locale(this);
 

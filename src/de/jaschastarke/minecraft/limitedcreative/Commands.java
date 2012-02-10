@@ -123,7 +123,7 @@ public class Commands {
                     str.append(options.get(i).name().toLowerCase());
                     if (i < options.size() - 1)
                         str.append(", ");
-                    if ((i - 1) % 5 == 0) {
+                    if ((i - 1) % 4 == 0) {
                         sender.sendMessage(str.toString());
                         str = new StringBuilder();
                     }

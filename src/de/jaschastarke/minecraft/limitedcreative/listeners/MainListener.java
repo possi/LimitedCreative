@@ -50,7 +50,10 @@ public class MainListener implements Listener {
         LimitedCreativeCore.debug("onPlayerGameModeChange: "+event.getPlayer().getName());
         LimitedCreativeCore.debug("Current GameMode: "+event.getPlayer().getGameMode());
         LimitedCreativeCore.debug("New GameMode: "+event.getNewGameMode());
+        LimitedCreativeCore.debug("isLoggedin: "+plugin.com.isLoggedIn(event.getPlayer()));
         LimitedCreativeCore.debug("isCancelled: "+event.isCancelled());
+        if (!plugin.com.isLoggedIn(event.getPlayer()))
+            return;
         if (event.getNewGameMode() == GameMode.CREATIVE) {
             if (!LCPlayer.get(event.getPlayer()).onSetCreative())
                 event.setCancelled(true);
@@ -65,6 +68,8 @@ public class MainListener implements Listener {
      */
     @EventHandler
     public void onItemSpawn(ItemSpawnEvent event) {
+        if (event.isCancelled())
+            return;
         if (event.getEntity() instanceof Item) {
             if (plugin.spawnblock.isBlocked(event.getLocation().getBlock().getLocation(), ((Item) event.getEntity()).getItemStack().getType())) {
                 event.setCancelled(true);
