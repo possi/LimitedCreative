@@ -28,7 +28,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import de.jaschastarke.minecraft.utils.Util;
-import de.jaschastarke.minecraft.worldguard.CCommand;
 import static de.jaschastarke.minecraft.utils.Locale.L;
 
 public class Commands {
@@ -185,9 +184,7 @@ public class Commands {
     public static void register(LimitedCreativeCore pplugin) {
         plugin = pplugin;
         plugin.getCommand("limitedcreative").setExecutor(new MainCommandExecutor());
-        if (plugin.worldguard != null) {
-            plugin.getCommand("/region").setExecutor(new CCommand(plugin, plugin.worldguard.getRegionManager()));
-        } else {
+        if (plugin.worldguard == null) {
             plugin.getCommand("/region").setExecutor(new NotAvailableCommandExecutor());
         }
     }

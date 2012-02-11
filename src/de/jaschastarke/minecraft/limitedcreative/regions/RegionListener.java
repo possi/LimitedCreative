@@ -5,7 +5,6 @@ import static de.jaschastarke.minecraft.utils.Locale.L;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
@@ -15,51 +14,38 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.managers.RegionManager;
 
 import de.jaschastarke.minecraft.limitedcreative.LCPlayer;
 import de.jaschastarke.minecraft.limitedcreative.LimitedCreativeCore;
 import de.jaschastarke.minecraft.utils.Util;
 import de.jaschastarke.minecraft.worldguard.ApplicableRegions;
 import de.jaschastarke.minecraft.worldguard.CRegionManager;
+import de.jaschastarke.minecraft.worldguard.events.PlayerChangedAreaEvent;
 
 public class RegionListener implements Listener {
     private static LimitedCreativeCore plugin = WorldGuardIntegration.plugin;
-    private static WorldGuardPlugin wg = WorldGuardIntegration.wg;
     private CRegionManager rm;
     public RegionListener(WorldGuardIntegration wgi) {
         rm = wgi.getRegionManager();
     }
 
-    private ApplicableRegions regionSet(World world, Location loc) {
-        RegionManager mgr = wg.getGlobalRegionManager().get(world);
-        return new ApplicableRegions(mgr.getApplicableRegions(loc), rm.world(world));
-    }
     private ApplicableRegions regionSet(Location loc) {
-        return regionSet(loc.getWorld(), loc);
+        return rm.getRegionSet(loc);
     }
     private ApplicableRegions regionSet(Block block) {
-        return regionSet(block.getWorld(), block.getLocation());
+        return rm.getRegionSet(block);
     }
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.isCancelled())
             return;
         LCPlayer player = LCPlayer.get(event.getPlayer());
-        RegionManager mgr = wg.getGlobalRegionManager().get(event.getPlayer().getWorld());
-        Vector pt = new Vector(event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ());
-        ApplicableRegions set = new ApplicableRegions(mgr.getApplicableRegions(pt), rm.world(event.getPlayer().getWorld()));
+        ApplicableRegions set =  rm.getRegionSet(event.getBlock());
 
         if (player.isRegionCreative() && !set.allows(Flags.CREATIVE, player)) { 
             event.getPlayer().sendMessage(L("blocked.outside_creative_break"));
             event.setCancelled(true);
-        } else if (set.allows(Flags.CREATIVE) && player.getRaw().getGameMode() != GameMode.CREATIVE) {
+        } else if (player.getRaw().getGameMode() != GameMode.CREATIVE && set.allows(Flags.CREATIVE)) {
             plugin.spawnblock.block(event.getBlock(), player);
         }
     }
@@ -69,11 +55,9 @@ public class RegionListener implements Listener {
         if (event.isCancelled())
             return;
         LCPlayer player = LCPlayer.get(event.getPlayer());
-        if (player.isRegionCreative()) {
+        if (player.isRegionCreative() && rm.isDiffrentRegion(event.getPlayer(), event.getBlock().getLocation())) {
             // do not build outside of creative regions, when in the region
-            RegionManager mgr = wg.getGlobalRegionManager().get(event.getPlayer().getWorld());
-            Vector pt = new Vector(event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ());
-            ApplicableRegions set = new ApplicableRegions(mgr.getApplicableRegions(pt), rm.world(event.getPlayer().getWorld()));
+            ApplicableRegions set =  rm.getRegionSet(event.getBlock());
             if (!set.allows(Flags.CREATIVE, player)) { 
                 event.getPlayer().sendMessage(L("blocked.outside_creative"));
                 event.setCancelled(true);
@@ -82,38 +66,8 @@ public class RegionListener implements Listener {
     }
     
     @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event) {
-        if (event.isCancelled())
-            return;
-        if (event.getFrom().getBlockX() != event.getTo().getBlockX()
-                || event.getFrom().getBlockY() != event.getTo().getBlockY()
-                || event.getFrom().getBlockZ() != event.getTo().getBlockZ()) {
-
-            LCPlayer player = LCPlayer.get(event.getPlayer());
-            RegionManager mgr = wg.getGlobalRegionManager().get(event.getPlayer().getWorld());
-            ApplicableRegionSet applicableRegions = mgr.getApplicableRegions(event.getTo());
-            LimitedCreativeCore.debug(applicableRegions.toString());
-            ApplicableRegions set = new ApplicableRegions(applicableRegions, rm.world(event.getPlayer().getWorld()));
-            
-            player.setRegionCreativeAllowed(set.allows(Flags.CREATIVE, player), event);
-        }
-    }
-    
-    @EventHandler
-    public void onPlayerTeleport(PlayerTeleportEvent event) {
-        if (event.isCancelled())
-            return;
-        if (event.getFrom().getBlockX() != event.getTo().getBlockX()
-                || event.getFrom().getBlockY() != event.getTo().getBlockY()
-                || event.getFrom().getBlockZ() != event.getTo().getBlockZ()) {
-
-            LCPlayer player = LCPlayer.get(event.getPlayer());
-            RegionManager mgr = wg.getGlobalRegionManager().get(event.getPlayer().getWorld());
-            Vector pt = new Vector(event.getTo().getBlockX(), event.getTo().getBlockY(), event.getTo().getBlockZ());
-            ApplicableRegions set = new ApplicableRegions(mgr.getApplicableRegions(pt), rm.world(event.getPlayer().getWorld()));
-            
-            player.setRegionCreativeAllowed(set.allows(Flags.CREATIVE, player), event);
-        }
+    public void onPlayerChangedArea(PlayerChangedAreaEvent event) {
+        LCPlayer.get(event.getPlayer()).setRegionCreativeAllowed(event.getNewRegionSet().allows(Flags.CREATIVE), event.getMoveEvent());
     }
     
     @EventHandler

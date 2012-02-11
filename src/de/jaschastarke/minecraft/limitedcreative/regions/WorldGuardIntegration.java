@@ -17,33 +17,44 @@
  */
 package de.jaschastarke.minecraft.limitedcreative.regions;
 
-import java.io.File;
+import java.util.List;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.flags.Flag;
 
 import de.jaschastarke.minecraft.limitedcreative.LimitedCreativeCore;
 import de.jaschastarke.minecraft.worldguard.CRegionManager;
-import de.jaschastarke.minecraft.worldguard.FlagList;
+import de.jaschastarke.minecraft.worldguard.Integration;
+import de.jaschastarke.minecraft.worldguard.Interface;
 
-public class WorldGuardIntegration {
+public class WorldGuardIntegration implements Integration {
     public static LimitedCreativeCore plugin;
     public static WorldGuardPlugin wg;
-    private CRegionManager rm;
 
     public WorldGuardIntegration(LimitedCreativeCore plugin) {
         WorldGuardIntegration.plugin = plugin;
         wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
         
-        rm = new CRegionManager(new File(plugin.getDataFolder(), "regions.yml"));
+        /*
+         * This should be only done by the "API"-Plugin itself (when its done). You don't need to that again if you
+         * like to interact with LimitedCreative's WorldGuard-Integration
+         */
+        new Interface(plugin);
         
-        FlagList.addFlag(Flags.CREATIVE);
-        FlagList.addFlag(Flags.CREATIVE_GROUP);
-        FlagList.addFlag(Flags.SPAWNDROPS);
+        /*
+         * You only need to do this one, to make your Flags available.
+         */
+        Interface.getInstance().register(this);
         
         plugin.getServer().getPluginManager().registerEvents(new RegionListener(this), plugin);
     }
     
     public CRegionManager getRegionManager() {
-        return rm;
+        return Interface.getInstance().getRegionManager();
+    }
+
+    @Override
+    public List<Flag<?>> getFlags() {
+        return Flags.getList();
     }
 }

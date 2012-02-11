@@ -20,16 +20,25 @@ package de.jaschastarke.minecraft.worldguard;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
+import com.sk89q.worldguard.bukkit.BukkitUtil;
+import com.sk89q.worldguard.protection.GlobalRegionManager;
 import com.sk89q.worldguard.protection.flags.Flag;
+import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+
+import de.jaschastarke.minecraft.utils.Util;
 
 public class CRegionManager {
     protected YamlConfiguration c;
@@ -117,5 +126,31 @@ public class CRegionManager {
             }
             return list;
         }
+    }
+    
+    public GlobalRegionManager getWGGlobalManager() {
+        return Interface.getInstance().getWorldGuard().getGlobalRegionManager();
+    }
+    public RegionManager getWGManager(World world) {
+        return Interface.getInstance().getWorldGuard().getRegionManager(world);
+    }
+    
+    public String getRegionsHash(Location loc) {
+        List<String> idlist = getWGGlobalManager().get(loc.getWorld()).getApplicableRegionsIDs(BukkitUtil.toVector(loc));
+        String[] ids = idlist.toArray(new String[idlist.size()]);
+        Arrays.sort(ids);
+        return Util.join(ids, "|");
+    }
+    
+    public ApplicableRegions getRegionSet(Location loc) {
+        return new ApplicableRegions(getWGManager(loc.getWorld()).getApplicableRegions(loc), this.world(loc.getWorld()));
+    }
+
+    public ApplicableRegions getRegionSet(Block block) {
+        return getRegionSet(block.getLocation());
+    }
+    
+    public boolean isDiffrentRegion(Player player, Location loc) {
+        return !getRegionsHash(loc).equals(CPlayer.get(player).getHash());
     }
 }

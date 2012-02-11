@@ -18,6 +18,7 @@
 package de.jaschastarke.minecraft.worldguard;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.bukkit.command.CommandSender;
@@ -32,6 +33,9 @@ public class FlagList {
     }
     public static void addFlag(Flag<?> flag) {
         list.add(flag);
+    }
+    public static void addFlags(Collection<Flag<?>> flags) {
+        list.addAll(flags);
     }
     public static Flag<?> getFlag(String flag) {
         for (Flag <?> f : list) {
