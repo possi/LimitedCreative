@@ -57,4 +57,8 @@ public class WorldGuardIntegration implements Integration {
     public List<Flag<?>> getFlags() {
         return Flags.getList();
     }
+
+    public void unload() {
+        Interface.unload();
+    }
 }

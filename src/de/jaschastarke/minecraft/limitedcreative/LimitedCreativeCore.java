@@ -42,14 +42,16 @@ public class LimitedCreativeCore extends JavaPlugin {
     @Override
     public void onDisable() {
         plugin.getServer().getScheduler().cancelTasks(this);
+        try {
+            worldguard.unload();
+            Locale.unload();
+        } catch (NoClassDefFoundError e) {} // prevent unload issue
+        
         plugin = null;
         worldguard = null;
         config = null;
         spawnblock = null;
         com = null;
-        try {
-            Locale.unload();
-        } catch (NoClassDefFoundError e) {} // prevent unload issue
     }
 
     @Override
@@ -59,7 +61,7 @@ public class LimitedCreativeCore extends JavaPlugin {
         perm = new Permissions(this);
         com = new Communicator(this);
         
-        new Locale(this);
+        new Locale(this, config.getLocale());
 
         spawnblock = new NoBlockItemSpawn();
         

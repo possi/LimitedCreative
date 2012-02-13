@@ -24,43 +24,70 @@ import java.util.List;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import de.jaschastarke.minecraft.limitedcreative.LimitedCreativeCore;
+
 public class Locale {
     protected YamlConfiguration lang;
+    private YamlConfiguration fallback_lang;
     private static Locale inst = null;
+    private JavaPlugin plugin;
+    private final static String DEFAULT_LANG = "en_US";
     
     public Locale(JavaPlugin plugin) {
-        String fn = getFilename("default");
+        this(plugin, null);
+    }
+    
+    public Locale(JavaPlugin plugin, String lang) {
+        if (inst == null)
+            inst = this;
+        this.plugin = plugin;
+        if (lang == null)
+            lang = java.util.Locale.getDefault().toString();
+        
+        String fn = getFilename(lang);
+        
+        LimitedCreativeCore.debug("Using Locale: " + lang);
         File localefile = new File(plugin.getDataFolder(), fn);
         if (localefile.exists())
-            lang = YamlConfiguration.loadConfiguration(localefile);
-        else
-            lang = YamlConfiguration.loadConfiguration(plugin.getResource(fn));
-        inst = this;
+            this.lang = YamlConfiguration.loadConfiguration(localefile);
+        else if (plugin.getResource(fn) != null)
+            this.lang = YamlConfiguration.loadConfiguration(plugin.getResource(fn));
     }
     private String getFilename(String locale) {
         return "lang/"+locale+".yml";
     }
-    public String get(String msg) {
+    private YamlConfiguration getLang(String msg) {
+        if (lang != null && lang.contains(msg)) {
+            return lang;
+        } else {
+            if (fallback_lang == null)
+                fallback_lang = YamlConfiguration.loadConfiguration(plugin.getResource(getFilename(DEFAULT_LANG)));
+            return fallback_lang;
+        }
+    }
+    public String get(String msg, Object... objects) {
+        YamlConfiguration lang = getLang(msg);
         if (lang.contains(msg)) {
             if (lang.isList(msg)) {
                 List<String> list = lang.getStringList(msg);
                 String[] lines = new String[list.size()];
                 list.toArray(lines);
-                return Util.join(lines, "\n");
+                msg = Util.join(lines, "\n");
             } else {
-                return lang.getString(msg);
+                msg = lang.getString(msg);
             }
         }
-        return msg;
+        if (objects.length > 0)
+            msg = MessageFormat.format(msg, objects);
+        return msg.replaceAll("&([0-9a-f])", "\u00A7$1");
     }
 
+    /**
+     * Static localization-access only works for first locale instance. if used by another plugin, you need to
+     * access the Locale-Instance get-Method
+     */
     public static String L(String msg, Object... objects) {
-        if (inst != null)
-            msg = inst.get(msg);
-        if (objects.length > 0)
-            return MessageFormat.format(msg, objects);
-        else
-            return msg;
+        return (inst != null) ? inst.get(msg, objects) : msg;
     }
     public static void unload() {
         inst = null;

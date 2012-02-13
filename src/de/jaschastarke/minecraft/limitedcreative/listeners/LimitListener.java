@@ -25,6 +25,7 @@ import org.bukkit.block.ContainerBlock;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.entity.StorageMinecart;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -98,6 +99,8 @@ public class LimitListener implements Listener {
             player.onSignAccess(event);
         } else if (block.getState() instanceof Lever || block.getState() instanceof Button) {
             player.onButtonAccess(event);
+        } else if (block.getType() == Material.WORKBENCH) {
+            player.onBenchAccess(event);
         }
     }
 
@@ -128,11 +131,16 @@ public class LimitListener implements Listener {
             return;
         if (meta_event instanceof EntityDamageByEntityEvent) {
             EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) meta_event;
+            
+            Entity source = event.getDamager();
+            if (source instanceof Projectile)
+                source = ((Projectile) source).getShooter();
+            
             if (event.getEntity() instanceof Player) {
-                LCPlayer.get((Player) event.getEntity()).onDamage(event);
+                LCPlayer.get((Player) event.getEntity()).onDamage(source, event);
             }
-            if (!event.isCancelled() && event.getDamager() instanceof Player){
-                LCPlayer.get((Player) event.getDamager()).onDealDamage(event);
+            if (!event.isCancelled() && source instanceof Player) {
+                LCPlayer.get((Player) source).onDealDamage(event);
             }
         }
     }

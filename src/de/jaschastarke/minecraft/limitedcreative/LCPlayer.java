@@ -31,6 +31,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -240,8 +241,8 @@ public class LCPlayer {
         tempinv = null;
     }
     
-    public void onDamage(EntityDamageByEntityEvent event) { // receives damage
-        if (event.getDamager() instanceof Player) {
+    public void onDamage(Entity from, EntityDamageByEntityEvent event) { // receives damage
+        if (from instanceof Player) {
             // its PVP
             Player attacker = (Player) event.getDamager();
             if (attacker.getGameMode() == GameMode.CREATIVE) {
@@ -296,6 +297,14 @@ public class LCPlayer {
         event.getPlayer().sendMessage(L("blocked.chest"));
         event.setCancelled(true);
     }
+    public void onBenchAccess(PlayerInteractEvent event) {
+        if (!plugin.config.getBenchBlock() || player.getGameMode() != GameMode.CREATIVE)
+            return;
+        if (plugin.config.getPermissionsEnabled() && hasPermission("limitedcreative.nolimit.chest"))
+            return;
+        event.getPlayer().sendMessage(L("blocked.chest"));
+        event.setCancelled(true);
+    }
     public void onSignAccess(PlayerInteractEvent event) {
         if (!plugin.config.getSignBlock() || player.getGameMode() != GameMode.CREATIVE)
             return;
@@ -323,10 +332,13 @@ public class LCPlayer {
     private long lastFloatingTimeWarning = 0;
 
     public void setRegionCreativeAllowed(boolean rcreative, PlayerMoveEvent event) {
-        if (rcreative && player.getGameMode() == GameMode.SURVIVAL && !isRegionCreative()) {
+        GameMode DEFAULT_GAMEMODE = plugin.com.isCreative(event.getTo().getWorld()) ? GameMode.CREATIVE : GameMode.SURVIVAL;
+        GameMode TEMPORARY_GAMEMODE = DEFAULT_GAMEMODE == GameMode.SURVIVAL ? GameMode.CREATIVE : GameMode.SURVIVAL;
+        
+        if (rcreative && player.getGameMode() == DEFAULT_GAMEMODE && !isRegionCreative()) {
             setRegionCreative(true); // have to be set, before setGameMode
-            player.setGameMode(GameMode.CREATIVE);
-        } else if (!rcreative && player.getGameMode() == GameMode.CREATIVE && !isPermanentCreative()) {
+            player.setGameMode(TEMPORARY_GAMEMODE);
+        } else if (!rcreative && player.getGameMode() == TEMPORARY_GAMEMODE && !isPermanentCreative()) {
             if (getFloatingHeight() > 3) {
                 if (System.currentTimeMillis() - lastFloatingTimeWarning > 10000) {// 10 sec. limit
                     player.sendMessage(L("blocked.survival_flying"));
@@ -375,4 +387,5 @@ public class LCPlayer {
     public boolean hasPermission(String permission) {
         return plugin.perm.hasPermission(this.getRaw(), permission);
     }
+    
 }

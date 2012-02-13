@@ -67,6 +67,11 @@ limit:
     # default: false
     button: false
     
+    # BlockWorkbenches
+    # When enabled also blocks usage of workbenches like chests (so the creative player never can see his inventar).
+    # default: false
+    workbench: false
+    
     # BlockDamageToMobs
     # Prevents dealing damage to all creatures in creative (friendly sheeps as well as hostile creepers).
     # default: false
@@ -132,3 +137,10 @@ permissions:
     # When "PermissionsEnabled" is false, the KeepInventory-Option will act like disabled, even if you set it to true.
     # default: false
     keepinventory: false
+
+
+# Locale (Language)
+# Uncomment the "locale: en_US"-Line, to override the locale which be used for localized messages. By default the
+# System-Locale is used (selected by Java depending on LC_LANG-Environment-Variable
+# default: none (Use System-Default Locale)
+#locale: en_US

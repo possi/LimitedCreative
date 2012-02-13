@@ -20,26 +20,16 @@ package de.jaschastarke.minecraft.integration;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class Communicator extends AbstractCommunicator {
-    public Communicator(JavaPlugin plugin) {
-        super(plugin);
+import com.onarandombox.MultiverseCore.MultiverseCore;
+
+public class MultiVerse implements CommunicationBridge {
+
+    public static boolean isCreative(World world) {
+        return getMV().getMVWorldManager().getMVWorld(world).getGameMode() == GameMode.CREATIVE;
     }
 
-    public boolean isLoggedIn(Player player) {
-        if (isPluginEnabled("AuthMe") && !AuthMe.isLoggedInComplete(player))
-            return false;
-        if (isPluginEnabled("xAuth") && !xAuth.isLoggedInNotGuest(player))
-            return false;
-        return true;
-    }
-    
-    public boolean isCreative(World world) {
-        boolean creative = Bukkit.getServer().getDefaultGameMode() == GameMode.CREATIVE;
-        if (isPluginEnabled("Multiverse-Core"))
-            creative = MultiVerse.isCreative(world);
-        return creative;
+    private static MultiverseCore getMV() {
+        return (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
     }
 }

@@ -18,28 +18,21 @@
 package de.jaschastarke.minecraft.integration;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class Communicator extends AbstractCommunicator {
-    public Communicator(JavaPlugin plugin) {
-        super(plugin);
-    }
+import com.cypherx.xauth.xAuthPlayer;
 
-    public boolean isLoggedIn(Player player) {
-        if (isPluginEnabled("AuthMe") && !AuthMe.isLoggedInComplete(player))
+public class xAuth implements CommunicationBridge {
+    public static boolean isLoggedInNotGuest(Player player) {
+        xAuthPlayer xpl = getAuth().getPlayer(player.getName());
+        if (!xpl.isAuthenticated())
             return false;
-        if (isPluginEnabled("xAuth") && !xAuth.isLoggedInNotGuest(player))
+        if (xpl.isGuest())
             return false;
         return true;
     }
     
-    public boolean isCreative(World world) {
-        boolean creative = Bukkit.getServer().getDefaultGameMode() == GameMode.CREATIVE;
-        if (isPluginEnabled("Multiverse-Core"))
-            creative = MultiVerse.isCreative(world);
-        return creative;
+    private static com.cypherx.xauth.xAuth getAuth() {
+        return (com.cypherx.xauth.xAuth) Bukkit.getServer().getPluginManager().getPlugin("xAuth");
     }
 }

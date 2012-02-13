@@ -55,4 +55,7 @@ public class Interface {
     public CRegionManager getRegionManager() {
         return mgr;
     }
+    public static void unload() {
+        _instance = null;
+    }
 }

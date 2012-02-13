@@ -40,6 +40,7 @@ public class Configuration {
         BLOCKSIGN("limit.sign", true),
         BLOCKBUTTON("limit.button", false),
         BLOCKDAMAGEMOB("limit.damagemob", false),
+        BLOCKBENCHES("limit.workbench", false),
         REMOVEDROP("limit.remove_drops", true),
         REMOVEPICKUP("limit.remove_pickup", false),
         PERMISSIONS("permissions.enabled", false),
@@ -122,6 +123,9 @@ public class Configuration {
     public boolean getSignBlock() {
         return this.getBoolean(Option.BLOCKSIGN);
     }
+    public boolean getBenchBlock() {
+        return this.getBoolean(Option.BLOCKBENCHES);
+    }
     public boolean getButtonBlock() {
         return this.getBoolean(Option.BLOCKBUTTON);
     }
@@ -145,6 +149,11 @@ public class Configuration {
         return this.getBoolean(Option.REGION_OPTIONAL);
     }
     
+    public String getLocale() {
+        if (c.contains("locale") && c.getString("locale") != "none")
+            return c.getString("locale");
+        return null;
+    }
 
     protected void reload() {
         _block_break = null;
