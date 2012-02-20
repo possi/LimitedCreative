@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 import de.jaschastarke.minecraft.limitedcreative.LCPlayer;
 import de.jaschastarke.minecraft.limitedcreative.Core;
@@ -92,6 +93,11 @@ public class RegionListener implements Listener {
     @EventHandler
     public void onPlayerChangedArea(PlayerChangedAreaEvent event) {
         Players.get(event.getPlayer()).setRegionCreativeAllowed(event.getNewRegionSet().allows(Flags.CREATIVE, event.getPlayer()), event);
+    }
+    
+    @EventHandler
+    public void onPlayerLogin(PlayerJoinEvent event) {
+        Players.get(event.getPlayer()).setRegionCreativeAllowed(rm.getRegionSet(event.getPlayer().getLocation()).allows(Flags.CREATIVE, event.getPlayer()), null);
     }
     
     @EventHandler

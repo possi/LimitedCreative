@@ -113,9 +113,9 @@ public class LCPlayer {
     public boolean isOptionalRegionGameMode() {
         return getOptionalRegionGameMode() != null;
     }
-    /*private boolean isOptionalRegionGameMode(final GameMode gm) {
+    public boolean isOptionalRegionGameMode(final GameMode gm) {
         return gm.equals(getOptionalRegionGameMode());
-    }*/
+    }
     public boolean isOptionalRegionGameMode(final String region, final GameMode gm) {
         return gm.equals(getOptionalRegionGameMode(region));
     }
@@ -337,9 +337,11 @@ public class LCPlayer {
     public void setRegionCreativeAllowed(boolean rcreative, PlayerChangedAreaEvent changearea_event) {
         Core.debug(getName()+": changed region: "+rcreative+": "+changearea_event.toString());
         
-        PlayerMoveEvent event = changearea_event.getMoveEvent();
-        GameMode CURRENT_GAMEMODE = event.getPlayer().getGameMode();
-        GameMode DEFAULT_GAMEMODE = plugin.com.getDefaultGameMode(event.getTo().getWorld());
+        PlayerMoveEvent event = null;
+        if (changearea_event != null)
+            event = changearea_event.getMoveEvent();
+        GameMode CURRENT_GAMEMODE = getPlayer().getGameMode();
+        GameMode DEFAULT_GAMEMODE = plugin.com.getDefaultGameMode(event != null ? event.getTo().getWorld() : getPlayer().getWorld());
         GameMode TEMPORARY_GAMEMODE = DEFAULT_GAMEMODE == GameMode.SURVIVAL ? GameMode.CREATIVE : GameMode.SURVIVAL; // the opposite
         
         if (rcreative && CURRENT_GAMEMODE != TEMPORARY_GAMEMODE && !this.isRegionGameMode(TEMPORARY_GAMEMODE)) {
@@ -349,16 +351,20 @@ public class LCPlayer {
             // 3. and the player is not aware of that
             // result: change him to that mode
             setRegionGameMode(TEMPORARY_GAMEMODE); // have to be set, before setGameMode
-            if (!isOptionalRegionGameMode(changearea_event.getNewRegionHash(), CURRENT_GAMEMODE)) {
-                event.getPlayer().setGameMode(TEMPORARY_GAMEMODE);
+            
+            boolean isOptional = changearea_event != null ?
+                        isOptionalRegionGameMode(changearea_event.getNewRegionHash(), CURRENT_GAMEMODE) :
+                        isOptionalRegionGameMode(CURRENT_GAMEMODE);
+            if (!isOptional) {
+                getPlayer().setGameMode(TEMPORARY_GAMEMODE);
             }
-        } else if (!rcreative && event.getPlayer().getGameMode() == TEMPORARY_GAMEMODE && !isPermanentGameMode(TEMPORARY_GAMEMODE)) {
+        } else if (!rcreative && getPlayer().getGameMode() == TEMPORARY_GAMEMODE && !isPermanentGameMode(TEMPORARY_GAMEMODE)) {
             Core.debug(getName()+": leaving creative area");
             // 1. the region doesn't allow "the other gamemode"
             // 2. but the player is in that mode
             // 3. and the player isn't global (permanent) in that mode
             // result: change him back to default mode
-            if (CURRENT_GAMEMODE == GameMode.CREATIVE && getFloatingHeight() > plugin.config.getMaximumFloatingHeight()) {
+            if (event != null && CURRENT_GAMEMODE == GameMode.CREATIVE && getFloatingHeight() > plugin.config.getMaximumFloatingHeight()) {
                 // but not if he is too high
                 this.sendTimeoutMessage(L("blocked.survival_flying"));
                 
@@ -369,7 +375,7 @@ public class LCPlayer {
                 event.setTo(newloc);
             } else {
                 setRegionGameMode(null);
-                if (event.getTo().getWorld() == event.getFrom().getWorld()) {
+                if (event != null && event.getTo().getWorld() == event.getFrom().getWorld()) {
                     // do not enforce the game mode change, on world teleport, as multiverse may cancel the event afterwards
                     // the world-change game-mode change is done by multiworld
                     event.getPlayer().setGameMode(DEFAULT_GAMEMODE);
