@@ -24,7 +24,7 @@ import java.util.List;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import de.jaschastarke.minecraft.limitedcreative.LimitedCreativeCore;
+import de.jaschastarke.minecraft.limitedcreative.Core;
 
 public class Locale {
     protected YamlConfiguration lang;
@@ -46,7 +46,7 @@ public class Locale {
         
         String fn = getFilename(lang);
         
-        LimitedCreativeCore.debug("Using Locale: " + lang);
+        Core.debug("Using Locale: " + lang);
         File localefile = new File(plugin.getDataFolder(), fn);
         if (localefile.exists())
             this.lang = YamlConfiguration.loadConfiguration(localefile);

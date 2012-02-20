@@ -27,11 +27,12 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import de.jaschastarke.minecraft.utils.IPermission;
 import de.jaschastarke.minecraft.utils.Util;
 import static de.jaschastarke.minecraft.utils.Locale.L;
 
 public class Commands {
-    private static LimitedCreativeCore plugin;
+    private static Core plugin;
     public static class MainCommandExecutor implements CommandExecutor {
         
         public enum Action {
@@ -45,7 +46,7 @@ public class Commands {
         
         @Override
         public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-            LimitedCreativeCore.debug(sender.getName() + ": /" + label + " " + Util.join(args));
+            Core.debug(sender.getName() + ": /" + label + " " + Util.join(args));
             if (args.length > 0) {
                 Action act = null;
                 try {
@@ -76,12 +77,13 @@ public class Commands {
                                 plugin.getCommand("/region").execute(sender, "/region", args);
                                 return true;
                             case RELOAD:
-                                plugin.getServer().getPluginManager().disablePlugin(plugin);
-                                plugin.getServer().getPluginManager().enablePlugin(plugin);
+                                //plugin.getServer().getPluginManager().disablePlugin(plugin); // disable removes classloader, so re-enabling causes problems
+                                //plugin.getServer().getPluginManager().enablePlugin(plugin);
+                                plugin.reload();
                                 return true;
                         }
                     } catch (CommandException e) {
-                        LimitedCreativeCore.debug("CommandException: "+e.getMessage());
+                        Core.debug("CommandException: "+e.getMessage());
                         sender.sendMessage(ChatColor.DARK_RED + e.getLocalizedMessage());
                         return true;
                     }
@@ -92,12 +94,12 @@ public class Commands {
             StringBuilder message = new StringBuilder();
             message.append("/"+c+" s[urvival] ["+L("command.player")+"] - "+L("command.switch.survival")+"\n");
             message.append("/"+c+" c[reative] ["+L("command.player")+"] - "+L("command.switch.creative")+"\n");
-            if (plugin.perm.hasPermission(sender, "limitedcreative.config")) {
+            if (hasPermission(sender, Perms.CONFIG)) {
                 message.append("/"+c+" e[nable] "+L("command.config.overview")+"\n");
                 message.append("/"+c+" d[isable] "+L("command.config.overview")+"\n");
                 message.append("/"+c+" reload "+L("command.config.reload")+"\n");
             }
-            if (plugin.perm.hasPermission(sender, "limitedcreative.regions"))
+            if (hasPermission(sender, Perms.REGIONS))
                 message.append("/"+c+" r[egion] "+L("command.worldguard.alias")+"\n");
             if (message.length() > 0) {
                 sender.sendMessage("Usage:");
@@ -110,7 +112,7 @@ public class Commands {
         }
         
         private void setOption(CommandSender sender, String[] args, boolean b) throws CommandException {
-            if (sender instanceof Player && !plugin.perm.hasPermission(sender, "limitedcreative.config")) {
+            if (sender instanceof Player && !hasPermission(sender, Perms.CONFIG)) {
                 throw new LackingPermissionException();
             }
             if (args.length > 2)
@@ -154,13 +156,17 @@ public class Commands {
 
             if (target == null) {
                 throw new InvalidCommandException("exception.command.playernotfound");
-            } else if (sender instanceof Player && sender != target && !plugin.perm.hasPermission(sender, "limitedcreative.switch_gamemode.other")) {
+            } else if (sender instanceof Player && sender != target && !hasPermission(sender, Perms.GM_OTHER)) {
                 throw new LackingPermissionException();
             } else if (target.getGameMode() != gm) {
-                if (sender == target) {
-                    LCPlayer.get(target).changeGameMode(gm);
-                } else {
+                if ((hasPermission(sender, Perms.GM)) ||
+                    Players.get(target).isGameModeAllowed(gm) ||
+                    (gm == plugin.com.getDefaultGameMode(target.getWorld()) && hasPermission(sender, Perms.GM_BACKONLY)) ||
+                    (gm == GameMode.CREATIVE && hasPermission(sender, Perms.GM_CREATIVE)) ||
+                    (gm == GameMode.SURVIVAL && hasPermission(sender, Perms.GM_SURVIVAL))) {
                     target.setGameMode(gm);
+                } else {
+                    throw new LackingPermissionException();
                 }
                 if (target != sender) {
                     sender.sendMessage(L("command.gamemode.changed", target.getName()));
@@ -181,12 +187,15 @@ public class Commands {
         
     }
     
-    public static void register(LimitedCreativeCore pplugin) {
+    public static void register(Core pplugin) {
         plugin = pplugin;
         plugin.getCommand("limitedcreative").setExecutor(new MainCommandExecutor());
         if (plugin.worldguard == null) {
             plugin.getCommand("/region").setExecutor(new NotAvailableCommandExecutor());
         }
+    }
+    private static boolean hasPermission(CommandSender sender, IPermission permission) {
+        return plugin.perm.hasPermission(sender, permission);
     }
     
     abstract static public class CommandException extends Exception {

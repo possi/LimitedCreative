@@ -28,6 +28,10 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 
+/**
+ * The "Block" means a Minecraft-Block, not "blocking". So this Class is used to prevent ItemSpawn which are Drops from
+ * specified Blocks.
+ */
 public class NoBlockItemSpawn {
     public final static long TIME_OFFSET = 250;
     
@@ -71,11 +75,11 @@ public class NoBlockItemSpawn {
     }
     
     public void block(Block block, LCPlayer player) {
-        if (player.getRaw().getItemInHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
+        if (player.getPlayer().getItemInHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
             block(block.getLocation(), block.getType());
         } else {
             // doesn't include silktouch
-            for (ItemStack i : block.getDrops(player.getRaw().getItemInHand())) {
+            for (ItemStack i : block.getDrops(player.getPlayer().getItemInHand())) {
                 block(block.getLocation(), i.getType());
             }
         }

@@ -27,6 +27,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.sk89q.minecraft.util.commands.CommandException;
+import com.sk89q.minecraft.util.commands.CommandPermissionsException;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.InvalidFlagFormat;
@@ -104,18 +106,36 @@ public class CCommand implements CommandExecutor {
         
         CRegion reg = rm.world(world).region(region);
         
-        switch (act) {
-            case INFO:
-                onInfo(sender, player, reg);
-                return true;
-            case FLAG:
-                onFlag(sender, player, reg, args);
-                return true;
+        try {
+            switch (act) {
+                case INFO:
+                    onInfo(sender, player, reg);
+                    return true;
+                case FLAG:
+                    onFlag(sender, player, reg, args);
+                    return true;
+            }
+        } catch (CommandException ex) { // worldedit command exception!
+            sender.sendMessage(ChatColor.DARK_RED + ex.getMessage());
+            return true;
         }
         return false;
     }
     
-    private void onInfo(CommandSender sender, Player player, CRegion region) {
+    private void onInfo(CommandSender sender, Player player, CRegion region) throws CommandPermissionsException {
+        /* not optimal yet
+        if (player != null) {
+            if (region.getProtectedRegion().isOwner(wg.wrapPlayer(player))) {
+                hasPermission(sender, Perms.INFO_OWN);
+            } else if (region.getProtectedRegion().isMember(wg.wrapPlayer(player))) {
+                hasPermission(sender, Perms.INFO_MEMBER);
+            } else {
+                hasPermission(sender, Perms.INFO);
+            }
+        } else {
+            hasPermission(sender, Perms.INFO);
+        }*/
+        
         String[] args = new String[]{"info", region.getWorld().getName(), region.getProtectedRegion().getId()};
         wg.onCommand(sender, wg.getCommand("region"), "region", args);
         
@@ -159,5 +179,10 @@ public class CCommand implements CommandExecutor {
         }
         sender.sendMessage(L("command.worldguard.flag_set", flag.getName()));
     }
+    
+    /*private boolean hasPermission(CommandSender sender, IPermission permission) throws CommandPermissionsException {
+        wg.checkPermission(sender, permission.toString());
+        return true;
+    }*/
 
 }

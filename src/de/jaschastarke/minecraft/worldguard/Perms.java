@@ -15,20 +15,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.jaschastarke.minecraft.worldedit;
+package de.jaschastarke.minecraft.worldguard;
 
-import org.bukkit.OfflinePlayer;
-import org.bukkit.plugin.java.JavaPlugin;
+import de.jaschastarke.minecraft.utils.IPermission;
 
-import com.sk89q.wepif.PermissionsResolverManager;
-
-public class PermissionsBridge {
-    protected com.sk89q.wepif.PermissionsResolverManager pif;
-    public PermissionsBridge(JavaPlugin plugin) {
-        PermissionsResolverManager.initialize(plugin);
-        pif = PermissionsResolverManager.getInstance();
+@Deprecated // NOT USED YET
+public enum Perms implements IPermission {
+    INFO("info"),
+    INFO_OWN("info.own"),
+    INFO_MEMBER("info.member");
+    
+    private static final String NS = "worldguard.region";
+    
+    private String perm;
+    private Perms(String permission) {
+        perm = permission;
     }
-    public boolean hasPermission(OfflinePlayer sender, String permission) {
-        return pif.hasPermission(sender, permission);
+    @Override
+    public String toString() {
+        return NS + SEP + perm;
     }
 }

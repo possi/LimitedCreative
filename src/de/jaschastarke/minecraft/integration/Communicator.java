@@ -23,6 +23,8 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import de.jaschastarke.minecraft.limitedcreative.Core;
+
 public class Communicator extends AbstractCommunicator {
     public Communicator(JavaPlugin plugin) {
         super(plugin);
@@ -40,6 +42,14 @@ public class Communicator extends AbstractCommunicator {
         boolean creative = Bukkit.getServer().getDefaultGameMode() == GameMode.CREATIVE;
         if (isPluginEnabled("Multiverse-Core"))
             creative = MultiVerse.isCreative(world);
+        Core.debug("com: "+world.getName()+": is creative: "+creative);
         return creative;
+    }
+    public GameMode getDefaultGameMode(World world) {
+        GameMode def = Bukkit.getServer().getDefaultGameMode();
+        if (isPluginEnabled("Multiverse-Core"))
+            def = MultiVerse.getGameMode(world);
+        Core.debug("com: "+world.getName()+": game mode: "+def);
+        return def;
     }
 }

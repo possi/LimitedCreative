@@ -19,14 +19,20 @@ package de.jaschastarke.minecraft.integration;
 
 import org.bukkit.entity.Player;
 
+import de.jaschastarke.minecraft.limitedcreative.Core;
+
 import uk.org.whoami.authme.cache.auth.PlayerCache;
 import uk.org.whoami.authme.cache.limbo.LimboCache;
 
 public class AuthMe implements CommunicationBridge {
     public static boolean isLoggedIn(Player player) {
-        return PlayerCache.getInstance().isAuthenticated(player.getName());
+        boolean li = PlayerCache.getInstance().isAuthenticated(player.getName());
+        Core.debug("AuthMe: "+player.getName()+": logged in: "+li);
+        return li;
     }
     public static boolean isLoggedInComplete(Player player) {
-        return isLoggedIn(player) && LimboCache.getInstance().getLimboPlayer(player.getName()) == null;
+        boolean li = isLoggedIn(player) && LimboCache.getInstance().getLimboPlayer(player.getName()) == null;
+        Core.debug("AuthMe: "+player.getName()+": logged in complete: "+li);
+        return li;
     }
 }

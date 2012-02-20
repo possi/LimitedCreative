@@ -22,16 +22,16 @@ import java.util.List;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.Flag;
 
-import de.jaschastarke.minecraft.limitedcreative.LimitedCreativeCore;
+import de.jaschastarke.minecraft.limitedcreative.Core;
 import de.jaschastarke.minecraft.worldguard.CRegionManager;
 import de.jaschastarke.minecraft.worldguard.Integration;
 import de.jaschastarke.minecraft.worldguard.Interface;
 
 public class WorldGuardIntegration implements Integration {
-    public static LimitedCreativeCore plugin;
+    public static Core plugin;
     public static WorldGuardPlugin wg;
 
-    public WorldGuardIntegration(LimitedCreativeCore plugin) {
+    public WorldGuardIntegration(Core plugin) {
         WorldGuardIntegration.plugin = plugin;
         wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
         

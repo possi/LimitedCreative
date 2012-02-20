@@ -17,12 +17,13 @@
  */
 package de.jaschastarke.minecraft.worldguard;
 
+import org.bukkit.entity.Player;
+
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
-import de.jaschastarke.minecraft.limitedcreative.LCPlayer;
 import de.jaschastarke.minecraft.limitedcreative.regions.WorldGuardIntegration;
 
 public class ApplicableRegions {
@@ -42,9 +43,9 @@ public class ApplicableRegions {
         return r;
     }
     
-    public boolean allows(StateFlag flag, LCPlayer player) {
+    public boolean allows(StateFlag flag, Player player) {
         extendRegionFlags();
-        boolean r = regions.allows(flag, WorldGuardIntegration.wg.wrapPlayer(player.getRaw()));
+        boolean r = regions.allows(flag, WorldGuardIntegration.wg.wrapPlayer(player));
         contractRegionFlags();
         return r;
     }
@@ -58,6 +59,13 @@ public class ApplicableRegions {
                 pr.setFlag(flag, value);
             }
         }
+        if (mgr.getGlobalRegion() != null) {
+            for (FlagValue data : mgr.region(mgr.getGlobalRegion()).getFlags()) {
+                T flag = (T) data.getFlag();
+                V value = (V) data.getValue();
+                mgr.getGlobalRegion().setFlag(flag, value);
+            }
+        }
     }
     @SuppressWarnings("unchecked")
     private <T extends Flag<V>, V> void contractRegionFlags() {
@@ -65,6 +73,12 @@ public class ApplicableRegions {
             for (FlagValue data : mgr.region(pr).getFlags()) {
                 T flag = (T) data.getFlag();
                 pr.setFlag(flag, null);
+            }
+        }
+        if (mgr.getGlobalRegion() != null) {
+            for (FlagValue data : mgr.region(mgr.getGlobalRegion()).getFlags()) {
+                T flag = (T) data.getFlag();
+                mgr.getGlobalRegion().setFlag(flag, null);
             }
         }
     }

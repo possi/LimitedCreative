@@ -23,16 +23,22 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import de.jaschastarke.minecraft.limitedcreative.LimitedCreativeCore;
 import de.jaschastarke.minecraft.worldguard.ApplicableRegions;
 import de.jaschastarke.minecraft.worldguard.Interface;
 
 @SuppressWarnings("serial")
 public class PlayerChangedAreaEvent extends Event {
     private PlayerMoveEvent event;
+    private String _previous_hash;
+    private String _new_hash;
     
     public PlayerChangedAreaEvent(PlayerMoveEvent moveevent) {
         event = moveevent;
+    }
+    public PlayerChangedAreaEvent(PlayerMoveEvent moveevent, String previous_hash, String new_hash) {
+        event = moveevent;
+        _previous_hash = previous_hash;
+        _new_hash = new_hash;
     }
     
     public Player getPlayer() {
@@ -50,19 +56,32 @@ public class PlayerChangedAreaEvent extends Event {
         return Interface.getInstance().getRegionManager().getRegionSet(event.getTo());
     }
     
-    private static final HandlerList handlers = new HandlerList();
-    
-    public HandlerList getHandlers() {
-        LimitedCreativeCore.debug("getHandlers");
-        return handlers;
+    public String getPreviousRegionHash() {
+        if (_previous_hash == null)
+            _previous_hash = Interface.getInstance().getRegionManager().getRegionsHash(event.getFrom());
+        return _previous_hash;
     }
-     
-    public static HandlerList getHandlerList() {
-        LimitedCreativeCore.debug("getHandlerList");
-        return handlers;
+    public String getNewRegionHash() {
+        if (_new_hash == null)
+            _new_hash = Interface.getInstance().getRegionManager().getRegionsHash(event.getTo());
+        return _new_hash;
     }
 
     public PlayerMoveEvent getMoveEvent() {
         return event;
+    }
+    
+    public String toString() {
+        return getClass().getSimpleName()+"["+getPreviousRegionHash()+" -> "+getNewRegionHash()+"]";
+    }
+    
+    private static final HandlerList handlers = new HandlerList();
+    
+    public HandlerList getHandlers() {
+        return handlers;
+    }
+     
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 }

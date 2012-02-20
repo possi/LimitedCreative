@@ -18,6 +18,7 @@
 package de.jaschastarke.minecraft.limitedcreative;
 import java.util.logging.Logger;
 
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -30,13 +31,13 @@ import de.jaschastarke.minecraft.utils.Locale;
 import de.jaschastarke.minecraft.utils.Permissions;
 
 
-public class LimitedCreativeCore extends JavaPlugin {
+public class Core extends JavaPlugin {
     public final Logger logger = Logger.getLogger("Minecraft");
     public Configuration config;
     public Permissions perm;
     public WorldGuardIntegration worldguard;
     public Communicator com;
-    public static LimitedCreativeCore plugin;
+    public static Core plugin;
     public NoBlockItemSpawn spawnblock;
 
     @Override
@@ -89,12 +90,12 @@ public class LimitedCreativeCore extends JavaPlugin {
         
         Commands.register(this);
         
-        plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+        /*plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
             @Override
             public void run() {
-                LCPlayer.cleanUp();
+                Players.cleanUp();
             }
-        }, LCPlayer.CLEANUP_TIMEOUT / 50L, LCPlayer.CLEANUP_TIMEOUT / 50L); // 50 = 1000ms / 20ticks
+        }, Players.CLEANUP_TIMEOUT / 50L, Players.CLEANUP_TIMEOUT / 50L); // 50 = 1000ms / 20ticks*/
         
         PluginDescriptionFile df = this.getDescription();
         if (worldguard != null)
@@ -103,14 +104,27 @@ public class LimitedCreativeCore extends JavaPlugin {
             logger.info("["+df.getName() + " v" + df.getVersion() + "] "+L("basic.loaded.no_worldguard"));
     }
     
+    public void reload() {
+        getServer().getScheduler().cancelTasks(this);
+        getServer().getServicesManager().unregisterAll(this);
+        HandlerList.unregisterAll(this);
+        setEnabled(false);
+        setEnabled(true);
+    }
     public void info(String s) {
         logger.info("["+this.getDescription().getName()+"] " + s);
     }
     public void warn(String s) {
         logger.warning("["+this.getDescription().getName()+"] " + s);
     }
+    public void error(String s) {
+        logger.severe("["+this.getDescription().getName()+"] " + s);
+    }
     public static void debug(String s) {
-        if (plugin.config.getDebug())
+        if (isDebug())
             plugin.info("DEBUG: " + s);
+    }
+    public static boolean isDebug() {
+        return plugin.config.getDebug();
     }
 }

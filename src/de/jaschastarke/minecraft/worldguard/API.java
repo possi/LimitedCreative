@@ -23,6 +23,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * This Namespace may be used as a Standalone-Plugin just providing the WorldGuard-API
  * TODO: Not done yet
  */
+@Deprecated // NOT READY YET
 public class API extends JavaPlugin {
     @Override
     public void onDisable() {

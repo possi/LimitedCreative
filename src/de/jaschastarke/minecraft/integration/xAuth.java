@@ -22,14 +22,18 @@ import org.bukkit.entity.Player;
 
 import com.cypherx.xauth.xAuthPlayer;
 
+import de.jaschastarke.minecraft.limitedcreative.Core;
+
 public class xAuth implements CommunicationBridge {
     public static boolean isLoggedInNotGuest(Player player) {
         xAuthPlayer xpl = getAuth().getPlayer(player.getName());
+        boolean li = true;
         if (!xpl.isAuthenticated())
-            return false;
-        if (xpl.isGuest())
-            return false;
-        return true;
+            li = false;
+        else if (xpl.isGuest())
+            li = false;
+        Core.debug("xAuth: "+player.getName()+": logged in not guest: "+li);
+        return li;
     }
     
     private static com.cypherx.xauth.xAuth getAuth() {

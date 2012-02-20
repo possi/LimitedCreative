@@ -19,6 +19,7 @@ package de.jaschastarke.minecraft.worldguard;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -33,34 +34,27 @@ public class CListener implements Listener {
         this.com = com;
     }
 
-    @EventHandler
+    @EventHandler(priority=EventPriority.HIGHEST) // run very late, because the event may be cancelled
     public void onPlayerMove(PlayerMoveEvent event) {
         if (event.isCancelled())
             return;
+        //if (event.isCoarse()) { // next bukkit release will shortcut that
         if (event.getFrom().getBlockX() != event.getTo().getBlockX()
                 || event.getFrom().getBlockY() != event.getTo().getBlockY()
                 || event.getFrom().getBlockZ() != event.getTo().getBlockZ()) { // he really moved, and not just looked around
 
             if (com.getRegionManager().isDiffrentRegion(event.getPlayer(), event.getTo())) {
-                Bukkit.getServer().getPluginManager().callEvent(new PlayerChangedAreaEvent(event));
-                CPlayer.get(event.getPlayer()).setHash(com.getRegionManager().getRegionsHash(event.getTo()));
+                String current_hash = CPlayer.get(event.getPlayer()).getHash();
+                String new_hash = com.getRegionManager().getRegionsHash(event.getTo());
+                Bukkit.getServer().getPluginManager().callEvent(new PlayerChangedAreaEvent(event, current_hash, new_hash));
+                CPlayer.get(event.getPlayer()).setHash(new_hash);
             }
         }
     }
     
-    @EventHandler
+    @EventHandler(priority=EventPriority.HIGHEST) // run very late, because the event may be cancelled
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        if (event.isCancelled())
-            return;
-        if (event.getFrom().getBlockX() != event.getTo().getBlockX()
-                || event.getFrom().getBlockY() != event.getTo().getBlockY()
-                || event.getFrom().getBlockZ() != event.getTo().getBlockZ()) { // he really moved, and not just looked around
-            
-            if (com.getRegionManager().isDiffrentRegion(event.getPlayer(), event.getTo())) {
-                Bukkit.getServer().getPluginManager().callEvent(new PlayerChangedAreaEvent(event));
-                CPlayer.get(event.getPlayer()).setHash(com.getRegionManager().getRegionsHash(event.getTo()));
-            }
-        }
+        onPlayerMove(event);
     }
     
     @EventHandler

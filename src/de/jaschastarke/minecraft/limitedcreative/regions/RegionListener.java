@@ -16,14 +16,15 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 
 import de.jaschastarke.minecraft.limitedcreative.LCPlayer;
-import de.jaschastarke.minecraft.limitedcreative.LimitedCreativeCore;
+import de.jaschastarke.minecraft.limitedcreative.Core;
+import de.jaschastarke.minecraft.limitedcreative.Players;
 import de.jaschastarke.minecraft.utils.Util;
 import de.jaschastarke.minecraft.worldguard.ApplicableRegions;
 import de.jaschastarke.minecraft.worldguard.CRegionManager;
 import de.jaschastarke.minecraft.worldguard.events.PlayerChangedAreaEvent;
 
 public class RegionListener implements Listener {
-    private static LimitedCreativeCore plugin = WorldGuardIntegration.plugin;
+    private static Core plugin = WorldGuardIntegration.plugin;
     private CRegionManager rm;
     public RegionListener(WorldGuardIntegration wgi) {
         rm = wgi.getRegionManager();
@@ -39,14 +40,29 @@ public class RegionListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.isCancelled())
             return;
-        LCPlayer player = LCPlayer.get(event.getPlayer());
-        ApplicableRegions set =  rm.getRegionSet(event.getBlock());
 
-        if (player.isRegionCreative() && !set.allows(Flags.CREATIVE, player)) { 
-            event.getPlayer().sendMessage(L("blocked.outside_creative_break"));
-            event.setCancelled(true);
-        } else if (player.getRaw().getGameMode() != GameMode.CREATIVE && set.allows(Flags.CREATIVE)) {
-            plugin.spawnblock.block(event.getBlock(), player);
+        LCPlayer player = Players.get(event.getPlayer());
+        boolean diffrent_region = rm.isDiffrentRegion(event.getPlayer(), event.getBlock().getLocation());
+        boolean creative_world = plugin.com.isCreative(event.getBlock().getWorld());
+        
+        if (player.isRegionGameMode() && diffrent_region) {
+            // do not break outside of "gamemod-change-region" when in the region
+            if (!rm.getRegionSet(event.getBlock()).allows(Flags.CREATIVE, event.getPlayer())) {
+                event.getPlayer().sendMessage(L("blocked.outside_creative_break"));
+                event.setCancelled(true);
+            }
+        } else if (diffrent_region) {
+            // do not break inside of "survial-region in creative world" when outside
+            if (rm.getRegionSet(event.getBlock()).allows(Flags.CREATIVE)) {
+                event.getPlayer().sendMessage(L("blocked.inside_survival_break"));
+                event.setCancelled(true);
+            }
+        }
+        if (!creative_world) { // in survival world
+            // prevent any drops for survival players in creative regions in survival worlds
+            if (event.getPlayer().getGameMode() != GameMode.CREATIVE && rm.getRegionSet(event.getBlock()).allows(Flags.CREATIVE)) {
+                plugin.spawnblock.block(event.getBlock(), player);
+            }
         }
     }
 
@@ -54,12 +70,20 @@ public class RegionListener implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
         if (event.isCancelled())
             return;
-        LCPlayer player = LCPlayer.get(event.getPlayer());
-        if (player.isRegionCreative() && rm.isDiffrentRegion(event.getPlayer(), event.getBlock().getLocation())) {
-            // do not build outside of creative regions, when in the region
-            ApplicableRegions set =  rm.getRegionSet(event.getBlock());
-            if (!set.allows(Flags.CREATIVE, player)) { 
+        
+        LCPlayer player = Players.get(event.getPlayer());
+        boolean diffrent_region = rm.isDiffrentRegion(event.getPlayer(), event.getBlock().getLocation());
+        
+        if (player.isRegionGameMode() && diffrent_region) {
+            // do not build outside of "gamemod-change-region" when in the region
+            if (!rm.getRegionSet(event.getBlock()).allows(Flags.CREATIVE, event.getPlayer())) { 
                 event.getPlayer().sendMessage(L("blocked.outside_creative"));
+                event.setCancelled(true);
+            }
+        } else if (diffrent_region) {
+            // do not build inside of "survial-region in creative world" when outside
+            if (rm.getRegionSet(event.getBlock()).allows(Flags.CREATIVE)) { 
+                event.getPlayer().sendMessage(L("blocked.inside_survival"));
                 event.setCancelled(true);
             }
         }
@@ -67,7 +91,7 @@ public class RegionListener implements Listener {
     
     @EventHandler
     public void onPlayerChangedArea(PlayerChangedAreaEvent event) {
-        LCPlayer.get(event.getPlayer()).setRegionCreativeAllowed(event.getNewRegionSet().allows(Flags.CREATIVE), event.getMoveEvent());
+        Players.get(event.getPlayer()).setRegionCreativeAllowed(event.getNewRegionSet().allows(Flags.CREATIVE, event.getPlayer()), event);
     }
     
     @EventHandler
@@ -76,12 +100,12 @@ public class RegionListener implements Listener {
             return;
         
         Block source = event.getBlock().getRelative(event.getDirection());
-        LimitedCreativeCore.debug("PistonExtend "+source.getType()+" "+event.getDirection());
+        Core.debug("PistonExtend "+source.getType()+" "+event.getDirection());
         if (source.getType() != Material.AIR) {
             if (regionSet(source).allows(Flags.CREATIVE)) {
                 for (int i = 1; i <= 12; i++) {
                     Block dest = source.getRelative(event.getDirection(), i);
-                    LimitedCreativeCore.debug("dest "+i+": "+dest.getType());
+                    Core.debug("dest "+i+": "+dest.getType());
                     if (!regionSet(dest).allows(Flags.CREATIVE)) {
                         plugin.logger.warning(L("blocked.piston", source.getRelative(event.getDirection(), i - 1).getType().toString(), Util.toString(source.getLocation())));
                         event.setCancelled(true);
@@ -100,9 +124,9 @@ public class RegionListener implements Listener {
             return;
         Block source = event.getBlock().getRelative(event.getDirection(), 2);
         Block dest = source.getRelative(event.getDirection().getOppositeFace());
-        LimitedCreativeCore.debug("PistonRetract "+source.getType()+" "+event.getDirection() + " " + event.isSticky());
+        Core.debug("PistonRetract "+source.getType()+" "+event.getDirection() + " " + event.isSticky());
         if (event.isSticky() && source.getType() != Material.AIR) { 
-            LimitedCreativeCore.debug("dest "+dest.getType());
+            Core.debug("dest "+dest.getType());
             if (regionSet(source).allows(Flags.CREATIVE)) {
                 if (!regionSet(dest).allows(Flags.CREATIVE)) {
                     plugin.logger.warning(L("blocked.piston", source.getType().toString(), Util.toString(source.getLocation())));

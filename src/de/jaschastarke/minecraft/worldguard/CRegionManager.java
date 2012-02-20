@@ -82,6 +82,10 @@ public class CRegionManager {
         public World getWorld() {
             return world;
         }
+        public ProtectedRegion getGlobalRegion() {
+            return getWGManager(world).getRegion("__global__");
+        }
+        
         @SuppressWarnings("unchecked")
         public <V> void storeFlag(CRegion region, Flag<V> flag, Object value) {
             if (wc == null) {
@@ -136,10 +140,17 @@ public class CRegionManager {
     }
     
     public String getRegionsHash(Location loc) {
+        StringBuilder hash = new StringBuilder(loc.getWorld().getName());
         List<String> idlist = getWGGlobalManager().get(loc.getWorld()).getApplicableRegionsIDs(BukkitUtil.toVector(loc));
-        String[] ids = idlist.toArray(new String[idlist.size()]);
-        Arrays.sort(ids);
-        return Util.join(ids, "|");
+        if (idlist.size() > 0) {
+            hash.append("#");
+            String[] ids = idlist.toArray(new String[idlist.size()]);
+            if (ids.length > 1) {
+                Arrays.sort(ids);
+            }
+            hash.append(Util.join(ids, ","));
+        }
+        return hash.toString();
     }
     
     public ApplicableRegions getRegionSet(Location loc) {

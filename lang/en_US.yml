@@ -47,7 +47,7 @@ exception:
     storage:
         load: Failed to load your Inventory. Ask your Admin to enable "UnsafeStorage" for LimitedCreative to allow invalid enchants on items
     region:
-        no_survival: You can not be survival in an creative area
+        not_optional: You can not be {0} in that area
 blocked:
     chest: Access to chests is not allowed in creative mode
     sign: To interact with signs is not allowed in creative mode
@@ -56,6 +56,8 @@ blocked:
     survival_flying: You should stay on ground, when leaving a creative-area
     outside_creative: You can not place blocks outside of the creative-area
     outside_creative_break: You can not destroy blocks outside of the creative-area
+    inside_survival: You can not place blocks inside of the survival-area
+    inside_survival_break: You can not destroy blocks inside of the survival-area
     use: You are not allowed to use this type of item
     place: You are not allowed to place this type of block
     break: You are not allowed to break this type of block

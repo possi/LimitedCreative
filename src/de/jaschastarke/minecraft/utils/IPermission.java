@@ -15,11 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.jaschastarke.minecraft.limitedcreative.serialize;
+package de.jaschastarke.minecraft.utils;
 
-import org.bukkit.configuration.ConfigurationSection;
+public interface IPermission {
+    public static final String SEP = ".";
 
-public interface Storeable {
-    public void store(ConfigurationSection section);
-    public void restore(ConfigurationSection section);
 }

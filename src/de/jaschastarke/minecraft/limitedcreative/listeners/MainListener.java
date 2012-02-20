@@ -17,7 +17,6 @@
  */
 package de.jaschastarke.minecraft.limitedcreative.listeners;
 
-import org.bukkit.GameMode;
 import org.bukkit.entity.Item;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -25,13 +24,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
-import de.jaschastarke.minecraft.limitedcreative.LCPlayer;
-import de.jaschastarke.minecraft.limitedcreative.LimitedCreativeCore;
+import de.jaschastarke.minecraft.limitedcreative.Core;
+import de.jaschastarke.minecraft.limitedcreative.Players;
 
 public class MainListener implements Listener {
-    private LimitedCreativeCore plugin;
-    public MainListener(LimitedCreativeCore plugin) {
+    private Core plugin;
+    public MainListener(Core plugin) {
         this.plugin = plugin;
     }
     
@@ -47,20 +47,18 @@ public class MainListener implements Listener {
     
     @EventHandler
     public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
-        LimitedCreativeCore.debug("onPlayerGameModeChange: "+event.getPlayer().getName());
-        LimitedCreativeCore.debug("Current GameMode: "+event.getPlayer().getGameMode());
-        LimitedCreativeCore.debug("New GameMode: "+event.getNewGameMode());
-        LimitedCreativeCore.debug("isLoggedin: "+plugin.com.isLoggedIn(event.getPlayer()));
-        LimitedCreativeCore.debug("isCancelled: "+event.isCancelled());
+        if (Core.isDebug()) {
+            Core.debug("onPlayerGameModeChange: "+event.getPlayer().getName());
+            Core.debug("Current GameMode: "+event.getPlayer().getGameMode());
+            Core.debug("New GameMode: "+event.getNewGameMode());
+            Core.debug("isLoggedin: "+plugin.com.isLoggedIn(event.getPlayer()));
+            Core.debug("isCancelled: "+event.isCancelled());
+        }
         if (!plugin.com.isLoggedIn(event.getPlayer()))
             return;
-        if (event.getNewGameMode() == GameMode.CREATIVE) {
-            if (!LCPlayer.get(event.getPlayer()).onSetCreative())
-                event.setCancelled(true);
-        } else if (event.getNewGameMode() == GameMode.SURVIVAL) {
-            if (!LCPlayer.get(event.getPlayer()).onSetSurvival())
-                event.setCancelled(true);
-        }
+
+        if (!Players.get(event.getPlayer()).onSetGameMode(event.getNewGameMode()))
+            event.setCancelled(true);
     }
     
     /**
@@ -77,27 +75,8 @@ public class MainListener implements Listener {
         }
     }
     
-
-    /*
-    public static class VehicleListen extends VehicleListener {
-        @EventHandler
-        public void onVehicleDestroy(VehicleDestroyEvent event) {
-            if (event.isCancelled())
-                return;
-            if (event.getAttacker() instanceof Player) {
-                Player player = (Player) event.getAttacker();
-                if (player.getGameMode() == GameMode.CREATIVE) {
-                    if (plugin.config.getPermissionsEnabled() && player.hasPermission("limitedcreative.nolimit.drop"))
-                        return;
-                    plugin.logger.info("Vehicle destroy: "+event.getVehicle() + " - "+event.getVehicle().getEntityId());
-                }
-            }
-        }
-        
-        private void register() {
-            if (plugin.config.getLimitEnabled()) {
-                pm.registerEvent(Event.Type.VEHICLE_DESTROY, this, Priority.Normal, plugin);
-            }
-        }
-    }*/
+    public void onLogout(PlayerQuitEvent event) {
+        // what? i can't cancel a logout event? but how to chain the user to the server than? xD
+        Players.remove(event.getPlayer().getName());
+    }
 }

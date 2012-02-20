@@ -25,13 +25,16 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import de.jaschastarke.minecraft.limitedcreative.store.InvYamlStorage;
+import de.jaschastarke.minecraft.limitedcreative.store.PlayerInventoryStorage;
+
 import static de.jaschastarke.minecraft.utils.Util.copyFile;
 import static de.jaschastarke.minecraft.utils.Locale.L;
 
 public class Configuration {
     private FileConfiguration c;
     private File file;
-    public static LimitedCreativeCore plugin;
+    public static Core plugin;
     
     public enum Option {
         STORECREATIVE("store.creative", true),
@@ -66,7 +69,7 @@ public class Configuration {
         }
     }
     
-    public Configuration(LimitedCreativeCore pplugin) {
+    public Configuration(Core pplugin) {
         plugin = pplugin;
         
         file = new File(plugin.getDataFolder(), "config.yml");
@@ -224,5 +227,24 @@ public class Configuration {
     }
     public boolean getTempStoreEnabled() {
         return _store_enabled;
+    }
+
+    /**
+     * @return Milliseconds
+     */
+    public long getRepeatingMessageTimeout() {
+        return 10000; // 10 sec. limit
+    }
+
+    /**
+     * The maximum height a player may fall down by leaving creative gamemode 
+     * @return Block-Height
+     */
+    public int getMaximumFloatingHeight() {
+        return 3;
+    }
+    
+    public PlayerInventoryStorage getInvetoryStorage() {
+        return new InvYamlStorage(new File(plugin.getDataFolder(), getInventoryFolder()));
     }
 }
