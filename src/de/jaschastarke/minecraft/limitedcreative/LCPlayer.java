@@ -335,7 +335,7 @@ public class LCPlayer {
      * Attention: "Creative" stands for "the other gamemode". So true may mean, "be survival in creative world".
      */
     public void setRegionCreativeAllowed(boolean rcreative, PlayerChangedAreaEvent changearea_event) {
-        Core.debug(getName()+": changed region: "+rcreative+": "+changearea_event.toString());
+        Core.debug(getName()+": changed region: "+rcreative+": " + (changearea_event == null ? "null" : changearea_event.toString()));
         
         PlayerMoveEvent event = null;
         if (changearea_event != null)
@@ -388,6 +388,8 @@ public class LCPlayer {
             // 3. (because of else) we are not longer in that mode
             // result: advise him to not longer allowed to that region
             setRegionGameMode(null);
+        } else if (this.isRegionGameMode()) {
+            // TODO: Add check to switch to optional selected gamemode
         }
     }
 
