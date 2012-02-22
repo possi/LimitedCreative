@@ -19,10 +19,9 @@ package de.jaschastarke.minecraft.integration;
 
 import org.bukkit.entity.Player;
 
-import de.jaschastarke.minecraft.limitedcreative.Core;
-
 import uk.org.whoami.authme.cache.auth.PlayerCache;
 import uk.org.whoami.authme.cache.limbo.LimboCache;
+import de.jaschastarke.minecraft.limitedcreative.Core;
 
 public class AuthMe implements CommunicationBridge {
     public static boolean isLoggedIn(Player player) {

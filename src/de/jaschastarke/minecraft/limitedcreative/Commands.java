@@ -17,6 +17,8 @@
  */
 package de.jaschastarke.minecraft.limitedcreative;
 
+import static de.jaschastarke.minecraft.utils.Locale.L;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,7 +31,6 @@ import org.bukkit.entity.Player;
 
 import de.jaschastarke.minecraft.utils.IPermission;
 import de.jaschastarke.minecraft.utils.Util;
-import static de.jaschastarke.minecraft.utils.Locale.L;
 
 public class Commands {
     private static Core plugin;

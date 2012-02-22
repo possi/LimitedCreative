@@ -17,6 +17,8 @@
  */
 package de.jaschastarke.minecraft.limitedcreative.listeners;
 
+import static de.jaschastarke.minecraft.utils.Locale.L;
+
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -46,11 +48,10 @@ import org.bukkit.material.Button;
 import org.bukkit.material.Lever;
 
 import de.jaschastarke.minecraft.limitedcreative.BlackList;
-import de.jaschastarke.minecraft.limitedcreative.LCPlayer;
 import de.jaschastarke.minecraft.limitedcreative.Core;
+import de.jaschastarke.minecraft.limitedcreative.LCPlayer;
 import de.jaschastarke.minecraft.limitedcreative.Perms;
 import de.jaschastarke.minecraft.limitedcreative.Players;
-import static de.jaschastarke.minecraft.utils.Locale.L;
 
 public class LimitListener implements Listener {
     private Core plugin;

@@ -17,6 +17,8 @@
  */
 package de.jaschastarke.minecraft.limitedcreative;
 
+import static de.jaschastarke.minecraft.utils.Locale.L;
+
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -24,7 +26,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import de.jaschastarke.minecraft.limitedcreative.store.PlayerInventoryStorage;
-import static de.jaschastarke.minecraft.utils.Locale.L;
 
 public class Inventory {
     private static PlayerInventoryStorage storage = Core.plugin.config.getInvetoryStorage();

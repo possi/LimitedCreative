@@ -16,13 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package de.jaschastarke.minecraft.limitedcreative;
+import static de.jaschastarke.minecraft.utils.Locale.L;
+
 import java.util.logging.Logger;
 
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import static de.jaschastarke.minecraft.utils.Locale.L;
 import de.jaschastarke.minecraft.integration.Communicator;
 import de.jaschastarke.minecraft.limitedcreative.listeners.LimitListener;
 import de.jaschastarke.minecraft.limitedcreative.listeners.MainListener;

@@ -17,6 +17,9 @@
  */
 package de.jaschastarke.minecraft.limitedcreative;
 
+import static de.jaschastarke.minecraft.utils.Locale.L;
+import static de.jaschastarke.minecraft.utils.Util.copyFile;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,9 +30,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import de.jaschastarke.minecraft.limitedcreative.store.InvYamlStorage;
 import de.jaschastarke.minecraft.limitedcreative.store.PlayerInventoryStorage;
-
-import static de.jaschastarke.minecraft.utils.Util.copyFile;
-import static de.jaschastarke.minecraft.utils.Locale.L;
 
 public class Configuration {
     private FileConfiguration c;

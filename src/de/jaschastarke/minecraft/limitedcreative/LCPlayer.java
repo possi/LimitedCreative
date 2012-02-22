@@ -17,6 +17,8 @@
  */
 package de.jaschastarke.minecraft.limitedcreative;
 
+import static de.jaschastarke.minecraft.utils.Locale.L;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -42,7 +44,6 @@ import org.bukkit.material.Lever;
 
 import de.jaschastarke.minecraft.utils.IPermission;
 import de.jaschastarke.minecraft.worldguard.events.PlayerChangedAreaEvent;
-import static de.jaschastarke.minecraft.utils.Locale.L;
 
 public class LCPlayer {
     private static Core plugin = Core.plugin;
