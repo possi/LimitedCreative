@@ -25,6 +25,7 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import de.jaschastarke.minecraft.limitedcreative.Core;
 import de.jaschastarke.minecraft.limitedcreative.Players;
@@ -59,6 +60,10 @@ public class MainListener implements Listener {
 
         if (!Players.get(event.getPlayer()).onSetGameMode(event.getNewGameMode()))
             event.setCancelled(true);
+    }
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        Players.get(event.getPlayer()).onRevive();
     }
     
     /**

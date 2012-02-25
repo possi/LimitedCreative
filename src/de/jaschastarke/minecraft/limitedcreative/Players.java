@@ -37,9 +37,9 @@ public class Players {
             return p;
         } else {
             LCPlayer p = players.get(player.getName());
-            /*if (player != p.getPlayer())
-                p.updatePlayer(player);*/
-            p.touch();
+            if (player != p.getPlayer())
+                p.updatePlayer(player);
+            //p.touch();
             return p;
         }
     }

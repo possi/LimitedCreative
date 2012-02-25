@@ -21,7 +21,7 @@ import de.jaschastarke.minecraft.limitedcreative.Players;
 import de.jaschastarke.minecraft.utils.Util;
 import de.jaschastarke.minecraft.worldguard.ApplicableRegions;
 import de.jaschastarke.minecraft.worldguard.CRegionManager;
-import de.jaschastarke.minecraft.worldguard.events.PlayerChangedAreaEvent;
+import de.jaschastarke.minecraft.worldguard.events.PlayerNewLocationAreaEvent;
 import de.jaschastarke.minecraft.worldguard.events.PlayerSetAreaEvent;
 import de.jaschastarke.minecraft.worldguard.events.PlayerUpdateAreaEvent;
 
@@ -92,7 +92,7 @@ public class RegionListener implements Listener {
     }
     
     @EventHandler
-    public void onPlayerChangedArea(PlayerChangedAreaEvent event) {
+    public void onPlayerChangedArea(PlayerNewLocationAreaEvent event) {
         Players.get(event.getPlayer()).setRegionCreativeAllowed(event.getRegionSet().allows(Flags.CREATIVE, event.getPlayer()), event);
     }
     

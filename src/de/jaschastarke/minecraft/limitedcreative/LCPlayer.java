@@ -51,32 +51,32 @@ import de.jaschastarke.minecraft.worldguard.events.PlayerChangedAreaEvent;
 public class LCPlayer {
     private static Core plugin = Core.plugin;
     
-    //private Player player;
-    private String name;
+    private Player player;
+    //private String name;
     private Inventory _inv;
     private GameMode _permanent_gamemode = null;
-    private long _timestamp;
+    //private long _timestamp;
     
     public LCPlayer(Player player) {
-        //this.player = player;
-        name = player.getName();
-        touch();
+        this.player = player;
+        //name = player.getName();
+        //touch();
         
         if (!this.isRegionGameMode(player.getGameMode())) {
             setPermanentGameMode(player.getGameMode());
         }
     }
-    /*private void updatePlayer(Player player) {
+    
+    public void updatePlayer(Player player) {
         this.player = player;
-        _inv = null;
-    }*/
+    }
     
     public Player getPlayer() {
-        //return player;
-        return plugin.getServer().getPlayerExact(name);
+        return player;
+        //return plugin.getServer().getPlayerExact(name); (doesn't work will revive)
     }
     public String getName() {
-        return name;
+        return player.getName();
     }
     
     public Inventory getInv() {
@@ -85,13 +85,13 @@ public class LCPlayer {
         return _inv;
     }
     
-    public void touch() {
+    /*public void touch() {
         _timestamp = System.currentTimeMillis();
     }
     public boolean isOutdated() {
         return (getPlayer() == null || !getPlayer().isOnline()) &&
                  _timestamp < (System.currentTimeMillis() - Players.CLEANUP_TIMEOUT);
-    }
+    }*/
 
     private Map<String, Object> options = new HashMap<String, Object>();
     public void setRegionGameMode(final GameMode gm) {
@@ -207,6 +207,12 @@ public class LCPlayer {
             
         }
         return true;
+    }
+
+    public void onRevive() {
+        if (getPlayer().getGameMode() == GameMode.CREATIVE) {
+            setCreativeArmor();
+        }
     }
     
     public void setCreativeArmor() {

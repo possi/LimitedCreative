@@ -17,9 +17,7 @@
  */
 package de.jaschastarke.minecraft.worldguard.events;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
@@ -27,34 +25,19 @@ import de.jaschastarke.minecraft.worldguard.ApplicableRegions;
 import de.jaschastarke.minecraft.worldguard.Interface;
 
 @SuppressWarnings("serial")
-public class PlayerChangedAreaEvent extends PlayerAreaEvent implements Cancellable {
+public class PlayerChangedAreaEvent extends PlayerNewLocationAreaEvent implements Cancellable {
     private PlayerMoveEvent event;
     private String _previous_hash;
-    private String _hash;
     private boolean _cancelled = false;
     
     public PlayerChangedAreaEvent(PlayerMoveEvent moveevent) {
+        super(moveevent.getPlayer(), moveevent.getTo());
         event = moveevent;
     }
     public PlayerChangedAreaEvent(PlayerMoveEvent moveevent, String previous_hash, String new_hash) {
+        super(moveevent.getPlayer(), moveevent.getTo(), new_hash);
         event = moveevent;
         _previous_hash = previous_hash;
-        _hash = new_hash;
-    }
-    
-    @Override
-    public String getRegionHash() {
-        if (_hash == null)
-            _hash = Interface.getInstance().getRegionManager().getRegionsHash(event.getTo());
-        return _hash;
-    }
-    @Override
-    public ApplicableRegions getRegionSet() {
-        return Interface.getInstance().getRegionManager().getRegionSet(event.getTo());
-    }
-    
-    public Player getPlayer() {
-        return event.getPlayer();
     }
     
     public boolean isTeleport() {
@@ -79,15 +62,6 @@ public class PlayerChangedAreaEvent extends PlayerAreaEvent implements Cancellab
         return getClass().getSimpleName()+"["+getPreviousRegionHash()+" -> "+getRegionHash()+"]";
     }
     
-    private static final HandlerList handlers = new HandlerList();
-    
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-     
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
     @Override
     public boolean isCancelled() {
         return _cancelled;

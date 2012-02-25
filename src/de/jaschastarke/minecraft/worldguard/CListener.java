@@ -25,9 +25,11 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import de.jaschastarke.minecraft.worldguard.events.PlayerChangedAreaEvent;
+import de.jaschastarke.minecraft.worldguard.events.PlayerNewLocationAreaEvent;
 import de.jaschastarke.minecraft.worldguard.events.PlayerSetAreaEvent;
 
 public class CListener implements Listener {
@@ -63,6 +65,14 @@ public class CListener implements Listener {
     @EventHandler(priority=EventPriority.HIGHEST) // run very late, because the event may be cancelled
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         onPlayerMove(event);
+    }
+    
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        String new_hash = com.getRegionManager().getRegionsHash(event.getRespawnLocation());
+        PlayerNewLocationAreaEvent areaevent = new PlayerNewLocationAreaEvent(event.getPlayer(), event.getRespawnLocation(), new_hash);
+        Bukkit.getServer().getPluginManager().callEvent(areaevent);
+        CPlayer.get(event.getPlayer()).setHash(new_hash);
     }
     
     @EventHandler
