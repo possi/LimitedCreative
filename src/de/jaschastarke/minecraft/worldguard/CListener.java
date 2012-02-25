@@ -81,12 +81,11 @@ public class CListener implements Listener {
     public void onPlayerComamnd(PlayerCommandPreprocessEvent event) {
         String[] cmd = event.getMessage().split(" ");
         if (cmd.length >= 2) {
-            if (cmd[0].replaceAll("/", "").toLowerCase() == "region") {
-                String opt = cmd[1].toLowerCase();
-                if (opt == "addowner" || opt == "addmember" ||
-                        opt == "removeowner" || opt == "remowner" ||
-                        opt == "removemember" || opt == "remmember" ||
-                        opt == "removemem" || opt == "remmem") {
+            if (cmd[0].replaceAll("/", "").equalsIgnoreCase("region")) {
+                if (cmd[1].equalsIgnoreCase("addowner") || cmd[1].equalsIgnoreCase("addmember") ||
+                        cmd[1].equalsIgnoreCase("removeowner") || cmd[1].equalsIgnoreCase("remowner") ||
+                        cmd[1].equalsIgnoreCase("removemember") || cmd[1].equalsIgnoreCase("remmember") ||
+                        cmd[1].equalsIgnoreCase("removemem") || cmd[1].equalsIgnoreCase("remmem")) {
                     CPlayer.clear();
                 }
             }
