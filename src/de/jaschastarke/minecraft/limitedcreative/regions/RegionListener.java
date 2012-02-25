@@ -14,7 +14,6 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 
 import de.jaschastarke.minecraft.limitedcreative.Core;
 import de.jaschastarke.minecraft.limitedcreative.LCPlayer;
@@ -23,6 +22,8 @@ import de.jaschastarke.minecraft.utils.Util;
 import de.jaschastarke.minecraft.worldguard.ApplicableRegions;
 import de.jaschastarke.minecraft.worldguard.CRegionManager;
 import de.jaschastarke.minecraft.worldguard.events.PlayerChangedAreaEvent;
+import de.jaschastarke.minecraft.worldguard.events.PlayerSetAreaEvent;
+import de.jaschastarke.minecraft.worldguard.events.PlayerUpdateAreaEvent;
 
 public class RegionListener implements Listener {
     private static Core plugin = WorldGuardIntegration.plugin;
@@ -92,12 +93,17 @@ public class RegionListener implements Listener {
     
     @EventHandler
     public void onPlayerChangedArea(PlayerChangedAreaEvent event) {
-        Players.get(event.getPlayer()).setRegionCreativeAllowed(event.getNewRegionSet().allows(Flags.CREATIVE, event.getPlayer()), event);
+        Players.get(event.getPlayer()).setRegionCreativeAllowed(event.getRegionSet().allows(Flags.CREATIVE, event.getPlayer()), event);
     }
     
     @EventHandler
-    public void onPlayerLogin(PlayerJoinEvent event) {
-        Players.get(event.getPlayer()).setRegionCreativeAllowed(rm.getRegionSet(event.getPlayer().getLocation()).allows(Flags.CREATIVE, event.getPlayer()), null);
+    public void onPlayerSetArea(PlayerSetAreaEvent event) {
+        Players.get(event.getPlayer()).setRegionCreativeAllowed(event.getRegionSet().allows(Flags.CREATIVE, event.getPlayer()), event);
+    }
+    
+    @EventHandler
+    public void onPlayerUpdateArea(PlayerUpdateAreaEvent event) {
+        Players.get(event.getPlayer()).setRegionCreativeAllowed(event.getRegionSet().allows(Flags.CREATIVE, event.getPlayer()), event);
     }
     
     @EventHandler

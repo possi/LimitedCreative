@@ -22,6 +22,7 @@ import de.jaschastarke.minecraft.utils.IPermission;
 public enum Perms implements IPermission {
     CONFIG("config"),
     REGIONS("regions"),
+    REGIONS_BYPASS("regions_bypass"),
     GM("switch_gamemode"),
     GM_BACKONLY("switch_gamemode.backonly"),
     GM_SURVIVAL("switch_gamemode.survival"),

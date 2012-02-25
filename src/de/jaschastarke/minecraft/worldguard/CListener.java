@@ -21,12 +21,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import de.jaschastarke.minecraft.worldguard.events.PlayerChangedAreaEvent;
+import de.jaschastarke.minecraft.worldguard.events.PlayerSetAreaEvent;
 
 public class CListener implements Listener {
     private Interface com;
@@ -43,11 +45,17 @@ public class CListener implements Listener {
                 || event.getFrom().getBlockY() != event.getTo().getBlockY()
                 || event.getFrom().getBlockZ() != event.getTo().getBlockZ()) { // he really moved, and not just looked around
 
-            if (com.getRegionManager().isDiffrentRegion(event.getPlayer(), event.getTo())) {
-                String current_hash = CPlayer.get(event.getPlayer()).getHash();
+            String current_hash = CPlayer.get(event.getPlayer()).getHash();
+            if (current_hash == null) {
                 String new_hash = com.getRegionManager().getRegionsHash(event.getTo());
-                Bukkit.getServer().getPluginManager().callEvent(new PlayerChangedAreaEvent(event, current_hash, new_hash));
+                Bukkit.getServer().getPluginManager().callEvent(new PlayerSetAreaEvent(event.getPlayer(), new_hash, event.getTo()));
                 CPlayer.get(event.getPlayer()).setHash(new_hash);
+            } else if (com.getRegionManager().isDiffrentRegion(event.getPlayer(), event.getTo())) {
+                String new_hash = com.getRegionManager().getRegionsHash(event.getTo());
+                PlayerChangedAreaEvent areaevent = new PlayerChangedAreaEvent(event, current_hash, new_hash);
+                Bukkit.getServer().getPluginManager().callEvent(areaevent);
+                if (!areaevent.isCancelled())
+                    CPlayer.get(event.getPlayer()).setHash(new_hash);
             }
         }
     }
@@ -59,11 +67,29 @@ public class CListener implements Listener {
     
     @EventHandler
     public void onPlayerLogin(PlayerJoinEvent event) {
-        CPlayer.get(event.getPlayer()).setHash(com.getRegionManager().getRegionsHash(event.getPlayer().getLocation()));
+        String new_hash = com.getRegionManager().getRegionsHash(event.getPlayer().getLocation());
+        Bukkit.getServer().getPluginManager().callEvent(new PlayerSetAreaEvent(event.getPlayer(), new_hash));
+        CPlayer.get(event.getPlayer()).setHash(new_hash);
     }
     
     @EventHandler
     public void onPlayerLogout(PlayerQuitEvent event) {
         CPlayer.remove(event.getPlayer());
+    }
+    
+    @EventHandler
+    public void onPlayerComamnd(PlayerCommandPreprocessEvent event) {
+        String[] cmd = event.getMessage().split(" ");
+        if (cmd.length >= 2) {
+            if (cmd[0].replaceAll("/", "").toLowerCase() == "region") {
+                String opt = cmd[1].toLowerCase();
+                if (opt == "addowner" || opt == "addmember" ||
+                        opt == "removeowner" || opt == "remowner" ||
+                        opt == "removemember" || opt == "remmember" ||
+                        opt == "removemem" || opt == "remmem") {
+                    CPlayer.clear();
+                }
+            }
+        }
     }
 }

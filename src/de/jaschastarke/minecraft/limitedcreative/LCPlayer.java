@@ -40,9 +40,12 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Lever;
+import org.bukkit.material.MaterialData;
 
 import de.jaschastarke.minecraft.utils.IPermission;
+import de.jaschastarke.minecraft.worldguard.events.PlayerAreaEvent;
 import de.jaschastarke.minecraft.worldguard.events.PlayerChangedAreaEvent;
 
 public class LCPlayer {
@@ -125,6 +128,8 @@ public class LCPlayer {
         return getOptionalRegionGameMode(region);
     }
     private GameMode getOptionalRegionGameMode(String region) {
+        if (!plugin.config.getRegionRememberOptional())
+            return null;
         if (!options.containsKey("region_opt#"+region)) {
             options.put("region_opt#"+region, Players.getOptions().getOptionalRegionGameMode(getName(), region));
         }
@@ -137,6 +142,8 @@ public class LCPlayer {
         setOptionalRegionGameMode(region, gm);
     }
     public void setOptionalRegionGameMode(String region, GameMode gm) {
+        if (!plugin.config.getRegionRememberOptional())
+            return;
         options.remove("region_opt#"+region);
         Core.debug(getName()+": set optional region game mode: "+region+" - " + gm);
         Players.getOptions().setOptionalRegionGameMode(getName(), region, gm);
@@ -162,7 +169,7 @@ public class LCPlayer {
         Core.debug(getName() + " going into " + gm);
         if (isRegionGameMode()) { // change to the other gamemode as the area defines
             if (!isRegionGameMode(gm)) { // only when we are not switching to the mode the region allows
-                if (!plugin.config.getRegionOptional()) {
+                if (!plugin.config.getRegionOptional() && (!plugin.config.getPermissionsEnabled() || !hasPermission(Perms.REGIONS_BYPASS))) {
                     getPlayer().sendMessage(ChatColor.RED + L("exception.region.not_optional", gm.toString().toLowerCase()));
                     Core.debug("... denied");
                     return false;
@@ -192,6 +199,7 @@ public class LCPlayer {
                 } else {
                     getInv().clear();
                 }
+                setCreativeArmor();
             } else if (gm == GameMode.SURVIVAL) {
                 if (getInv().isStored(GameMode.SURVIVAL))
                     getInv().load(GameMode.SURVIVAL);
@@ -199,6 +207,22 @@ public class LCPlayer {
             
         }
         return true;
+    }
+    
+    public void setCreativeArmor() {
+         Map<String, MaterialData> armor = plugin.config.getCreativeArmor();
+        if (armor != null) {
+            ItemStack[] is = new ItemStack[4];
+            if (armor.containsKey("feet"))
+                is[0] = armor.get("feet").toItemStack(1);
+            if (armor.containsKey("legs"))
+                is[1] = armor.get("legs").toItemStack(1);
+            if (armor.containsKey("chest"))
+                is[2] = armor.get("chest").toItemStack(1);
+            if (armor.containsKey("head"))
+                is[3] = armor.get("head").toItemStack(1);
+            getPlayer().getInventory().setArmorContents(is);
+        }
     }
     
     public void onDropItem(PlayerDropItemEvent event) {
@@ -332,15 +356,39 @@ public class LCPlayer {
         }
     }
 
+    private boolean checkSwitchFlight(PlayerMoveEvent event) {
+        if (event != null && getPlayer().getGameMode() == GameMode.CREATIVE && getFloatingHeight(event.getTo()) > plugin.config.getMaximumFloatingHeight()) {
+            // but not if he is too high
+            this.sendTimeoutMessage(L("blocked.survival_flying"));
+            
+            Location newloc = event.getTo().clone();
+            newloc.setX(event.getFrom().getX());
+            newloc.setY(event.getFrom().getY()); // well, otherwise flying high out of the region is possible
+            newloc.setZ(event.getFrom().getZ());
+            event.setTo(newloc);
+            return false;
+        }
+        return true;
+    }
+    private boolean checkSwitchFlight(PlayerAreaEvent area_event) {
+        if (area_event instanceof PlayerChangedAreaEvent) {
+            if (!checkSwitchFlight(((PlayerChangedAreaEvent) area_event).getMoveEvent())) {
+                ((PlayerChangedAreaEvent) area_event).setCancelled(true);
+                return false;
+            }
+        }
+        return true;
+    }
+    
     /*
      * Attention: "Creative" stands for "the other gamemode". So true may mean, "be survival in creative world".
      */
-    public void setRegionCreativeAllowed(boolean rcreative, PlayerChangedAreaEvent changearea_event) {
-        Core.debug(getName()+": changed region: "+rcreative+": " + (changearea_event == null ? "null" : changearea_event.toString()));
+    public void setRegionCreativeAllowed(boolean rcreative, PlayerAreaEvent area_event) {
+        Core.debug(getName()+": changed region: "+rcreative+": " + area_event);
         
         PlayerMoveEvent event = null;
-        if (changearea_event != null)
-            event = changearea_event.getMoveEvent();
+        if (area_event instanceof PlayerChangedAreaEvent)
+            event = ((PlayerChangedAreaEvent) area_event).getMoveEvent();
         GameMode CURRENT_GAMEMODE = getPlayer().getGameMode();
         GameMode DEFAULT_GAMEMODE = plugin.com.getDefaultGameMode(event != null ? event.getTo().getWorld() : getPlayer().getWorld());
         GameMode TEMPORARY_GAMEMODE = DEFAULT_GAMEMODE == GameMode.SURVIVAL ? GameMode.CREATIVE : GameMode.SURVIVAL; // the opposite
@@ -351,13 +399,15 @@ public class LCPlayer {
             // 2. but the player is not in that mode
             // 3. and the player is not aware of that
             // result: change him to that mode
-            setRegionGameMode(TEMPORARY_GAMEMODE); // have to be set, before setGameMode
             
-            boolean isOptional = changearea_event != null ?
-                        isOptionalRegionGameMode(changearea_event.getNewRegionHash(), CURRENT_GAMEMODE) :
-                        isOptionalRegionGameMode(CURRENT_GAMEMODE);
-            if (!isOptional) {
-                getPlayer().setGameMode(TEMPORARY_GAMEMODE);
+            boolean isOptional = isOptionalRegionGameMode(area_event.getRegionHash(), CURRENT_GAMEMODE);
+            
+            if (isOptional || checkSwitchFlight(area_event)) {
+                setRegionGameMode(TEMPORARY_GAMEMODE); // have to be set, before setGameMode
+                
+                if (!isOptional) {
+                    getPlayer().setGameMode(TEMPORARY_GAMEMODE);
+                }
             }
         } else if (!rcreative && getPlayer().getGameMode() == TEMPORARY_GAMEMODE && !isPermanentGameMode(TEMPORARY_GAMEMODE)) {
             Core.debug(getName()+": leaving creative area");
@@ -365,21 +415,12 @@ public class LCPlayer {
             // 2. but the player is in that mode
             // 3. and the player isn't global (permanent) in that mode
             // result: change him back to default mode
-            if (event != null && CURRENT_GAMEMODE == GameMode.CREATIVE && getFloatingHeight() > plugin.config.getMaximumFloatingHeight()) {
-                // but not if he is too high
-                this.sendTimeoutMessage(L("blocked.survival_flying"));
-                
-                Location newloc = event.getTo().clone();
-                newloc.setX(event.getFrom().getX());
-                newloc.setY(event.getFrom().getY()); // well, otherwise flying high out of the region is possible
-                newloc.setZ(event.getFrom().getZ());
-                event.setTo(newloc);
-            } else {
+            if (checkSwitchFlight(area_event)) {
                 setRegionGameMode(null);
-                if (event != null && event.getTo().getWorld() == event.getFrom().getWorld()) {
+                if (event == null || event.getTo().getWorld() == event.getFrom().getWorld()) {
                     // do not enforce the game mode change, on world teleport, as multiverse may cancel the event afterwards
                     // the world-change game-mode change is done by multiworld
-                    event.getPlayer().setGameMode(DEFAULT_GAMEMODE);
+                    getPlayer().setGameMode(DEFAULT_GAMEMODE);
                 }
             }
         } else if (!rcreative && this.isRegionGameMode(TEMPORARY_GAMEMODE)) {
@@ -389,9 +430,21 @@ public class LCPlayer {
             // 3. (because of else) we are not longer in that mode
             // result: advise him to not longer allowed to that region
             setRegionGameMode(null);
-        } else if (this.isRegionGameMode()) {
-            // TODO: Add check to switch to optional selected gamemode
         }
+        /** At the moment, in permanent game mode, it ignores all regions
+        else if (this.isRegionGameMode()) {
+            Core.debug(getName()+": entering creative area (while already in region gamemode)");
+            // 1. the region allow "the other gamemode"
+            // 2. (inherit) the player is already in that mode
+            GameMode rgm = getOptionalRegionGameMode(area_event.getRegionHash());
+            if (rgm != null && rgm != CURRENT_GAMEMODE) {
+                Core.debug(getName()+": switching to optional remembered gamemode");
+                // 3. but he remembered optional want the other gamemode in that region
+                //    * this inherits, that the option is allowed
+                // result: change to the optional remembered game mode
+                getPlayer().setGameMode(rgm);
+            }
+        }*/
     }
 
     private Map<String, Long> timeout_msgs = new HashMap<String, Long>();
@@ -408,8 +461,12 @@ public class LCPlayer {
             getPlayer().sendMessage(msg);
         }
     }
+    
     public int getFloatingHeight() {
-        Block b = getPlayer().getLocation().getBlock();
+        return getFloatingHeight(getPlayer().getLocation());
+    }
+    public int getFloatingHeight(Location loc) {
+        Block b = loc.getBlock();
         int steps = 0;
         while (b.getType() == Material.AIR) {
             steps++;

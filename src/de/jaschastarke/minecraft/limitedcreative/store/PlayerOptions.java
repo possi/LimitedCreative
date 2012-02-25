@@ -35,10 +35,12 @@ public class PlayerOptions {
     }
     
     public void setRegionGameMode(String player, GameMode gm) {
-        if (gm == null)
+        if (gm == null) {
             store.set(player + ".region_gamemode", null);
-        else
+            cleanUp(player);
+        } else {
             store.set(player + ".region_gamemode", gm.name());
+        }
         save();
     }
     public GameMode getRegionGameMode(String player) {
@@ -63,9 +65,17 @@ public class PlayerOptions {
         ConfigurationSection sect = store.contains(player+".region") ? store.getConfigurationSection(player+".region") : store.createSection(player+".region");
         String mode = gm == null ? null : gm.name();
         sect.set(region, mode);
-        if (sect.getKeys(true).size() == 0)
+        if (sect.getKeys(true).size() == 0) {
             store.set(sect.getCurrentPath(), null);
+            cleanUp(player);
+        }
         save();
+    }
+    
+    protected void cleanUp(String player) {
+        if (store.contains(player) && store.getConfigurationSection(player).getValues(true).size() == 0) {
+            store.set(player, null);
+        }
     }
 
     protected void save() {

@@ -1,6 +1,6 @@
 name: LimitedCreative
 main: de.jaschastarke.minecraft.limitedcreative.Core
-version: 0.9.5-dev
+version: 0.9.5-beta
 softdepend: [WorldGuard, WorldEdit, MultiInv]
 dev-url: http://dev.bukkit.org/server-mods/limited-creative/
 commands:
@@ -19,6 +19,9 @@ permissions:
     limitedcreative.regions:
         description: Allows usage of the //region commands
         default: op
+    limitedcreative.regions.bypass:
+        description: Ignores the force of a gamemode, when region optional is disabled
+        default: false
     limitedcreative.switch_gamemode:
         description: Allows switching of own game mode to creative and back
         default: op

@@ -2,12 +2,13 @@
 # Limited Creative - Configuration
 # Full Default Configuration at:
 # https://github.com/possi/LimitedCreative/blob/master/config.yml
+#
+# (YAML-Syntax: http://en.wikipedia.org/wiki/YAML)
 # --------------------------------
 
 store:
     # SeparatedInventoryEnabled
     # Use this option to disable the separated inventories feature, for the case you only need the other features.
-    # This option can only changed by reloading the plugin (not via ingame commands).
     # default: true
     enabled: true
     
@@ -20,9 +21,26 @@ store:
     # UnsafeStore (for storing invalid enchants)
     # By default the new and upgrade-safe storage method for items is used. This method doesn't allow the use
     # of "invalid" enchants, like given by different plugins. Enable it, to allow invalid enchants (not recommended).
-    # This option can only changed by reloading the plugin (not via ingame commands).
+    # (May be removed with 1.2, as bukkit then allows unsafed enchants by default)
     # default: false
     unsafe: false
+    
+    # CreativeArmor
+    # When set, all creative Player automatically wears the given items as Armor. So they are better seen by other
+    # Players.
+    armor:
+        # CreativeArmorEnabled
+        # When disabled, the players Armor isn't swapped
+        # default: true
+        enabled: true
+        
+        # CreativeArmor-Items
+        # Allows changing of the "Creative-Armor" to be wear when in creative mode
+        # *see Blacklist for details on Item-Types
+        head: CHAINMAIL_HELMET
+        chest: CHAINMAIL_CHESTPLATE
+        legs: CHAINMAIL_LEGGINGS
+        feet: CHAINMAIL_BOOTS
     
     # InventoryFolder
     # The folder inside the datadir-folder (plugin/LimitedCreative) where the inventories are saved to.
@@ -33,8 +51,7 @@ store:
 limit:
     # LimitsEnabled
     # Use this option to disable all drop/pvp/etc. preventions while in creative mode. While you also can get this
-    # by giving the "nolimit" permissions, using this option can save you CPU performance. This option can only changed
-    # by reloading the plugin (not via ingame commands).
+    # by giving the "nolimit" permissions, using this option can save you CPU performance.
     # default: true
     enabled: true
 
@@ -88,7 +105,6 @@ limit:
     # data-value, all items/blocks of this material are blocked.
     # You also may add the special block "*" (better add quotes to don't break yml) which prevents the usage of ANY
     # item/block.
-    # This option can only changed by reloading the plugin (not via ingame commands).
     # default: []
     use: []
     
@@ -96,7 +112,6 @@ limit:
     # Prevents destroying of the given blocks in creative mode (and only in creative).
     # You can use the technical name (see http://jd.bukkit.org/doxygen/d7/dd9/namespaceorg_1_1bukkit.html#ab7fa290bb19b9a830362aa88028ec80a)
     # or the id of the block/item (better use the id, if you're not sure).
-    # This option can only changed by reloading the plugin (not via ingame commands).
     # You may add the data separated with a colon e.g.: "WOOL:11" blocks blue wool. But be sure to put it in quotes, to
     # not break yml-configuration! Named data values aren't supported yet. If you don't add a data-value, all blocks
     # of this material are blocked.
@@ -110,7 +125,6 @@ region:
     # RegionsEnabled
     # Enables the Feature for "creative-regions". This Feature is automatically disabled, if the required plugin
     # "WorldGuard" (http://dev.bukkit.org/server-mods/worldguard/) isn't found.
-    # This option can only changed by reloading the plugin (not via ingame commands).
     # default: true 
     enabled: true
     
@@ -119,6 +133,13 @@ region:
     # have no global permission to those commands
     # default: true
     optional: true
+    
+    # RegionRememberOptional
+    # Remembers if s.o. disables the region gamemode, so the region doesn't change his mode automatically if he enters
+    # the region again.
+    # Hint: Is very confusing, if MultiVerse "enforce gamemode" swaps your state.
+    # default: true
+    remember: true
 
 permissions:
     # PermissionsEnabled

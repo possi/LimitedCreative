@@ -23,10 +23,14 @@ import static de.jaschastarke.minecraft.utils.Util.copyFile;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.material.MaterialData;
 
 import de.jaschastarke.minecraft.limitedcreative.store.InvYamlStorage;
 import de.jaschastarke.minecraft.limitedcreative.store.PlayerInventoryStorage;
@@ -38,7 +42,9 @@ public class Configuration {
     
     public enum Option {
         STORECREATIVE("store.creative", true),
+        CREATIVEARMOR("store.armor.enabled", true),
         REGION_OPTIONAL("region.optional", true),
+        REGION_REMEMBER("region.remember", true),
         BLOCKPICKUP("limit.pickup", true),
         BLOCKSIGN("limit.sign", true),
         BLOCKBUTTON("limit.button", false),
@@ -151,6 +157,9 @@ public class Configuration {
     public boolean getRegionOptional() {
         return this.getBoolean(Option.REGION_OPTIONAL);
     }
+    public boolean getRegionRememberOptional() {
+        return this.getRegionOptional() && this.getBoolean(Option.REGION_REMEMBER);
+    }
     
     public String getLocale() {
         if (c.contains("locale") && c.getString("locale") != "none")
@@ -187,38 +196,47 @@ public class Configuration {
         List<BlackList> list = new ArrayList<BlackList>();
         if (s != null) {
             for (String m : s) {
-                int d = -1;
                 if (m.equals("*")) {
                     list.clear();
                     list.add(new BlackList.All());
                     break;
                 } else {
-                    if (m.contains(":")) {
-                        String[] t = m.split(":");
-                        m = t[0];
-                        try {
-                            d = Integer.parseInt(t[1]);
-                        } catch (NumberFormatException ex) {
-                            // TODO: try to find the data value by 
-                            if (d == -1)
-                                plugin.warn(L("exception.config.materiak_data_not_found", t[1]));
-                        }
-                    }
-                    Material e = null;
-                    try {
-                        e = Material.getMaterial(Integer.parseInt(m));
-                    } catch (NumberFormatException ex) {
-                        e = Material.matchMaterial(m);
-                    }
-                    if (e == null) {
-                        plugin.warn(L("exception.config.material_not_found", m));
-                    } else {
-                        list.add(new BlackList.Some(e, d));
-                    }
+                    MaterialData md = parseMaterial(m);
+                    if (md != null)
+                        list.add(new BlackList.Some(md));
                 }
             }
         }
         return list;
+    }
+    
+    private MaterialData parseMaterial(String m) {
+        int d = -1;
+        if (m.contains(":")) {
+            String[] t = m.split(":");
+            m = t[0];
+            try {
+                d = Integer.parseInt(t[1]);
+            } catch (NumberFormatException ex) {
+                // TODO: try to find the data value by 
+                if (d == -1)
+                    plugin.warn(L("exception.config.materiak_data_not_found", t[1]));
+            }
+        }
+        Material e = null;
+        try {
+            e = Material.getMaterial(Integer.parseInt(m));
+        } catch (NumberFormatException ex) {
+            e = Material.matchMaterial(m);
+        }
+        if (e == null) {
+            plugin.warn(L("exception.config.material_not_found", m));
+            return null;
+        }
+        if (d != -1)
+            return new MaterialData(e, (byte) d);
+        else
+            return new MaterialData(e);
     }
     
     private boolean _store_enabled = true;
@@ -246,5 +264,21 @@ public class Configuration {
     
     public PlayerInventoryStorage getInvetoryStorage() {
         return new InvYamlStorage(new File(plugin.getDataFolder(), getInventoryFolder()));
+    }
+
+    public Map<String, MaterialData> getCreativeArmor() {
+        if (c.contains("store.armor") && c.isConfigurationSection("store.armor")) {
+            ConfigurationSection sect = c.getConfigurationSection("store.armor");
+            if (sect.getBoolean("enabled")) {
+                Map<String, MaterialData> armor = new HashMap<String, MaterialData>();
+                for (Map.Entry<String, Object> entry : sect.getValues(false).entrySet()) {
+                    MaterialData md = parseMaterial((String) entry.getValue());
+                    if (md != null)
+                        armor.put(entry.getKey(), md);
+                }
+                return armor;
+            }
+        }
+        return null;
     }
 }

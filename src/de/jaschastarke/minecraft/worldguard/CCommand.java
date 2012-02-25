@@ -177,6 +177,7 @@ public class CCommand implements CommandExecutor {
             sender.sendMessage(ChatColor.DARK_RED + e.getLocalizedMessage());
             return;
         }
+        CPlayer.updateAll();
         sender.sendMessage(L("command.worldguard.flag_set", flag.getName()));
     }
     

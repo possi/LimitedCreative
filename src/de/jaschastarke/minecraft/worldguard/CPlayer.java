@@ -20,7 +20,10 @@ package de.jaschastarke.minecraft.worldguard;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import de.jaschastarke.minecraft.worldguard.events.PlayerUpdateAreaEvent;
 
 public class CPlayer {
     private static Map<String, CPlayer> players = new HashMap<String, CPlayer>();
@@ -44,5 +47,14 @@ public class CPlayer {
     }
     public void setHash(String hash) {
         this.hash = hash;
+    }
+    public static void clear() {
+        players.clear();
+    }
+    
+    public static void updateAll() {
+        for (Map.Entry<String, CPlayer> entry : players.entrySet()) {
+            Bukkit.getServer().getPluginManager().callEvent(new PlayerUpdateAreaEvent(entry.getKey(), entry.getValue().getHash()));
+        }
     }
 }

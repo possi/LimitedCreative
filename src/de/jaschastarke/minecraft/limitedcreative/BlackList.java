@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 abstract public class BlackList {
     
@@ -35,6 +36,11 @@ abstract public class BlackList {
         }
         public Some(Material material) {
             mat = material;
+        }
+        public Some(MaterialData md) {
+            mat = md.getItemType();
+            if (md.getData() != 0)
+                this.data = md.getData();
         }
         public boolean matches(Block block) {
             if (this.mat == null)

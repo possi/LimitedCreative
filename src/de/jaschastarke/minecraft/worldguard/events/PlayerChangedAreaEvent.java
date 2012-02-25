@@ -18,7 +18,7 @@
 package de.jaschastarke.minecraft.worldguard.events;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -27,10 +27,11 @@ import de.jaschastarke.minecraft.worldguard.ApplicableRegions;
 import de.jaschastarke.minecraft.worldguard.Interface;
 
 @SuppressWarnings("serial")
-public class PlayerChangedAreaEvent extends Event {
+public class PlayerChangedAreaEvent extends PlayerAreaEvent implements Cancellable {
     private PlayerMoveEvent event;
     private String _previous_hash;
-    private String _new_hash;
+    private String _hash;
+    private boolean _cancelled = false;
     
     public PlayerChangedAreaEvent(PlayerMoveEvent moveevent) {
         event = moveevent;
@@ -38,7 +39,18 @@ public class PlayerChangedAreaEvent extends Event {
     public PlayerChangedAreaEvent(PlayerMoveEvent moveevent, String previous_hash, String new_hash) {
         event = moveevent;
         _previous_hash = previous_hash;
-        _new_hash = new_hash;
+        _hash = new_hash;
+    }
+    
+    @Override
+    public String getRegionHash() {
+        if (_hash == null)
+            _hash = Interface.getInstance().getRegionManager().getRegionsHash(event.getTo());
+        return _hash;
+    }
+    @Override
+    public ApplicableRegions getRegionSet() {
+        return Interface.getInstance().getRegionManager().getRegionSet(event.getTo());
     }
     
     public Player getPlayer() {
@@ -52,19 +64,11 @@ public class PlayerChangedAreaEvent extends Event {
     public ApplicableRegions getPreviousRegionSet() {
         return Interface.getInstance().getRegionManager().getRegionSet(event.getFrom());
     }
-    public ApplicableRegions getNewRegionSet() {
-        return Interface.getInstance().getRegionManager().getRegionSet(event.getTo());
-    }
     
     public String getPreviousRegionHash() {
         if (_previous_hash == null)
             _previous_hash = Interface.getInstance().getRegionManager().getRegionsHash(event.getFrom());
         return _previous_hash;
-    }
-    public String getNewRegionHash() {
-        if (_new_hash == null)
-            _new_hash = Interface.getInstance().getRegionManager().getRegionsHash(event.getTo());
-        return _new_hash;
     }
 
     public PlayerMoveEvent getMoveEvent() {
@@ -72,7 +76,7 @@ public class PlayerChangedAreaEvent extends Event {
     }
     
     public String toString() {
-        return getClass().getSimpleName()+"["+getPreviousRegionHash()+" -> "+getNewRegionHash()+"]";
+        return getClass().getSimpleName()+"["+getPreviousRegionHash()+" -> "+getRegionHash()+"]";
     }
     
     private static final HandlerList handlers = new HandlerList();
@@ -83,5 +87,13 @@ public class PlayerChangedAreaEvent extends Event {
      
     public static HandlerList getHandlerList() {
         return handlers;
+    }
+    @Override
+    public boolean isCancelled() {
+        return _cancelled;
+    }
+    @Override
+    public void setCancelled(boolean b) {
+        _cancelled = b;
     }
 }
