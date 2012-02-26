@@ -47,9 +47,13 @@ public class Communicator extends AbstractCommunicator {
     }
     public GameMode getDefaultGameMode(World world) {
         GameMode def = Bukkit.getServer().getDefaultGameMode();
-        if (isPluginEnabled("Multiverse-Core"))
+        if (isMultiVerse())
             def = MultiVerse.getGameMode(world);
         Core.debug("com: "+world.getName()+": game mode: "+def);
         return def;
+    }
+    
+    public boolean isMultiVerse() {
+        return isPluginEnabled("Multiverse-Core");
     }
 }

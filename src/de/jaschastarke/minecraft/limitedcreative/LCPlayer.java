@@ -277,7 +277,7 @@ public class LCPlayer {
     public void onDamage(Entity from, EntityDamageByEntityEvent event) { // receives damage
         if (from instanceof Player) {
             // its PVP
-            Player attacker = (Player) event.getDamager();
+            Player attacker = (Player) from;
             if (attacker.getGameMode() == GameMode.CREATIVE) {
                 if (!plugin.config.getPermissionsEnabled() || !Players.get(attacker).hasPermission(Perms.NoLimit.PVP)) {
                     event.setCancelled(true);
@@ -423,7 +423,7 @@ public class LCPlayer {
             // result: change him back to default mode
             if (checkSwitchFlight(area_event)) {
                 setRegionGameMode(null);
-                if (event == null || event.getTo().getWorld() == event.getFrom().getWorld()) {
+                if (event == null || event.getTo().getWorld() == event.getFrom().getWorld() || !plugin.com.isMultiVerse()) {
                     // do not enforce the game mode change, on world teleport, as multiverse may cancel the event afterwards
                     // the world-change game-mode change is done by multiworld
                     getPlayer().setGameMode(DEFAULT_GAMEMODE);
