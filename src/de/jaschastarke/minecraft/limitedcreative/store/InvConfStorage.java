@@ -89,7 +89,7 @@ abstract public class InvConfStorage extends PlayerInventoryStorage {
             ConfigurationSection sect = (ConfigurationSection) is;
             Material type = Material.getMaterial(sect.getString("type"));
             short damage = new Integer(sect.getInt("damage", 0)).shortValue();
-            int amount = sect.getInt("amaount", 1);
+            int amount = sect.getInt("amount", 1);
             
             ItemStack result = new ItemStack(type, amount, damage);
             if (sect.contains("enchantments")) {
