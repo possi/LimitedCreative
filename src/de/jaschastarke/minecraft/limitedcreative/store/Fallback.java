@@ -78,9 +78,11 @@ public class Fallback {
                 return section.getItemStack(path);
             } else {
                 ConfigurationSection s = section.getConfigurationSection(path);
-                Map<String, Object> serialize = s.getValues(false);
-                serialize.remove("enchantments");
-                ItemStack result = ItemStack.deserialize(serialize);
+                Material type = Material.getMaterial(s.getString("type"));
+                short damage = new Integer(s.getInt("damage", 0)).shortValue();
+                int amount = s.getInt("amaount", 1);
+                
+                ItemStack result = new ItemStack(type, amount, damage);
                 Map<String, Object> item = section.getConfigurationSection(path).getValues(false);
                 item.remove("enchantments");
                 if (s.contains("enchantments")) {
