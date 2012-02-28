@@ -22,7 +22,6 @@ import org.bukkit.event.Event;
 
 import de.jaschastarke.minecraft.worldguard.ApplicableRegions;
 
-@SuppressWarnings("serial")
 public abstract class PlayerAreaEvent extends Event {
     abstract public String getRegionHash();
     abstract public ApplicableRegions getRegionSet();

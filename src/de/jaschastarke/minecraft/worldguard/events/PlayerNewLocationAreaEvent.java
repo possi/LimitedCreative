@@ -24,7 +24,6 @@ import org.bukkit.event.HandlerList;
 import de.jaschastarke.minecraft.worldguard.ApplicableRegions;
 import de.jaschastarke.minecraft.worldguard.Interface;
 
-@SuppressWarnings("serial")
 public class PlayerNewLocationAreaEvent extends PlayerAreaEvent {
     private Location location;
     private Player player;

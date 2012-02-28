@@ -24,7 +24,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import de.jaschastarke.minecraft.worldguard.ApplicableRegions;
 import de.jaschastarke.minecraft.worldguard.Interface;
 
-@SuppressWarnings("serial")
 public class PlayerChangedAreaEvent extends PlayerNewLocationAreaEvent implements Cancellable {
     private PlayerMoveEvent event;
     private String _previous_hash;
