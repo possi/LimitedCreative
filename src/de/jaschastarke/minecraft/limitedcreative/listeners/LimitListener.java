@@ -23,7 +23,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.ContainerBlock;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -44,6 +43,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.material.Button;
 import org.bukkit.material.Lever;
 
@@ -90,7 +90,7 @@ public class LimitListener implements Listener {
         
         Block block = event.getClickedBlock();
         
-        if (block.getState() instanceof ContainerBlock) {
+        if (block.getState() instanceof InventoryHolder) {
             player.onChestAccess(event);
         } else if (block.getState() instanceof Sign) {
             player.onSignAccess(event);
