@@ -24,7 +24,6 @@ import org.bukkit.event.HandlerList;
 import de.jaschastarke.minecraft.worldguard.ApplicableRegions;
 import de.jaschastarke.minecraft.worldguard.Interface;
 
-@SuppressWarnings("serial")
 public class PlayerSetAreaEvent extends PlayerAreaEvent {
     private Player player;
     private String hash;

@@ -17,11 +17,7 @@
  */
 package de.jaschastarke.minecraft.limitedcreative.store;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -40,31 +36,6 @@ public class InvYamlStorage extends InvConfStorage {
     
     @Override
     public void load(Inventory pinv, Target target) {
-// BEGIN: VERY dirty Workaround for 1.1-R4-Bug (will be removed when r5 released)
-        try {
-            BufferedReader in = new BufferedReader(new FileReader(getFile(pinv, target)));
-            String line;
-            StringBuilder file = new StringBuilder();
-            Boolean changed = false;
-            while ((line = in.readLine()) != null) {
-                if (!line.matches("\\s*==:\\s+org\\.bukkit\\.inventory\\.ItemStack\\s*")) {
-                    file.append(line);
-                    file.append("\n");
-                } else {
-                    changed = true;
-                }
-            }
-            in.close();
-            
-            if (changed) {
-                BufferedWriter out = new BufferedWriter(new FileWriter(getFile(pinv, target)));
-                out.write(file.toString());
-                out.close();
-            }
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-// END: workaround
         load(pinv, YamlConfiguration.loadConfiguration(getFile(pinv, target)));
     }
     
