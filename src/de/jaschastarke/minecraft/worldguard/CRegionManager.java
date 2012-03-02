@@ -103,7 +103,12 @@ public class CRegionManager {
 
             ConfigurationSection fs = rs.contains("flags") ? rs.getConfigurationSection("flags") : rs.createSection("flags");
             
-            fs.set(flag.getName(), flag.marshal((V) value));
+            
+            Object o = null;
+            if (value != null)
+                o = flag.marshal((V) value);
+            
+            fs.set(flag.getName(), o);
             
             try {
                 c.save(file);
@@ -122,8 +127,10 @@ public class CRegionManager {
                         ConfigurationSection fs = rs.getConfigurationSection("flags");
                         for (Map.Entry<String, Object> data : fs.getValues(false).entrySet()) {
                             Flag<?> flag = FlagList.getFlag(data.getKey());
-                            Object value = flag.unmarshal(data.getValue());
-                            list.add(new FlagValue(flag, value));
+                            if (flag != null) { // the flag doesn't exists anymore. just ignore it without error
+                                Object value = flag.unmarshal(data.getValue());
+                                list.add(new FlagValue(flag, value));
+                            }
                         }
                     }
                 }

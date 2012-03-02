@@ -19,6 +19,7 @@ package de.jaschastarke.minecraft.worldguard;
 
 import static de.jaschastarke.minecraft.utils.Locale.L;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -136,8 +137,11 @@ public class CCommand implements CommandExecutor {
             hasPermission(sender, Perms.INFO);
         }*/
         
-        String[] args = new String[]{"info", region.getWorld().getName(), region.getProtectedRegion().getId()};
-        wg.onCommand(sender, wg.getCommand("region"), "region", args);
+        /*
+         * WorldEdits intercepting Servers privates commandMap via Reflections realy sucks!
+         * Just because they are to lazy to add all the lines commands to plugin.yml
+         */
+        Bukkit.getServer().dispatchCommand(sender, "region info "+region.getWorld().getName()+ " "+region.getProtectedRegion().getId());
         
         StringBuilder list = new StringBuilder();
         for (FlagValue data : region.getFlags()) {
@@ -157,15 +161,24 @@ public class CCommand implements CommandExecutor {
             return;
         }
         String flagName = args[2];
+        String value = null;
+        
         Flag<?> flag = FlagList.getFlag(flagName);
+        
+        if (args.length > 3 && args[3].equalsIgnoreCase("-g")) {
+            flag = flag.getRegionGroupFlag();
+            if (args.length > 4)
+                value = Util.join(args, 4);
+        } else {
+            if (args.length > 3)
+                value = Util.join(args, 3);
+        }
+        
         if (flag == null) {
             sender.sendMessage(ChatColor.DARK_RED + L("command.worldguard.unknown_flag") + ": " + flagName);
             sender.sendMessage(ChatColor.DARK_RED + L("command.worldguard.available_flags") + ": " + FlagList.getStringListAvailableFlags(sender));
             return;
         }
-        String value = null;
-        if (args.length > 3)
-            value = Util.join(args, 3);
         
         try {
             if (value != null) {

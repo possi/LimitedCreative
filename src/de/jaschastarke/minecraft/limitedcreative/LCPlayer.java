@@ -100,7 +100,7 @@ public class LCPlayer {
         Players.getOptions().setRegionGameMode(getName(), gm);
     }
     
-    private GameMode getRegionGameMode() {
+    public GameMode getRegionGameMode() {
         if (!options.containsKey("region")) {
             options.put("region", Players.getOptions().getRegionGameMode(getName()));
         }

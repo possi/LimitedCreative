@@ -44,8 +44,9 @@ public class Core extends JavaPlugin {
     @Override
     public void onDisable() {
         plugin.getServer().getScheduler().cancelTasks(this);
-        try {
+        if (worldguard != null)
             worldguard.unload();
+        try {
             Locale.unload();
         } catch (NoClassDefFoundError e) {} // prevent unload issue
         

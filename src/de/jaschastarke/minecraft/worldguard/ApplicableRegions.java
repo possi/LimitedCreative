@@ -49,6 +49,20 @@ public class ApplicableRegions {
         contractRegionFlags();
         return r;
     }
+    
+    public <T extends Flag<V>, V> V getFlag(T flag) {
+        extendRegionFlags();
+        V r = regions.getFlag(flag);
+        contractRegionFlags();
+        return r;
+    }
+    
+    public <T extends Flag<V>, V> V getFlag(T flag, Player player) {
+        extendRegionFlags();
+        V r = regions.getFlag(flag, WorldGuardIntegration.wg.wrapPlayer(player));
+        contractRegionFlags();
+        return r;
+    }
 
     @SuppressWarnings("unchecked")
     private <T extends Flag<V>, V> void extendRegionFlags() {
