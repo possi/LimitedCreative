@@ -1,6 +1,6 @@
 name: LimitedCreative
 main: de.jaschastarke.minecraft.limitedcreative.Core
-version: 0.9.7-beta
+version: 1.0
 softdepend: [WorldGuard, WorldEdit, MultiInv]
 dev-url: http://dev.bukkit.org/server-mods/limited-creative/
 commands:
