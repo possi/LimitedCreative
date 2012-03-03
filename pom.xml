@@ -10,6 +10,23 @@
   	<developerConnection>scm:git:git@github.com:possi/LimitedCreative.git</developerConnection>
   	<url>https://github.com/possi/LimitedCreative/tree/master</url>
   </scm>
+  <repositories>
+    <!-- Required dependencies for optional integrations, that aren't hosted yet -->
+    <repository>
+      <id>opt-dep</id>
+      <url>http://dl.dropbox.com/u/5023975/mvn-repo</url>
+    </repository>
+    <!-- Official (Craft-)Bukkit repository -->
+    <repository>
+      <id>bukkit-repo</id>
+      <url>http://repo.bukkit.org/content/groups/public</url>
+    </repository>
+    <!-- Official WorldGuard and WorldEdit repository -->
+    <repository>
+      <id>sk89q-mvn2</id>
+      <url>http://mvn2.sk89q.com/repo</url>
+    </repository>
+  </repositories>
   <build>
     <sourceDirectory>${basedir}/src</sourceDirectory>
   	<plugins>

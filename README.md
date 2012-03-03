@@ -6,15 +6,11 @@ Required dependencies
 
 * [Bukkit](https://github.com/Bukkit/Bukkit)
 
-Maven Dependencies for optional integrations
---------------------------------------------
+Dependencies for optional integrations
+--------------------------------------
 
 * [WorldGuard](https://github.com/sk89q/worldguard)
 * [WorldEdit](https://github.com/sk89q/worldedit)
-
-Non-Maven dependencies for optional integrations
-------------------------------------------------
-
 * [xAuth](http://dev.bukkit.org/server-mods/xauth/)
 * [AuthMe](http://dev.bukkit.org/server-mods/authme-reloaded/)
 * [Multiverse-Core](http://dev.bukkit.org/server-mods/multiverse-core/)
@@ -24,9 +20,6 @@ Non-Maven dependencies for optional integrations
 To use Maven packaging
 ----------------------
 
-You need to add the non-maven dependencies:
-
-* download the jars and then...
-* $ mvn install:install-file -Dfile=AuthMe.jar -DgroupId=uk.org.whoami -DartifactId=authme -Dversion=2.6.2 -Dpackaging=jar
-* $ mvn install:install-file -Dfile=Multiverse-Core.jar -DgroupId=com.onarandombox -DartifactId=multiverse-core  -Dversion=2.3-AB -Dpackaging=jar
-* $ mvn install:install-file -Dfile=xAuth.jar -DgroupId=com.cypherx -DartifactId=xauth -Dversion=3.1 -Dpackaging=jar
+For required development snapshots, that aren't found by maven, you have to clone the project and do:
+$ mvn install
+in the directory of the project
