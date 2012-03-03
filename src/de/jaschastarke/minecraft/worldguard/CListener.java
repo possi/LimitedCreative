@@ -42,10 +42,11 @@ public class CListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         if (event.isCancelled())
             return;
-        //if (event.isCoarse()) { // next bukkit release will shortcut that
+        
         if (event.getFrom().getBlockX() != event.getTo().getBlockX()
                 || event.getFrom().getBlockY() != event.getTo().getBlockY()
-                || event.getFrom().getBlockZ() != event.getTo().getBlockZ()) { // he really moved, and not just looked around
+                || event.getFrom().getBlockZ() != event.getTo().getBlockZ()
+                || !event.getFrom().getWorld().equals(event.getTo().getWorld())) { // he really moved, and not just looked around
 
             String current_hash = CPlayer.get(event.getPlayer()).getHash();
             if (current_hash == null) {
