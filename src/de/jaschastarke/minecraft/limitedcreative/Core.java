@@ -25,8 +25,10 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.jaschastarke.minecraft.integration.Communicator;
+import de.jaschastarke.minecraft.limitedcreative.listeners.CreativeBlockListener;
+import de.jaschastarke.minecraft.limitedcreative.listeners.GenericListener;
 import de.jaschastarke.minecraft.limitedcreative.listeners.LimitListener;
-import de.jaschastarke.minecraft.limitedcreative.listeners.MainListener;
+import de.jaschastarke.minecraft.limitedcreative.listeners.InventoryStoreListener;
 import de.jaschastarke.minecraft.limitedcreative.regions.WorldGuardIntegration;
 import de.jaschastarke.minecraft.utils.Locale;
 import de.jaschastarke.minecraft.utils.Permissions;
@@ -73,7 +75,9 @@ public class Core extends JavaPlugin {
             warn(L("basic.conflict", "MultiInv", L("basic.feature.store")));
             config.setTempStoreEnabled(false);
         }
-        getServer().getPluginManager().registerEvents(new MainListener(this), this);
+        getServer().getPluginManager().registerEvents(new InventoryStoreListener(this), this);
+        getServer().getPluginManager().registerEvents(new GenericListener(this), this);
+        getServer().getPluginManager().registerEvents(new CreativeBlockListener(this), this);
         
         // 2nd Feature: Creative Limitations (Restrictions)
         if (config.getLimitEnabled())

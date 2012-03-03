@@ -72,7 +72,7 @@ public class LimitListener implements Listener {
 
     @EventHandler(priority=EventPriority.LOWEST)
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (MainListener.isCancelled(event) || event.getPlayer().getGameMode() != GameMode.CREATIVE)
+        if (GenericListener.isCancelled(event) || event.getPlayer().getGameMode() != GameMode.CREATIVE)
             return;
         
         LCPlayer player = Players.get(event.getPlayer());

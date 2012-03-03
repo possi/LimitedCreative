@@ -121,6 +121,9 @@ limit:
     break:
      - bedrock
 
+blocks:
+    enabled: true
+
 region:
     # RegionsEnabled
     # Enables the Feature for "creative-regions". This Feature is automatically disabled, if the required plugin
