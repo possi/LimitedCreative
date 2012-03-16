@@ -26,9 +26,31 @@
       <id>sk89q-mvn2</id>
       <url>http://mvn2.sk89q.com/repo</url>
     </repository>
+    <!-- Official Multiverse repository -->
+    <repository>
+        <id>onarandombox</id>
+        <url>http://repo.onarandombox.com/content/groups/public</url>
+    </repository>
   </repositories>
   <build>
     <sourceDirectory>${basedir}/src</sourceDirectory>
+    
+    <resources>
+      <resource>
+        <targetPath>.</targetPath>
+        <filtering>true</filtering>
+        <directory>${basedir}/</directory>
+        <includes>
+          <include>plugin.yml</include>
+          <include>config.yml</include>
+        </includes>
+      </resource>
+      <resource>
+        <targetPath>lang/</targetPath>
+        <directory>${basedir}/lang/</directory>
+      </resource>
+    </resources>
+    
   	<plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -45,7 +67,7 @@
   	<dependency>
   		<groupId>org.bukkit</groupId>
   		<artifactId>bukkit</artifactId>
-  		<version>1.2.3-R0.1-SNAPSHOT</version>
+  		<version>1.2.3-R0.2-SNAPSHOT</version>
   	</dependency>
   	<dependency>
   		<groupId>com.sk89q</groupId>
@@ -58,9 +80,9 @@
   		<version>2.6.2</version>
   	</dependency>
   	<dependency>
-  		<groupId>com.onarandombox</groupId>
-  		<artifactId>multiverse-core</artifactId>
-  		<version>2.3-AB</version>
+  		<groupId>com.onarandombox.multiversecore</groupId>
+  		<artifactId>Multiverse-Core</artifactId>
+  		<version>2.4</version>
   	</dependency>
   	<dependency>
   		<groupId>com.cypherx</groupId>
