@@ -122,8 +122,10 @@ public class CRegionManager {
                         ConfigurationSection fs = rs.getConfigurationSection("flags");
                         for (Map.Entry<String, Object> data : fs.getValues(false).entrySet()) {
                             Flag<?> flag = FlagList.getFlag(data.getKey());
-                            Object value = flag.unmarshal(data.getValue());
-                            list.add(new FlagValue(flag, value));
+                            if (flag != null) {
+                                Object value = flag.unmarshal(data.getValue());
+                                list.add(new FlagValue(flag, value));
+                            }
                         }
                     }
                 }
