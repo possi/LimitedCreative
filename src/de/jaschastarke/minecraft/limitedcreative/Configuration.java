@@ -272,9 +272,11 @@ public class Configuration {
             if (sect.getBoolean("enabled")) {
                 Map<String, MaterialData> armor = new HashMap<String, MaterialData>();
                 for (Map.Entry<String, Object> entry : sect.getValues(false).entrySet()) {
-                    MaterialData md = parseMaterial((String) entry.getValue());
-                    if (md != null)
-                        armor.put(entry.getKey(), md);
+                    if (!entry.getKey().equals("enabled")) {
+                        MaterialData md = parseMaterial((String) entry.getValue());
+                        if (md != null)
+                            armor.put(entry.getKey(), md);
+                    }
                 }
                 return armor;
             }
