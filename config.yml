@@ -105,8 +105,10 @@ limit:
     # data-value, all items/blocks of this material are blocked.
     # You also may add the special block "*" (better add quotes to don't break yml) which prevents the usage of ANY
     # item/block.
-    # default: []
-    use: []
+    # default: [exp_bottle, bedrock]
+    use:
+     - EXP_BOTTLE
+     - bedrock
     
     # BreakBlackList
     # Prevents destroying of the given blocks in creative mode (and only in creative).
