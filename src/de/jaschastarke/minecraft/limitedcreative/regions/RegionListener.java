@@ -47,9 +47,9 @@ public class RegionListener implements Listener {
         LCPlayer player = Players.get(event.getPlayer());
         boolean diffrent_region = rm.isDiffrentRegion(event.getPlayer(), event.getBlock().getLocation());
         
-        if (player.isRegionGameMode() && diffrent_region) {
+        if (player.isActiveRegionGameMode() && diffrent_region) {
             // do not break outside of "gamemod-change-region" when in the region
-            if (rm.getRegionSet(event.getBlock()).getFlag(Flags.GAMEMODE, event.getPlayer()) != player.getRegionGameMode()) {
+            if (rm.getRegionSet(event.getBlock()).getFlag(Flags.GAMEMODE, event.getPlayer()) != player.getActiveRegionGameMode()) {
                 event.getPlayer().sendMessage(L("blocked.outside_break"));
                 event.setCancelled(true);
             }
@@ -76,9 +76,9 @@ public class RegionListener implements Listener {
         LCPlayer player = Players.get(event.getPlayer());
         boolean diffrent_region = rm.isDiffrentRegion(event.getPlayer(), event.getBlock().getLocation());
         
-        if (player.isRegionGameMode() && diffrent_region) {
+        if (player.isActiveRegionGameMode() && diffrent_region) {
             // do not build outside of "gamemod-change-region" when in the region
-            if (rm.getRegionSet(event.getBlock()).getFlag(Flags.GAMEMODE, event.getPlayer()) != player.getRegionGameMode()) { 
+            if (rm.getRegionSet(event.getBlock()).getFlag(Flags.GAMEMODE, event.getPlayer()) != player.getActiveRegionGameMode()) { 
                 event.getPlayer().sendMessage(L("blocked.outside_place"));
                 event.setCancelled(true);
             }
@@ -93,17 +93,17 @@ public class RegionListener implements Listener {
     
     @EventHandler
     public void onPlayerChangedArea(PlayerNewLocationAreaEvent event) {
-        Players.get(event.getPlayer()).setRegionCreativeAllowed(event.getRegionSet().getFlag(Flags.GAMEMODE, event.getPlayer()) != null, event);
+        Players.get(event.getPlayer()).setRegionGameMode(event.getRegionSet().getFlag(Flags.GAMEMODE, event.getPlayer()), event);
     }
     
     @EventHandler
     public void onPlayerSetArea(PlayerSetAreaEvent event) {
-        Players.get(event.getPlayer()).setRegionCreativeAllowed(event.getRegionSet().getFlag(Flags.GAMEMODE, event.getPlayer()) != null, event);
+        Players.get(event.getPlayer()).setRegionGameMode(event.getRegionSet().getFlag(Flags.GAMEMODE, event.getPlayer()), event);
     }
     
     @EventHandler
     public void onPlayerUpdateArea(PlayerUpdateAreaEvent event) {
-        Players.get(event.getPlayer()).setRegionCreativeAllowed(event.getRegionSet().getFlag(Flags.GAMEMODE, event.getPlayer()) != null, event);
+        Players.get(event.getPlayer()).setRegionGameMode(event.getRegionSet().getFlag(Flags.GAMEMODE, event.getPlayer()), event);
     }
     
     @EventHandler

@@ -62,8 +62,8 @@ public class LCPlayer {
         //name = player.getName();
         //touch();
         
-        if (!this.isRegionGameMode(player.getGameMode())) {
-            setPermanentGameMode(player.getGameMode());
+        if (!this.isActiveRegionGameMode(player.getGameMode())) {
+            setInPermanentGameMode(player.getGameMode());
         }
     }
     
@@ -94,24 +94,24 @@ public class LCPlayer {
     }*/
 
     private Map<String, Object> options = new HashMap<String, Object>();
-    public void setRegionGameMode(final GameMode gm) {
+    public void storeActiveRegionGameMode(final GameMode gm) {
         options.remove("region");
         Core.debug(getName()+": set region game mode: " + gm);
         Players.getOptions().setRegionGameMode(getName(), gm);
     }
     
-    public GameMode getRegionGameMode() {
+    public GameMode getActiveRegionGameMode() {
         if (!options.containsKey("region")) {
             options.put("region", Players.getOptions().getRegionGameMode(getName()));
         }
         Core.debug(getName()+": get region game mode: " + options.get("region"));
         return (GameMode) options.get("region");
     }
-    public boolean isRegionGameMode(final GameMode gm) {
-        return gm.equals(getRegionGameMode());
+    public boolean isActiveRegionGameMode(final GameMode gm) {
+        return gm.equals(getActiveRegionGameMode());
     }
-    public boolean isRegionGameMode() {
-        return getRegionGameMode() != null;
+    public boolean isActiveRegionGameMode() {
+        return getActiveRegionGameMode() != null;
     }
     
     public boolean isOptionalRegionGameMode() {
@@ -149,26 +149,29 @@ public class LCPlayer {
         Players.getOptions().setOptionalRegionGameMode(getName(), region, gm);
     }
     
-    public void setPermanentGameMode(GameMode temp) {
+    public void setInPermanentGameMode(GameMode temp) {
         Core.debug(getName()+": set permanent game mode: " + temp);
         if (temp != null) {
             if (temp.equals(plugin.com.getDefaultGameMode(getPlayer().getWorld()))) {
                 temp = null;
             } else {
-                setRegionGameMode(null);
+                storeActiveRegionGameMode(null);
             }
         }
         _permanent_gamemode = temp;
     }
-    public boolean isPermanentGameMode(GameMode temp) {
+    public boolean isInPermanentGameMode() {
+        return isInPermanentGameMode(getPlayer().getGameMode());
+    }
+    public boolean isInPermanentGameMode(GameMode temp) {
         Core.debug(getName()+": get permanent game mode: " + _permanent_gamemode);
         return temp.equals(_permanent_gamemode);
     }
     
     public boolean onSetGameMode(GameMode gm) {
         Core.debug(getName() + " going into " + gm);
-        if (isRegionGameMode()) { // change to the other gamemode as the area defines
-            if (!isRegionGameMode(gm)) { // only when we are not switching to the mode the region allows
+        if (isActiveRegionGameMode()) { // change to the other gamemode as the area defines
+            if (!isActiveRegionGameMode(gm)) { // only when we are not switching to the mode the region allows
                 if (!plugin.config.getRegionOptional() && (!plugin.config.getPermissionsEnabled() || !hasPermission(Perms.REGIONS_BYPASS))) {
                     getPlayer().sendMessage(ChatColor.RED + L("exception.region.not_optional", gm.toString().toLowerCase()));
                     Core.debug("... denied");
@@ -179,10 +182,10 @@ public class LCPlayer {
             } else {
                 // we are changing to the mode the region defines, thats not permanent
                 setOptionalRegionGameMode(null);
-                setPermanentGameMode(null);
+                setInPermanentGameMode(null);
             }
         } else {
-            setPermanentGameMode(gm); // we are not in a region, so the mode change is permanent
+            setInPermanentGameMode(gm); // we are not in a region, so the mode change is permanent
         }
         
         /*
@@ -389,17 +392,16 @@ public class LCPlayer {
     /*
      * Attention: "Creative" stands for "the other gamemode". So true may mean, "be survival in creative world".
      */
-    public void setRegionCreativeAllowed(boolean rcreative, PlayerAreaEvent area_event) {
-        Core.debug(getName()+": changed region: "+rcreative+": " + area_event);
+    public void setRegionGameMode(GameMode region_gamemode, PlayerAreaEvent area_event) {
+        Core.debug(getName()+": changed region: "+region_gamemode+": " + area_event);
         
         PlayerMoveEvent event = null;
         if (area_event instanceof PlayerChangedAreaEvent)
             event = ((PlayerChangedAreaEvent) area_event).getMoveEvent();
         GameMode CURRENT_GAMEMODE = getPlayer().getGameMode();
         GameMode DEFAULT_GAMEMODE = plugin.com.getDefaultGameMode(event != null ? event.getTo().getWorld() : getPlayer().getWorld());
-        GameMode TEMPORARY_GAMEMODE = DEFAULT_GAMEMODE == GameMode.SURVIVAL ? GameMode.CREATIVE : GameMode.SURVIVAL; // the opposite
         
-        if (rcreative && CURRENT_GAMEMODE != TEMPORARY_GAMEMODE && !this.isRegionGameMode(TEMPORARY_GAMEMODE)) {
+        if (region_gamemode != null && CURRENT_GAMEMODE != region_gamemode && !this.isActiveRegionGameMode(region_gamemode)) {
             Core.debug(getName()+": entering creative area");
             // 1. the region allows "the other (temporary) gamemode"
             // 2. but the player is not in that mode
@@ -409,33 +411,33 @@ public class LCPlayer {
             boolean isOptional = isOptionalRegionGameMode(area_event.getRegionHash(), CURRENT_GAMEMODE);
             
             if (isOptional || checkSwitchFlight(area_event)) {
-                setRegionGameMode(TEMPORARY_GAMEMODE); // have to be set, before setGameMode
+                storeActiveRegionGameMode(region_gamemode); // have to be set, before setGameMode
                 
                 if (!isOptional) {
-                    getPlayer().setGameMode(TEMPORARY_GAMEMODE);
+                    getPlayer().setGameMode(region_gamemode);
                 }
             }
-        } else if (!rcreative && getPlayer().getGameMode() == TEMPORARY_GAMEMODE && !isPermanentGameMode(TEMPORARY_GAMEMODE)) {
+        } else if (region_gamemode == null && getPlayer().getGameMode() != DEFAULT_GAMEMODE && !isInPermanentGameMode(CURRENT_GAMEMODE)) {
             Core.debug(getName()+": leaving creative area");
             // 1. the region doesn't allow "the other gamemode"
             // 2. but the player is in that mode
             // 3. and the player isn't global (permanent) in that mode
             // result: change him back to default mode
             if (checkSwitchFlight(area_event)) {
-                setRegionGameMode(null);
+                storeActiveRegionGameMode(null);
                 if (event == null || event.getTo().getWorld() == event.getFrom().getWorld() || !plugin.com.isMultiVerse()) {
                     // do not enforce the game mode change, on world teleport, as multiverse may cancel the event afterwards
                     // the world-change game-mode change is done by multiworld
                     getPlayer().setGameMode(DEFAULT_GAMEMODE);
                 }
             }
-        } else if (!rcreative && this.isRegionGameMode(TEMPORARY_GAMEMODE)) {
+        } else if (region_gamemode == null && this.isActiveRegionGameMode()) {
             Core.debug(getName()+": leaving creative area (while already in default gamemode)");
             // 1. the region doesn't allow "the other gamemode"
             // 2. but he thinks he is still allowed
             // 3. (because of else) we are not longer in that mode
             // result: advise him to not longer allowed to that region
-            setRegionGameMode(null);
+            storeActiveRegionGameMode(null);
         }
         /** At the moment, in permanent game mode, it ignores all regions
         else if (this.isRegionGameMode()) {
@@ -501,7 +503,7 @@ public class LCPlayer {
     }
 
     public boolean isGameModeAllowed(GameMode gm) {
-        if (plugin.config.getRegionOptional() && isRegionGameMode()) {
+        if (plugin.config.getRegionOptional() && isActiveRegionGameMode()) {
             return true;
         }
         return false;
