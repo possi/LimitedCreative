@@ -194,6 +194,7 @@ public class LCPlayer {
         if (plugin.config.getStoreEnabled()) {
             if (plugin.config.getPermissionToKeepInventory() && hasPermission(Perms.KEEPINVENTORY))
                 return true;
+            getPlayer().closeInventory();
             if (gm != GameMode.CREATIVE || plugin.config.getStoreCreative())
                 getInv().save();
             if (gm == GameMode.CREATIVE) {
@@ -425,11 +426,7 @@ public class LCPlayer {
             // result: change him back to default mode
             if (checkSwitchFlight(area_event)) {
                 storeActiveRegionGameMode(null);
-                if (event == null || event.getTo().getWorld() == event.getFrom().getWorld() || !plugin.com.isMultiVerse()) {
-                    // do not enforce the game mode change, on world teleport, as multiverse may cancel the event afterwards
-                    // the world-change game-mode change is done by multiworld
-                    getPlayer().setGameMode(DEFAULT_GAMEMODE);
-                }
+                getPlayer().setGameMode(DEFAULT_GAMEMODE);
             }
         } else if (region_gamemode == null && this.isActiveRegionGameMode()) {
             Core.debug(getName()+": leaving creative area (while already in default gamemode)");

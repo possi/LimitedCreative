@@ -32,8 +32,6 @@ public class xAuth implements CommunicationBridge {
             li = false;
         else if (xpl.isGuest())
             li = false;
-        else if (!getAuth().getPlyrMngr().checkSession(xpl))
-            li = false;
         Core.debug("xAuth: "+player.getName()+": logged in not guest: "+li);
         return li;
     }
