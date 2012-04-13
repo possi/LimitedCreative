@@ -40,15 +40,21 @@ public class Communicator extends AbstractCommunicator {
     
     public boolean isCreative(World world) {
         boolean creative = Bukkit.getServer().getDefaultGameMode() == GameMode.CREATIVE;
-        if (isPluginEnabled("Multiverse-Core"))
-            creative = MultiVerse.isCreative(world);
+        if (isMultiVerse()) {
+            GameMode tmp = MultiVerse.getGameMode(world);
+            if (tmp != null)
+                creative = tmp == GameMode.CREATIVE;
+        }
         Core.debug("com: "+world.getName()+": is creative: "+creative);
         return creative;
     }
     public GameMode getDefaultGameMode(World world) {
         GameMode def = Bukkit.getServer().getDefaultGameMode();
-        if (isMultiVerse())
-            def = MultiVerse.getGameMode(world);
+        if (isMultiVerse()) {
+            GameMode tmp = MultiVerse.getGameMode(world);
+            if (tmp != null)
+                def = tmp;
+        }
         Core.debug("com: "+world.getName()+": game mode: "+def);
         return def;
     }

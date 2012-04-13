@@ -6,89 +6,41 @@ import org.bukkit.command.CommandSender;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.InvalidFlagFormat;
-import com.sk89q.worldguard.protection.flags.RegionGroupFlag;
+import com.sk89q.worldguard.protection.flags.RegionGroup;
 
 /**
  * Well, that was an interesting idea, but it doesn't work.
  */
-public class GameModeFlag extends Flag<GameModeFlag.State> {
-    private State def;
-    private RegionGroupFlag groupFlag;
-    
-    public enum State {
-        CREATIVE,
-        SURVIVAL,
-        NONE;
-        
-        public GameMode getGameMode() {
-            return getBukkitGameMode(this);
-        }
-        public boolean equals (GameMode gm) {
-            return gm == this.getGameMode();
-        }
-        public static GameMode getBukkitGameMode(State gm) {
-            switch (gm) {
-                case CREATIVE:
-                    return GameMode.CREATIVE;
-                case SURVIVAL:
-                    return GameMode.SURVIVAL;
-                default:
-                    return null;
-            }
-        }
-    }
-    
-    public GameModeFlag(String name, State def) {
-        super(name);
-        this.def = def;
-    }
-
-    public State getDefault() {
-        return def;
-    }
-
-    public RegionGroupFlag getGroupFlag() {
-        return groupFlag;
-    }
-
-    public void setGroupFlag(RegionGroupFlag groupFlag) {
-        this.groupFlag = groupFlag;
+public class GameModeFlag extends Flag<GameMode> {
+    public GameModeFlag(String name, RegionGroup defaultGroup) {
+        super(name, defaultGroup);
     }
     
     @Override
-    public State parseInput(WorldGuardPlugin plugin, CommandSender sender, String input) throws InvalidFlagFormat {
+    public GameMode parseInput(WorldGuardPlugin plugin, CommandSender sender, String input) throws InvalidFlagFormat {
         input = input.trim();
         if (input.equalsIgnoreCase("creative")) {
-            return State.CREATIVE;
+            return GameMode.CREATIVE;
         } else if (input.equalsIgnoreCase("survival")) {
-            return State.SURVIVAL;
+            return GameMode.SURVIVAL;
         } else if (input.equalsIgnoreCase("none")) {
             return null;
         } else {
-            throw new InvalidFlagFormat("Expected none/allow/deny but got '" + input + "'");
+            throw new InvalidFlagFormat("Expected survival/creative/none but got '" + input + "'");
         }
     }
     
     @Override
-    public State unmarshal(Object o) {
-        String input = o.toString();
-        if (input.equalsIgnoreCase("creative")) {
-            return State.CREATIVE;
-        } else if (input.equalsIgnoreCase("survival")) {
-            return State.SURVIVAL;
-        } else {
-            return null;
+    public GameMode unmarshal(Object o) {
+        GameMode gm = null;
+        if (o != null) {
+            gm = GameMode.valueOf((String) o);
         }
+        return gm;
     }
-    
+
     @Override
-    public Object marshal(State o) {
-        if (o == State.CREATIVE) {
-            return "allow";
-        } else if (o == State.SURVIVAL) {
-            return "deny";
-        } else {
-            return null;
-        }
+    public Object marshal(GameMode o) {
+        return o == null ? null : o.name();
     }
 }

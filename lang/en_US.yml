@@ -54,10 +54,10 @@ blocked:
     button: To interact with buttons is not allowed in creative mode
     lever: To interact with levers is not allowed in creative mode
     survival_flying: You should stay on ground, when leaving a creative-area
-    outside_creative: You can not place blocks outside of the creative-area
-    outside_creative_break: You can not destroy blocks outside of the creative-area
-    inside_survival: You can not place blocks inside of the survival-area
-    inside_survival_break: You can not destroy blocks inside of the survival-area
+    outside_place: You can not place blocks outside of the gamemode-area
+    outside_break: You can not destroy blocks outside of the gamemode-area
+    inside_place: You can not place blocks inside of the gamemode-area
+    inside_break: You can not destroy blocks inside of the gamemode-area
     use: You are not allowed to use this type of item
     place: You are not allowed to place this type of block
     break: You are not allowed to break this type of block

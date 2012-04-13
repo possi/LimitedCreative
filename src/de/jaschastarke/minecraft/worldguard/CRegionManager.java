@@ -122,7 +122,7 @@ public class CRegionManager {
                         ConfigurationSection fs = rs.getConfigurationSection("flags");
                         for (Map.Entry<String, Object> data : fs.getValues(false).entrySet()) {
                             Flag<?> flag = FlagList.getFlag(data.getKey());
-                            if (flag != null) {
+                            if (flag != null) { // the flag doesn't exists anymore. just ignore it without error
                                 Object value = flag.unmarshal(data.getValue());
                                 list.add(new FlagValue(flag, value));
                             }

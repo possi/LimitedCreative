@@ -26,7 +26,7 @@ import de.jaschastarke.minecraft.limitedcreative.Core;
 
 public class xAuth implements CommunicationBridge {
     public static boolean isLoggedInNotGuest(Player player) {
-        xAuthPlayer xpl = getAuth().getPlayer(player.getName());
+        xAuthPlayer xpl = getAuth().getPlyrMngr().getPlayer(player.getName());
         boolean li = true;
         if (!xpl.isAuthenticated())
             li = false;

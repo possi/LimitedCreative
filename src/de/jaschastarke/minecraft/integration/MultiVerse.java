@@ -22,19 +22,16 @@ import org.bukkit.GameMode;
 import org.bukkit.World;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 
 import de.jaschastarke.minecraft.limitedcreative.Core;
 
 public class MultiVerse implements CommunicationBridge {
-
-    public static boolean isCreative(World world) {
-        boolean ic = getMV().getMVWorldManager().getMVWorld(world).getGameMode() == GameMode.CREATIVE;
-        Core.debug("Multiverse: "+world.getName()+": is creative: "+ic);
-        return ic;
-    }
-    
     public static GameMode getGameMode(World world) {
-        GameMode gm = getMV().getMVWorldManager().getMVWorld(world).getGameMode();
+        MultiverseWorld mvWorld = getMV().getMVWorldManager().getMVWorld(world);
+        if (mvWorld == null)
+            return null;
+        GameMode gm = mvWorld.getGameMode();
         Core.debug("Multiverse: "+world.getName()+": game mode: "+gm);
         return gm;
     }

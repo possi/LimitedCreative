@@ -1,11 +1,25 @@
 # Limited Creative
 http://dev.bukkit.org/server-mods/limited-creative/
 
-There is no automated building yet, so just use "Export..." -> "JAR file" in Eclipse
+Required dependencies
+---------------------
 
-Dependencies:
+* [Bukkit](https://github.com/Bukkit/Bukkit)
 
-* [Craftbukkit](https://github.com/Bukkit/CraftBukkit)
-    * which implies [Bukkit](https://github.com/Bukkit/Bukkit)
-* Optional: [WorldGuard](https://github.com/sk89q/worldguard)
-    * which depends on [WorldEdit](https://github.com/sk89q/worldedit)
+Dependencies for optional integrations
+--------------------------------------
+
+* [WorldGuard](https://github.com/sk89q/worldguard)
+* [WorldEdit](https://github.com/sk89q/worldedit)
+* [xAuth](http://dev.bukkit.org/server-mods/xauth/)
+* [AuthMe](http://dev.bukkit.org/server-mods/authme-reloaded/)
+* [Multiverse-Core](http://dev.bukkit.org/server-mods/multiverse-core/)
+
+----
+
+To use Maven packaging
+----------------------
+
+For required development snapshots, that aren't found by maven, you have to clone the project and do:
+$ mvn install
+in the directory of the project
