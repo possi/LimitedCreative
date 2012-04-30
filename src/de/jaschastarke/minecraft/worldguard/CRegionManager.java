@@ -38,6 +38,7 @@ import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
+import de.jaschastarke.minecraft.limitedcreative.Core;
 import de.jaschastarke.minecraft.utils.Util;
 
 public class CRegionManager {
@@ -121,10 +122,19 @@ public class CRegionManager {
                     if (rs.contains("flags")) {
                         ConfigurationSection fs = rs.getConfigurationSection("flags");
                         for (Map.Entry<String, Object> data : fs.getValues(false).entrySet()) {
-                            Flag<?> flag = FlagList.getFlag(data.getKey());
+                            Flag<?> flag = null;
+                            if (data.getKey().endsWith("-group")) {
+                                flag = FlagList.getFlag(data.getKey().substring(0, data.getKey().length() - 6));
+                                if (flag != null)
+                                    flag = flag.getRegionGroupFlag();
+                            } else {
+                                flag = FlagList.getFlag(data.getKey());
+                            }
                             if (flag != null) { // the flag doesn't exists anymore. just ignore it without error
                                 Object value = flag.unmarshal(data.getValue());
                                 list.add(new FlagValue(flag, value));
+                            } else {
+                                Core.debug("Couldn't load unknown Flag: "+data.getKey());
                             }
                         }
                     }
