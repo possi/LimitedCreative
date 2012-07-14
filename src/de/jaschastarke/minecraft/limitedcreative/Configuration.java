@@ -54,6 +54,7 @@ public class Configuration {
         REMOVEPICKUP("limit.remove_pickup", false),
         PERMISSIONS("permissions.enabled", false),
         PERM_KEEPINVENTORY("permissions.keepinventory", false),
+        PERM_WEPIF("permissions.wepif", true),
         DEBUG("debug", false);
         
         private String key;
@@ -153,6 +154,9 @@ public class Configuration {
     }
     public boolean getPermissionToKeepInventory() {
         return this.getPermissionsEnabled() && this.getBoolean(Option.PERM_KEEPINVENTORY);
+    }
+    public boolean getWEPIFEnabled() {
+    	return this.getBoolean(Option.PERM_WEPIF);
     }
     public boolean getRegionOptional() {
         return this.getBoolean(Option.REGION_OPTIONAL);

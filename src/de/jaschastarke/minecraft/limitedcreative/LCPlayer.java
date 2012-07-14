@@ -418,11 +418,12 @@ public class LCPlayer {
                     getPlayer().setGameMode(region_gamemode);
                 }
             }
-        } else if (region_gamemode == null && getPlayer().getGameMode() != DEFAULT_GAMEMODE && !isInPermanentGameMode(CURRENT_GAMEMODE)) {
+        } else if (region_gamemode == null && getPlayer().getGameMode() != DEFAULT_GAMEMODE && !isInPermanentGameMode(CURRENT_GAMEMODE) && getActiveRegionGameMode() != null) {
             Core.debug(getName()+": leaving creative area");
             // 1. the region doesn't allow "the other gamemode"
             // 2. but the player is in that mode
             // 3. and the player isn't global (permanent) in that mode
+            // 4. and the player isn't temporary in that mode (that means its maybe a world teleport, and the mode changes afterwards)
             // result: change him back to default mode
             if (checkSwitchFlight(area_event)) {
                 storeActiveRegionGameMode(null);

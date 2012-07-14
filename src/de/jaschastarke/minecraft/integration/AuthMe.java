@@ -25,12 +25,12 @@ import de.jaschastarke.minecraft.limitedcreative.Core;
 
 public class AuthMe implements CommunicationBridge {
     public static boolean isLoggedIn(Player player) {
-        boolean li = PlayerCache.getInstance().isAuthenticated(player.getName());
+        boolean li = PlayerCache.getInstance().isAuthenticated(player.getName().toLowerCase());
         Core.debug("AuthMe: "+player.getName()+": logged in: "+li);
         return li;
     }
     public static boolean isLoggedInComplete(Player player) {
-        boolean li = isLoggedIn(player) && LimboCache.getInstance().getLimboPlayer(player.getName()) == null;
+        boolean li = isLoggedIn(player) && LimboCache.getInstance().getLimboPlayer(player.getName().toLowerCase()) == null;
         Core.debug("AuthMe: "+player.getName()+": logged in complete: "+li);
         return li;
     }

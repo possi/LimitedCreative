@@ -12,7 +12,7 @@ Dependencies for optional integrations
 * [WorldGuard](https://github.com/sk89q/worldguard)
 * [WorldEdit](https://github.com/sk89q/worldedit)
 * [xAuth](http://dev.bukkit.org/server-mods/xauth/)
-* [AuthMe](http://dev.bukkit.org/server-mods/authme-reloaded/)
+* [AuthMe](http://dev.bukkit.org/server-mods/authme-reloaded/) ([GitSource](https://github.com/Multiplayer-italia/AuthMe-Reloaded))
 * [Multiverse-Core](http://dev.bukkit.org/server-mods/multiverse-core/)
 
 ----

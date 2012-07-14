@@ -31,9 +31,11 @@ public class Permissions {
     public Permissions(JavaPlugin plugin) {
         this.plugin = plugin;
         try {
-            // because worldedit may be not loaded as plugin, just as library, we check that way
-            Class.forName("com.sk89q.wepif.PermissionsResolverManager", false, plugin.getClass().getClassLoader());
-            pif = new PermissionsBridge(plugin);
+        	if (Core.plugin.config.getWEPIFEnabled()) {
+	            // because worldedit may be not loaded as plugin, just as library, we check that way
+	            Class.forName("com.sk89q.wepif.PermissionsResolverManager", false, plugin.getClass().getClassLoader());
+	            pif = new PermissionsBridge(plugin);
+        	}
         } catch (ClassNotFoundException e) {}
     }
     
