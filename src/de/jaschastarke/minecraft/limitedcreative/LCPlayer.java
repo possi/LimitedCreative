@@ -195,20 +195,34 @@ public class LCPlayer {
             if (plugin.config.getPermissionToKeepInventory() && hasPermission(Perms.KEEPINVENTORY))
                 return true;
             getPlayer().closeInventory();
-            if (gm != GameMode.CREATIVE || plugin.config.getStoreCreative())
-                getInv().save();
-            if (gm == GameMode.CREATIVE) {
-                if (plugin.config.getStoreCreative() && getInv().isStored(GameMode.CREATIVE)) {
-                    getInv().load(GameMode.CREATIVE);
-                } else {
-                    getInv().clear();
-                }
-                setCreativeArmor();
-            } else if (gm == GameMode.SURVIVAL) {
-                if (getInv().isStored(GameMode.SURVIVAL))
-                    getInv().load(GameMode.SURVIVAL);
-            }
             
+            GameMode cgm = getPlayer().getGameMode();
+            if (gm == GameMode.ADVENTURE && !plugin.config.getAdventureInv())
+            	gm = GameMode.SURVIVAL;
+            if (cgm == GameMode.ADVENTURE && !plugin.config.getAdventureInv())
+            	cgm = GameMode.SURVIVAL;
+            
+            if (gm != cgm) {
+	            if (gm != GameMode.CREATIVE || plugin.config.getStoreCreative()) {
+	        		getInv().save(cgm);
+	            }
+	            if (gm == GameMode.CREATIVE) {
+	                if (plugin.config.getStoreCreative() && getInv().isStored(GameMode.CREATIVE)) {
+	                    getInv().load(GameMode.CREATIVE);
+	                } else {
+	                    getInv().clear();
+	                }
+	                setCreativeArmor();
+	            } else if (gm == GameMode.SURVIVAL) {
+	                if (getInv().isStored(GameMode.SURVIVAL))
+	                    getInv().load(GameMode.SURVIVAL);
+	            } else if (gm == GameMode.ADVENTURE) {
+	                if (getInv().isStored(GameMode.ADVENTURE))
+	                	getInv().load(GameMode.ADVENTURE);
+	                else
+	                	getInv().clear();
+	            }
+            }
         }
         return true;
     }

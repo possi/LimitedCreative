@@ -23,6 +23,8 @@ public class GameModeFlag extends Flag<GameMode> {
             return GameMode.CREATIVE;
         } else if (input.equalsIgnoreCase("survival")) {
             return GameMode.SURVIVAL;
+        } else if (input.equalsIgnoreCase("adventure")) {
+            return GameMode.ADVENTURE;
         } else if (input.equalsIgnoreCase("none")) {
             return null;
         } else {

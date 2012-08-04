@@ -35,10 +35,11 @@ public class Inventory {
 
     public enum Target {
         SURVIVAL,
-        CREATIVE;
+        CREATIVE,
+        ADVENTURE;
         
         public static Target getTarget(GameMode gm) {
-            return gm == GameMode.CREATIVE ? Target.CREATIVE : Target.SURVIVAL;
+            return Target.valueOf(gm.name());
         }
     }
     
@@ -59,6 +60,10 @@ public class Inventory {
     public void save() {
         Core.debug(getPlayer().getName()+": store inventory: "+getPlayer().getGameMode());
         storage.store(this, Target.getTarget(getPlayer().getGameMode()));
+    }
+    public void save(GameMode gm) {
+        Core.debug(getPlayer().getName()+": store inventory: "+gm);
+        storage.store(this, Target.getTarget(gm));
     }
     
     public void load() {

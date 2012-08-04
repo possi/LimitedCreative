@@ -3,7 +3,7 @@
   <groupId>de.jaschastarke</groupId>
   <artifactId>LimitedCreative</artifactId>
   <name>LimitedCreative</name>
-  <version>1.2.5</version>
+  <version>1.3.0a</version>
   <url>https://github.com/possi/LimitedCreative</url>
   <scm>
   	<connection>scm:git:git://github.com/possi/LimitedCreative.git</connection>
@@ -68,7 +68,7 @@
   	<dependency>
   		<groupId>org.bukkit</groupId>
   		<artifactId>bukkit</artifactId>
-  		<version>1.2.5-R4.0</version>
+  		<version>1.3.1-R0.1-SNAPSHOT</version>
   	</dependency>
   	<dependency>
   		<groupId>com.sk89q</groupId>

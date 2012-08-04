@@ -43,6 +43,7 @@ public class Configuration {
     public enum Option {
         STORECREATIVE("store.creative", true),
         CREATIVEARMOR("store.armor.enabled", true),
+        ADVENTUREINV("store.adventure", false),
         REGION_OPTIONAL("region.optional", true),
         REGION_REMEMBER("region.remember", true),
         BLOCKPICKUP("limit.pickup", true),
@@ -126,6 +127,9 @@ public class Configuration {
     }
     public String getInventoryFolder() {
         return c.getString("store.folder", "inventories");
+    }
+    public boolean getAdventureInv() {
+    	return this.getBoolean(Option.ADVENTUREINV);
     }
     public boolean getBlockPickupInCreative() {
         return this.getBoolean(Option.BLOCKPICKUP);

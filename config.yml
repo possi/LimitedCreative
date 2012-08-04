@@ -47,6 +47,11 @@ store:
     # By default the inventories are saved to "plugin/LimitedCreative/inventories".
     # default: "inventories"
     folder: "inventories"
+    
+    # SeparateAdventureInventory
+    # When true, your players get a separate inventory when switching to adventure gamemode (2). Otherwise
+    # they have the default survival inventory while in adventure gamemode.
+    adventure: false
 
 limit:
     # LimitsEnabled
