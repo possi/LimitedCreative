@@ -39,6 +39,7 @@ public class Commands {
         public enum Action {
             C, CREATIVE,
             S, SURVIVAL,
+            A, ADVENTURE,
             E, ENABLE,
             D, DISABLE,
             R, REGION,
@@ -63,6 +64,10 @@ public class Commands {
                             case S:
                             case SURVIVAL:
                                 this.setGameMode(GameMode.SURVIVAL, sender, args);
+                                return true;
+                            case A:
+                            case ADVENTURE:
+                                this.setGameMode(GameMode.ADVENTURE, sender, args);
                                 return true;
                             case E:
                             case ENABLE:
@@ -95,6 +100,7 @@ public class Commands {
             StringBuilder message = new StringBuilder();
             message.append("/"+c+" s[urvival] ["+L("command.player")+"] - "+L("command.switch.survival")+"\n");
             message.append("/"+c+" c[reative] ["+L("command.player")+"] - "+L("command.switch.creative")+"\n");
+            message.append("/"+c+" a[dventure] ["+L("command.player")+"] - "+L("command.switch.adventure")+"\n");
             if (hasPermission(sender, Perms.CONFIG)) {
                 message.append("/"+c+" e[nable] "+L("command.config.overview")+"\n");
                 message.append("/"+c+" d[isable] "+L("command.config.overview")+"\n");
@@ -164,7 +170,8 @@ public class Commands {
                     Players.get(target).isGameModeAllowed(gm) ||
                     (gm == plugin.com.getDefaultGameMode(target.getWorld()) && hasPermission(sender, Perms.GM_BACKONLY)) ||
                     (gm == GameMode.CREATIVE && hasPermission(sender, Perms.GM_CREATIVE)) ||
-                    (gm == GameMode.SURVIVAL && hasPermission(sender, Perms.GM_SURVIVAL))) {
+                    (gm == GameMode.SURVIVAL && hasPermission(sender, Perms.GM_SURVIVAL)) ||
+                    (gm == GameMode.ADVENTURE && hasPermission(sender, Perms.GM_ADVENTURE))) {
                     target.setGameMode(gm);
                 } else {
                     throw new LackingPermissionException();

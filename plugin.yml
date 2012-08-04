@@ -23,16 +23,19 @@ permissions:
         description: Ignores the force of a gamemode, when region optional is disabled
         default: false
     limitedcreative.switch_gamemode:
-        description: Allows switching of own game mode to creative and back
+        description: Allows switching of own game mode to creative/adventure and back
         default: op
     limitedcreative.switch_gamemode.backonly:
         description: Allows switching of own game mode to default of the not world he is in, but not back
         default: false
     limitedcreative.switch_gamemode.survival:
-        description: Allows switching of own game mode to survival, but not to creative
+        description: Allows switching of own game mode to survival, but not to creative/adventure
         default: false
     limitedcreative.switch_gamemode.creative:
-        description: Allows switching of own game mode to creative, but not to survival
+        description: Allows switching of own game mode to creative, but not to survival/adventure
+        default: false
+    limitedcreative.switch_gamemode.adventure:
+        description: Allows switching of own game mode to adventure, but not to creative/survival
         default: false
     limitedcreative.switch_gamemode.other:
         description: Allows switching of other users game mode

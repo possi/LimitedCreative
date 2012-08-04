@@ -27,6 +27,7 @@ public enum Perms implements IPermission {
     GM_BACKONLY("switch_gamemode.backonly"),
     GM_SURVIVAL("switch_gamemode.survival"),
     GM_CREATIVE("switch_gamemode.creative"),
+    GM_ADVENTURE("switch_gamemode.adventure"),
     GM_OTHER("switch_gamemode.other"),
     KEEPINVENTORY("keepinventory");
     

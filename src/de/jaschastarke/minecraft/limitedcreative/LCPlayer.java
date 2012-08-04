@@ -515,7 +515,7 @@ public class LCPlayer {
     }
 
     public boolean isGameModeAllowed(GameMode gm) {
-        if (plugin.config.getRegionOptional() && isActiveRegionGameMode()) {
+        if (plugin.config.getRegionOptional() && isActiveRegionGameMode(gm)) {
             return true;
         }
         return false;
