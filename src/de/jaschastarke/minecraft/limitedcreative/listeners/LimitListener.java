@@ -90,7 +90,7 @@ public class LimitListener implements Listener {
         
         Block block = event.getClickedBlock();
         
-        if (block.getState() instanceof InventoryHolder) {
+        if (block.getState() instanceof InventoryHolder || block.getType() == Material.ENDER_CHEST) { // Workaround, Bukkit not recognize a Enderchest
             player.onChestAccess(event);
         } else if (block.getState() instanceof Sign) {
             player.onSignAccess(event);
