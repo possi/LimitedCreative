@@ -3,7 +3,7 @@
   <groupId>de.jaschastarke</groupId>
   <artifactId>LimitedCreative</artifactId>
   <name>LimitedCreative</name>
-  <version>1.3.0b</version>
+  <version>1.3.0c</version>
   <url>https://github.com/possi/LimitedCreative</url>
   <scm>
   	<connection>scm:git:git://github.com/possi/LimitedCreative.git</connection>
@@ -78,7 +78,7 @@
   	<dependency>
   		<groupId>uk.org.whoami</groupId>
   		<artifactId>authme</artifactId>
-  		<version>2.6.2</version>
+  		<version>2.6.7b5</version>
   	</dependency>
   	<dependency>
   		<groupId>com.onarandombox.multiversecore</groupId>
@@ -88,7 +88,7 @@
   	<dependency>
   		<groupId>com.cypherx</groupId>
   		<artifactId>xauth</artifactId>
-  		<version>2.0.3</version>
+  		<version>2.0.20</version>
   	</dependency>
   </dependencies>
   <properties>
