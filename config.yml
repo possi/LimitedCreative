@@ -101,7 +101,8 @@ limit:
     
     # UseBlackList
     # Prevents using or placing of the given blocks in creative mode (and only in creative).
-    # You can use the technical name (see http://jd.bukkit.org/doxygen/d7/dd9/namespaceorg_1_1bukkit.html#ab7fa290bb19b9a830362aa88028ec80a)
+    # You can use the technical name (see http://jd.bukkit.org/doxygen/d6/d0e/enumorg_1_1bukkit_1_1Material.html
+    # or https://github.com/Bukkit/Bukkit/blob/master/src/main/java/org/bukkit/Material.java)
     # or the id of the block/item (better use the id, if you're not sure).
     # To prevent Lava you need to add "LAVA_BUCKET", because lava-blocks aren't "placed", therefore Lava-Buckets are
     # "used".

@@ -1,7 +1,7 @@
 name: LimitedCreative
 main: de.jaschastarke.minecraft.limitedcreative.Core
-version: 1.3.0c
-softdepend: [WorldGuard, WorldEdit, MultiInv]
+version: 1.4.0a
+softdepend: [WorldGuard, WorldEdit, MultiInv, Vault]
 dev-url: http://dev.bukkit.org/server-mods/limited-creative/
 commands:
     limitedcreative:
@@ -72,4 +72,7 @@ permissions:
         default: false
     limitedcreative.nolimit.break:
         description: Allows bypassing the "block break"-limitation
+        default: false
+    limitedcreative.permissions.keep:
+        description: Allows bypassing the permission based limitations settet temporary via Vault (TESTING)
         default: false

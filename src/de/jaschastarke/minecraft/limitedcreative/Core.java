@@ -25,20 +25,25 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.jaschastarke.minecraft.integration.Communicator;
-import de.jaschastarke.minecraft.limitedcreative.listeners.LimitListener;
-import de.jaschastarke.minecraft.limitedcreative.listeners.MainListener;
+import de.jaschastarke.minecraft.limitedcreative.prot.LimitListener;
 import de.jaschastarke.minecraft.limitedcreative.regions.WorldGuardIntegration;
+import de.jaschastarke.minecraft.limitedcreative.sepinv.MainListener;
+import de.jaschastarke.minecraft.limitedcreative.utils.NoBlockItemSpawn;
 import de.jaschastarke.minecraft.utils.Locale;
 import de.jaschastarke.minecraft.utils.Permissions;
 
 
 public class Core extends JavaPlugin {
+    public static Core plugin;
     public final Logger logger = Logger.getLogger("Minecraft");
-    public Configuration config;
+    
+    
     public Permissions perm;
     public WorldGuardIntegration worldguard;
     public Communicator com;
-    public static Core plugin;
+    
+    /* Utils */
+    public Configuration config;
     public NoBlockItemSpawn spawnblock;
 
     @Override

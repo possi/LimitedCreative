@@ -3,7 +3,7 @@
   <groupId>de.jaschastarke</groupId>
   <artifactId>LimitedCreative</artifactId>
   <name>LimitedCreative</name>
-  <version>1.3.0c</version>
+  <version>1.4.0a</version>
   <url>https://github.com/possi/LimitedCreative</url>
   <scm>
   	<connection>scm:git:git://github.com/possi/LimitedCreative.git</connection>
@@ -30,6 +30,10 @@
     <repository>
         <id>onarandombox</id>
         <url>http://repo.onarandombox.com/content/groups/public</url>
+    </repository>
+    <repository>
+	    <id>vault-repo</id>
+	    <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
     </repository>
   </repositories>
   <build>
@@ -68,12 +72,12 @@
   	<dependency>
   		<groupId>org.bukkit</groupId>
   		<artifactId>bukkit</artifactId>
-  		<version>1.3.1-R1.0</version>
+  		<version>1.4.2-R0.2</version>
   	</dependency>
   	<dependency>
   		<groupId>com.sk89q</groupId>
   		<artifactId>worldguard</artifactId>
-  		<version>5.5.4-SNAPSHOT</version>
+  		<version>5.6.3</version>
   	</dependency>
   	<dependency>
   		<groupId>uk.org.whoami</groupId>
