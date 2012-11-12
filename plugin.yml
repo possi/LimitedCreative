@@ -41,7 +41,7 @@ permissions:
         description: Allows switching of other users game mode
         default: op
     limitedcreative.keepinventory:
-        description: Allows bypassing the inventory separation (if PermissionKeepInventory is enabled in config)
+        description: Allows bypassing the inventory separation
         default: false
     limitedcreative.nolimit.drop:
         description: Allows bypassing the "do not drop anything"-limitation
