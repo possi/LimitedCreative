@@ -145,8 +145,8 @@ region:
     # Remembers if s.o. disables the region gamemode, so the region doesn't change his mode automatically if he enters
     # the region again.
     # Hint: Is very confusing, if MultiVerse "enforce gamemode" swaps your state.
-    # default: true
-    remember: true
+    # default: false
+    remember: false
 
 
 cmdblock:

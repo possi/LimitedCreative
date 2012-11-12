@@ -4,7 +4,7 @@ basic:
         no_worldguard: Erfolgreich geladen (ohne WorldGuard)
     feature:
         store: Getrennte Inventare
-        limit: Kreativ-EinschrÃ¤nkungen
+        limit: Kreativ-Einschränkungen
         region: Kreativ-Regionen
     conflict: Wegen eines Konfliktes mit {0} ist die Funktion {1} deaktiviert
     warning:
@@ -13,42 +13,42 @@ basic:
 command:
     player: Spieler
     switch:
-        survival: Ã„ndert den Spiel-Modus des Charakters zu Ãœberleben
-        creative: Ã„ndert den Spiel-Modus des Charakters zu Kreativ
-        adventure: Ã„ndert den Spiel-Modus des Charakters zu Abenteuer
+        survival: ÿndert den Spiel-Modus des Charakters zu ÿberleben
+        creative: ÿndert den Spiel-Modus des Charakters zu Kreativ
+        adventure: ÿndert den Spiel-Modus des Charakters zu Abenteuer
     config:
         overview: "[Einstellung] - liste durch weglassen"
-        settings: "VerfÃ¼gbare Einstellungen: "
-        reload: LÃ¤dt das Plugin neu (funktioniert nur teilweise)
+        settings: "Verfügbare Einstellungen: "
+        reload: Lädt das Plugin neu (funktioniert nur teilweise)
     gamemode:
-        changed: "{0}'s Spiel-Modus wurde geÃ¤ndert"
+        changed: "{0}'s Spiel-Modus wurde geändert"
         no_change: Bereits in diesem Spiel-Modus
     option:
-        done: Option geÃ¤ndert.
+        done: Option geändert.
     worldguard:
-        alias: Alias fÃ¼r den //region-Befehl
+        alias: Alias für den //region-Befehl
         unknown_flag: Unbekanntes Attribut
-        available_flags: VerfÃ¼gbare Attribute
+        available_flags: Verfügbare Attribute
         region_not_found: Keine Region mit dieser ID gefunden
         world_not_found: Es konnte keine Welt mit diesem Namen gefunden werden
         no_flag_given: Es muss ein Attribut angegeben werden, dass gesetzt werden soll
-        no_integration: Der worldguard-Befehl ist nicht verfÃ¼gbar, da WorldGuard nicht gefunden wurde
+        no_integration: Der worldguard-Befehl ist nicht verfügbar, da WorldGuard nicht gefunden wurde
         flag_set: "Das Attribut {0} wurde gesetzt"
-        additional_flags: ZusÃ¤tzliche Attribute
+        additional_flags: Zusätzliche Attribute
 cmdblock:
     blocked: Dieser Befehl ist im Kreativ-Modus blockiert.
 exception:
     command:
         lackingpermission: Kein Zugriff auf diesen Befehl
         toomuchparameter: Zuviele Argumente angegeben
-        missingparameter: Nicht genÃ¼gen Argumente angegeben
+        missingparameter: Nicht genügen Argumente angegeben
         playernotfound: Spieler nicht gefunden
         invalidoption: Unbkeannte Option
     config:
         savefail: Die Konfiguration konnte nicht gespeichert werden
         material_not_found: (Konfiguration) Material mit Name/ID "{0}" wurde nicht gefunden.
     storage:
-        load: Fehler beim Laden des Inventars. Bitte einen Admin die Option "UnsafeStorege" in LimitedCreative zu aktivieren um ungÃ¼ltig verzauberte GegenstÃ¤nde zu erlauben
+        load: Fehler beim Laden des Inventars. Bitte einen Admin die Option "UnsafeStorege" in LimitedCreative zu aktivieren um ungültig verzauberte Gegenstände zu erlauben
     region:
         not_optional: "In dieser Region kannst du nicht im folgenden Modus sein: {0}"
 blocked:
@@ -56,13 +56,14 @@ blocked:
     sign: Im Kreativ-Modus kann nicht mit Schildern interagiert werden
     button: Im Kreativ-Modus kann nicht mit Buttons interagiert werden
     lever: Im Kreativ-Modus kann nicht mit Schaltern interagiert werden
-    survival_flying: Du solltest auf dem Boden stehen wenn du Kreativ-Regionen verlÃ¤sst
-    outside_place: Du kannst keine BlÃ¶cke auÃŸerhalb von Spiel-Modus-Regionen setzen
-    outside_break: Du kannst keine BlÃ¶cke auÃŸerhalb von Spiel-Modus-Regionen zerstÃ¶ren
-    inside_place: Du kannst keine BlÃ¶cke innerhalb von Spiel-Modus-Regionen setzen
-    inside_break: Du kannst keine BlÃ¶cke innerhalb von Spiel-Modus-Regionen zerstÃ¶ren
-    use: Du darfst diese Art von GegenstÃ¤nden im Kreativ-Modus verwenden
-    place: Du darfst diese Art von BlÃ¶cken im Kreativ-Modus nicht setzen
-    break: Du darfst diese Art von BlÃ¶cken im Kreativ-Modus nicht zerstÃ¶ren
+    survival_flying: Du solltest auf dem Boden stehen wenn du Kreativ-Regionen verlässt
+    outside_place: Du kannst keine Blöcke auÿerhalb von Spiel-Modus-Regionen setzen
+    outside_break: Du kannst keine Blöcke auÿerhalb von Spiel-Modus-Regionen zerstören
+    inside_place: Du kannst keine Blöcke innerhalb von Spiel-Modus-Regionen setzen
+    inside_break: Du kannst keine Blöcke innerhalb von Spiel-Modus-Regionen zerstören
+    use: Du darfst diese Art von Gegenständen im Kreativ-Modus verwenden
+    place: Du darfst diese Art von Blöcken im Kreativ-Modus nicht setzen
+    break: Du darfst diese Art von Blöcken im Kreativ-Modus nicht zerstören
     piston: Verschieben von Block {0} aus einer Spiel-Modus-Region bei {1} wurde blockiert
     piston_in: Verschieben von Block {0} in eine Spiel-Modus-Region bei {1} wurde blockiert
+  

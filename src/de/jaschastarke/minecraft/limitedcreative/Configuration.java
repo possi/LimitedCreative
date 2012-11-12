@@ -48,7 +48,7 @@ public class Configuration {
         CREATIVEARMOR("store.armor.enabled", true),
         ADVENTUREINV("store.adventure", false),
         REGION_OPTIONAL("region.optional", true),
-        REGION_REMEMBER("region.remember", true),
+        REGION_REMEMBER("region.remember", false),
         BLOCKPICKUP("limit.pickup", true),
         BLOCKSIGN("limit.sign", true),
         BLOCKBUTTON("limit.button", false),
