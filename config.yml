@@ -101,7 +101,7 @@ limit:
     
     # UseBlackList
     # Prevents using or placing of the given blocks in creative mode (and only in creative).
-    # You can use the technical name (see http://jd.bukkit.org/doxygen/d7/dd9/namespaceorg_1_1bukkit.html#ab7fa290bb19b9a830362aa88028ec80a)
+    # You can use the technical name (see http://jd.bukkit.org/doxygen/d6/d0e/enumorg_1_1bukkit_1_1Material.html)
     # or the id of the block/item (better use the id, if you're not sure).
     # To prevent Lava you need to add "LAVA_BUCKET", because lava-blocks aren't "placed", therefore Lava-Buckets are
     # "used".
@@ -117,7 +117,7 @@ limit:
     
     # BreakBlackList
     # Prevents destroying of the given blocks in creative mode (and only in creative).
-    # You can use the technical name (see http://jd.bukkit.org/doxygen/d7/dd9/namespaceorg_1_1bukkit.html#ab7fa290bb19b9a830362aa88028ec80a)
+    # You can use the technical name (see http://jd.bukkit.org/doxygen/d6/d0e/enumorg_1_1bukkit_1_1Material.html)
     # or the id of the block/item (better use the id, if you're not sure).
     # You may add the data separated with a colon e.g.: "WOOL:11" blocks blue wool. But be sure to put it in quotes, to
     # not break yml-configuration! Named data values aren't supported yet. If you don't add a data-value, all blocks
@@ -130,7 +130,7 @@ limit:
 
 region:
     # RegionsEnabled
-    # Enables the Feature for "creative-regions". This Feature is automatically disabled, if the required plugin
+    # Enables the feature for "creative-regions". This Feature is automatically disabled, if the required plugin
     # "WorldGuard" (http://dev.bukkit.org/server-mods/worldguard/) isn't found.
     # default: true 
     enabled: true
@@ -148,24 +148,27 @@ region:
     # default: true
     remember: true
 
-permissions:
-    # PermissionsEnabled
-    # When enabled, the Permissions will allow selected users to ignore limitations like PvP, Chest-Block, etc.
-    # When not enabled, all users are treated equally.
-    # Note: Not all Permission, are affected by this option. So you still need the defined permissions or op, to use
-    #       commands, even if this options is disabled!
-    # default: false
-    enabled: false
-    
-    # PermissionKeepInventory
-    # Disables the limitedcreative.keepinventory-Permission, so you can use the separated-inventories-feature, even
-    # if you have a permission plugin that grants ALL permission to you.
-    # If Enabled, only players WITHOUT the limitedcreative.keepinventory-Permission, have separated inventories;
-    # Players with the permission will have the inventory, like this plugin were not installed.
-    # When "PermissionsEnabled" is false, the KeepInventory-Option will act like disabled, even if you set it to true.
-    # default: false
-    keepinventory: false
 
+cmdblock:
+    # CommandBlockerEnabled
+    # Enables the feature for blocking certain commands in creative mode.
+    # default: true
+    enabled: true
+    
+    # CommandBlockerList
+    # Defines the list of commands that are blocked while in creative mode. The leading / isn't included. By default
+    # the list-item is treated as simple string as typed in by the user after the /. All commands starting with
+    # this string are blocked, even if more parameteres are entered by the user.
+    # If the first Char is ^ the entry is interpreted as a regular expression (including the ^ for begin of the string).
+    # Only use regular expressions if you know them.
+    # default: []
+    commands:
+    # - logout
+    # - home
+    # - home second
+    # - ^chest (one|two|three)
+    # - ^(lc|limitedcreative) s(urvival)?
+    
 
 # Locale (Language)
 # Uncomment the "locale: en_US"-Line, to override the locale which be used for localized messages. By default the

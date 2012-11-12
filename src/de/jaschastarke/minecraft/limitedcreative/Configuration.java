@@ -32,6 +32,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.material.MaterialData;
 
+import de.jaschastarke.minecraft.limitedcreative.cmdblock.ICmdBlockEntry;
+import de.jaschastarke.minecraft.limitedcreative.cmdblock.RegexpBlockEntry;
+import de.jaschastarke.minecraft.limitedcreative.cmdblock.StringBlockEntry;
 import de.jaschastarke.minecraft.limitedcreative.store.InvYamlStorage;
 import de.jaschastarke.minecraft.limitedcreative.store.PlayerInventoryStorage;
 
@@ -53,9 +56,8 @@ public class Configuration {
         BLOCKBENCHES("limit.workbench", false),
         REMOVEDROP("limit.remove_drops", true),
         REMOVEPICKUP("limit.remove_pickup", false),
-        PERMISSIONS("permissions.enabled", false),
-        PERM_KEEPINVENTORY("permissions.keepinventory", false),
         PERM_WEPIF("permissions.wepif", true),
+        CMDBLOCKER("cmdblocker.enabled", true),
         DEBUG("debug", false);
         
         private String key;
@@ -93,8 +95,6 @@ public class Configuration {
             throw new IllegalArgumentException("Setting this option is not allowed");*/
         this.reload();
         c.set(opt.getKey(), value);
-        if (value && opt == Option.PERM_KEEPINVENTORY && !this.getPermissionsEnabled())
-            c.set(Option.PERMISSIONS.getKey(), true);
         this.save();
     }
     
@@ -153,12 +153,6 @@ public class Configuration {
         return this.getBoolean(Option.BLOCKDAMAGEMOB);
     }
     
-    public boolean getPermissionsEnabled() {
-        return this.getBoolean(Option.PERMISSIONS);
-    }
-    public boolean getPermissionToKeepInventory() {
-        return this.getPermissionsEnabled() && this.getBoolean(Option.PERM_KEEPINVENTORY);
-    }
     public boolean getWEPIFEnabled() {
     	return this.getBoolean(Option.PERM_WEPIF);
     }
@@ -290,5 +284,24 @@ public class Configuration {
             }
         }
         return null;
+    }
+    
+    public boolean getCommandBlockerEnabled() {
+        return this.getBoolean(Option.CMDBLOCKER);
+    }
+    
+    private List<ICmdBlockEntry> _blocklist = null;
+    public List<ICmdBlockEntry> getCommandBlockList() {
+         if (_blocklist == null) {
+             _blocklist = new ArrayList<ICmdBlockEntry>();
+             for (String cmd : c.getStringList("cmdblock.commands")) {
+                 if (cmd.startsWith("^")) {
+                     _blocklist.add(new RegexpBlockEntry(cmd));
+                 } else {
+                     _blocklist.add(new StringBlockEntry(cmd));
+                 }
+             }
+         }
+         return _blocklist;
     }
 }

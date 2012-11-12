@@ -35,6 +35,8 @@ command:
         no_integration: The worldguard-commands are not available, because worldguard wasn't found
         flag_set: "The flag {0} was set"
         additional_flags: Additional flags
+cmdblock:
+    blocked: This command is blocked while in creative mode.
 exception:
     command:
         lackingpermission: You do not have access to this command

@@ -1,0 +1,68 @@
+basic:
+    loaded:
+        worldguard: Erfolgreich mit WorldGuard-Integration geladen
+        no_worldguard: Erfolgreich geladen (ohne WorldGuard)
+    feature:
+        store: Getrennte Inventare
+        limit: Kreativ-Einschränkungen
+        region: Kreativ-Regionen
+    conflict: Wegen eines Konfliktes mit {0} ist die Funktion {1} deaktiviert
+    warning:
+        worldguard_not_found: WorldGuard wurd enicht gefunde, dahier ist die Funktion {0} deaktiviert
+        # double single-quote '' because of MessageFormater to insert {0}
+command:
+    player: Spieler
+    switch:
+        survival: Ändert den Spiel-Modus des Charakters zu Überleben
+        creative: Ändert den Spiel-Modus des Charakters zu Kreativ
+        adventure: Ändert den Spiel-Modus des Charakters zu Abenteuer
+    config:
+        overview: "[Einstellung] - liste durch weglassen"
+        settings: "Verfügbare Einstellungen: "
+        reload: Lädt das Plugin neu (funktioniert nur teilweise)
+    gamemode:
+        changed: "{0}'s Spiel-Modus wurde geändert"
+        no_change: Bereits in diesem Spiel-Modus
+    option:
+        done: Option geändert.
+    worldguard:
+        alias: Alias für den //region-Befehl
+        unknown_flag: Unbekanntes Attribut
+        available_flags: Verfügbare Attribute
+        region_not_found: Keine Region mit dieser ID gefunden
+        world_not_found: Es konnte keine Welt mit diesem Namen gefunden werden
+        no_flag_given: Es muss ein Attribut angegeben werden, dass gesetzt werden soll
+        no_integration: Der worldguard-Befehl ist nicht verfügbar, da WorldGuard nicht gefunden wurde
+        flag_set: "Das Attribut {0} wurde gesetzt"
+        additional_flags: Zusätzliche Attribute
+cmdblock:
+    blocked: Dieser Befehl ist im Kreativ-Modus blockiert.
+exception:
+    command:
+        lackingpermission: Kein Zugriff auf diesen Befehl
+        toomuchparameter: Zuviele Argumente angegeben
+        missingparameter: Nicht genügen Argumente angegeben
+        playernotfound: Spieler nicht gefunden
+        invalidoption: Unbkeannte Option
+    config:
+        savefail: Die Konfiguration konnte nicht gespeichert werden
+        material_not_found: (Konfiguration) Material mit Name/ID "{0}" wurde nicht gefunden.
+    storage:
+        load: Fehler beim Laden des Inventars. Bitte einen Admin die Option "UnsafeStorege" in LimitedCreative zu aktivieren um ungültig verzauberte Gegenstände zu erlauben
+    region:
+        not_optional: "In dieser Region kannst du nicht im folgenden Modus sein: {0}"
+blocked:
+    chest: Zugriff auf Truhen ist im Kreativ-Modus nicht erlaubt
+    sign: Im Kreativ-Modus kann nicht mit Schildern interagiert werden
+    button: Im Kreativ-Modus kann nicht mit Buttons interagiert werden
+    lever: Im Kreativ-Modus kann nicht mit Schaltern interagiert werden
+    survival_flying: Du solltest auf dem Boden stehen wenn du Kreativ-Regionen verlässt
+    outside_place: Du kannst keine Blöcke außerhalb von Spiel-Modus-Regionen setzen
+    outside_break: Du kannst keine Blöcke außerhalb von Spiel-Modus-Regionen zerstören
+    inside_place: Du kannst keine Blöcke innerhalb von Spiel-Modus-Regionen setzen
+    inside_break: Du kannst keine Blöcke innerhalb von Spiel-Modus-Regionen zerstören
+    use: Du darfst diese Art von Gegenständen im Kreativ-Modus verwenden
+    place: Du darfst diese Art von Blöcken im Kreativ-Modus nicht setzen
+    break: Du darfst diese Art von Blöcken im Kreativ-Modus nicht zerstören
+    piston: Verschieben von Block {0} aus einer Spiel-Modus-Region bei {1} wurde blockiert
+    piston_in: Verschieben von Block {0} in eine Spiel-Modus-Region bei {1} wurde blockiert

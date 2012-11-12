@@ -172,7 +172,7 @@ public class LCPlayer {
         Core.debug(getName() + " going into " + gm);
         if (isActiveRegionGameMode()) { // change to the other gamemode as the area defines
             if (!isActiveRegionGameMode(gm)) { // only when we are not switching to the mode the region allows
-                if (!plugin.config.getRegionOptional() && (!plugin.config.getPermissionsEnabled() || !hasPermission(Perms.REGIONS_BYPASS))) {
+                if (!plugin.config.getRegionOptional() && !hasPermission(Perms.REGIONS_BYPASS)) {
                     getPlayer().sendMessage(ChatColor.RED + L("exception.region.not_optional", gm.toString().toLowerCase()));
                     Core.debug("... denied");
                     return false;
@@ -192,7 +192,7 @@ public class LCPlayer {
          * Feature 1: Separated Inventories / Storage
          */
         if (plugin.config.getStoreEnabled()) {
-            if (plugin.config.getPermissionToKeepInventory() && hasPermission(Perms.KEEPINVENTORY))
+            if (hasPermission(Perms.KEEPINVENTORY))
                 return true;
             getPlayer().closeInventory();
             
@@ -252,7 +252,7 @@ public class LCPlayer {
     public void onDropItem(PlayerDropItemEvent event) {
         Core.debug(getName() + " ("+getPlayer().getGameMode()+")  drops items " + event.getItemDrop().getItemStack().getType());
         if (getPlayer().getGameMode() == GameMode.CREATIVE) {
-            if (plugin.config.getPermissionsEnabled() && hasPermission(Perms.NoLimit.DROP))
+            if (hasPermission(Perms.NoLimit.DROP))
                 return;
             Core.debug("removed");
             if (plugin.config.getRemoveDrop())
@@ -263,7 +263,7 @@ public class LCPlayer {
     }
     public void onPickupItem(PlayerPickupItemEvent event) {
         if (getPlayer().getGameMode() == GameMode.CREATIVE) {
-            if (plugin.config.getPermissionsEnabled() && hasPermission(Perms.NoLimit.PICKUP))
+            if (hasPermission(Perms.NoLimit.PICKUP))
                 return;
             if (plugin.config.getBlockPickupInCreative()) {
                 event.setCancelled(true);
@@ -276,7 +276,7 @@ public class LCPlayer {
     
     public void onDie(EntityDeathEvent event) {
         if (getPlayer().getGameMode() == GameMode.CREATIVE) {
-            if (!plugin.config.getPermissionsEnabled() || !hasPermission(Perms.NoLimit.DROP)) {
+            if (!hasPermission(Perms.NoLimit.DROP)) {
                 event.getDrops().clear();
                 //getInv().storeTemp();
             }
@@ -297,13 +297,13 @@ public class LCPlayer {
             // its PVP
             Player attacker = (Player) from;
             if (attacker.getGameMode() == GameMode.CREATIVE) {
-                if (!plugin.config.getPermissionsEnabled() || !Players.get(attacker).hasPermission(Perms.NoLimit.PVP)) {
+                if (!Players.get(attacker).hasPermission(Perms.NoLimit.PVP)) {
                     event.setCancelled(true);
                     return; // skip next check
                 }
             }
             if (getPlayer().getGameMode() == GameMode.CREATIVE) {
-                if (!plugin.config.getPermissionsEnabled() || !hasPermission(Perms.NoLimit.PVP)) {
+                if (!hasPermission(Perms.NoLimit.PVP)) {
                     event.setCancelled(true);
                 }
             }
@@ -312,7 +312,7 @@ public class LCPlayer {
     public void onDealDamage(EntityDamageByEntityEvent event) { // deals damage
         if (event.getEntity() instanceof Creature) {
             if (getPlayer().getGameMode() == GameMode.CREATIVE && plugin.config.getMobDamageBlock()) {
-                if (!plugin.config.getPermissionsEnabled() || !hasPermission(Perms.NoLimit.MOB_DAMAGE)) {
+                if (!hasPermission(Perms.NoLimit.MOB_DAMAGE)) {
                     event.setCancelled(true);
                 }
             }
@@ -325,7 +325,7 @@ public class LCPlayer {
     public void onTarget(EntityTargetEvent event) {
         if (event.getEntity() instanceof Creature) {
             if (((Player) event.getTarget()).getGameMode() == GameMode.CREATIVE && plugin.config.getMobDamageBlock()) {
-                if (!plugin.config.getPermissionsEnabled() || !hasPermission(Perms.NoLimit.MOB_DAMAGE)) {
+                if (!hasPermission(Perms.NoLimit.MOB_DAMAGE)) {
                     event.setCancelled(true);
                 }
             }
@@ -335,7 +335,7 @@ public class LCPlayer {
     public void onChestAccess(PlayerInteractEvent event) {
         if (event.getPlayer().getGameMode() != GameMode.CREATIVE)
             return;
-        if (plugin.config.getPermissionsEnabled() && hasPermission(Perms.NoLimit.CHEST))
+        if (hasPermission(Perms.NoLimit.CHEST))
             return;
         event.getPlayer().sendMessage(L("blocked.chest"));
         event.setCancelled(true);
@@ -343,7 +343,7 @@ public class LCPlayer {
     public void onChestAccess(PlayerInteractEntityEvent event) { // chest-minecarts are different events
         if (getPlayer().getGameMode() != GameMode.CREATIVE)
             return;
-        if (plugin.config.getPermissionsEnabled() && hasPermission(Perms.NoLimit.CHEST))
+        if (hasPermission(Perms.NoLimit.CHEST))
             return;
         event.getPlayer().sendMessage(L("blocked.chest"));
         event.setCancelled(true);
@@ -351,7 +351,7 @@ public class LCPlayer {
     public void onBenchAccess(PlayerInteractEvent event) {
         if (!plugin.config.getBenchBlock() || event.getPlayer().getGameMode() != GameMode.CREATIVE)
             return;
-        if (plugin.config.getPermissionsEnabled() && hasPermission(Perms.NoLimit.CHEST))
+        if (hasPermission(Perms.NoLimit.CHEST))
             return;
         event.getPlayer().sendMessage(L("blocked.chest"));
         event.setCancelled(true);
@@ -359,7 +359,7 @@ public class LCPlayer {
     public void onSignAccess(PlayerInteractEvent event) {
         if (!plugin.config.getSignBlock() || event.getPlayer().getGameMode() != GameMode.CREATIVE)
             return;
-        if (plugin.config.getPermissionsEnabled() && hasPermission(Perms.NoLimit.SIGN))
+        if (hasPermission(Perms.NoLimit.SIGN))
             return;
         event.getPlayer().sendMessage(L("blocked.sign"));
         event.setCancelled(true);
@@ -368,12 +368,12 @@ public class LCPlayer {
         if (!plugin.config.getButtonBlock() || event.getPlayer().getGameMode() != GameMode.CREATIVE)
             return;
         if (event.getClickedBlock().getState() instanceof Lever) {
-            if (plugin.config.getPermissionsEnabled() && hasPermission(Perms.NoLimit.LEVER))
+            if (hasPermission(Perms.NoLimit.LEVER))
                 return;
             event.getPlayer().sendMessage(L("blocked.lever"));
             event.setCancelled(true);
         } else {
-            if (plugin.config.getPermissionsEnabled() && hasPermission(Perms.NoLimit.BUTTON))
+            if (hasPermission(Perms.NoLimit.BUTTON))
                 return;
             event.getPlayer().sendMessage(L("blocked.button"));
             event.setCancelled(true);

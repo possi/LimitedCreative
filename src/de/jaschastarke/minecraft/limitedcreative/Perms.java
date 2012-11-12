@@ -65,4 +65,14 @@ public enum Perms implements IPermission {
             return Perms.NS + SEP + NoLimit.NS + SEP + perm;
         }
     }
+    
+    public static final class CmdBlock { // not the best way, but this matches to everything in this plugin ;)
+        public static final String NS = "cmdblock";
+        
+        public static IPermission ALL = new IPermission() {
+            public String toString() {
+                return Perms.NS + SEP + CmdBlock.NS + SEP + "all";
+            }
+        };
+    }
 }

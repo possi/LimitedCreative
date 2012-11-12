@@ -25,6 +25,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.jaschastarke.minecraft.integration.Communicator;
+import de.jaschastarke.minecraft.limitedcreative.cmdblock.CommandBlocker;
 import de.jaschastarke.minecraft.limitedcreative.listeners.LimitListener;
 import de.jaschastarke.minecraft.limitedcreative.listeners.MainListener;
 import de.jaschastarke.minecraft.limitedcreative.regions.WorldGuardIntegration;
@@ -40,6 +41,7 @@ public class Core extends JavaPlugin {
     public Communicator com;
     public static Core plugin;
     public NoBlockItemSpawn spawnblock;
+    public CommandBlocker cmdblock;
 
     @Override
     public void onDisable() {
@@ -55,6 +57,7 @@ public class Core extends JavaPlugin {
         config = null;
         spawnblock = null;
         com = null;
+        cmdblock = null;
     }
 
     @Override
@@ -86,9 +89,14 @@ public class Core extends JavaPlugin {
             warn(L("basic.warning.worldguard_not_found", L("basic.feature.region")));
         }
         
+        // 4th Feature: Command Blocker
+        if (config.getCommandBlockerEnabled())
+            cmdblock = new CommandBlocker(this);
+        
         debug("Store: " + config.getStoreEnabled());
         debug("Limit: " + config.getLimitEnabled());
         debug("Region: " + (worldguard != null));
+        debug("CmdBlock: " + config.getCommandBlockerEnabled());
         
         Commands.register(this);
         

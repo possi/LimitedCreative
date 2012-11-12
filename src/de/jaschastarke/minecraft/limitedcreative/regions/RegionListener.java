@@ -7,6 +7,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -14,6 +16,7 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 
 import de.jaschastarke.minecraft.limitedcreative.Core;
 import de.jaschastarke.minecraft.limitedcreative.LCPlayer;
@@ -43,27 +46,38 @@ public class RegionListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.isCancelled())
             return;
+        whenBlockBreak(event, event.getBlock(), event.getPlayer());
+    }
+    
+    @EventHandler
+    public void onHangingBreak(HangingBreakByEntityEvent event) {
+        if (event.getRemover() instanceof Player) {
+            Player eventPlayer = (Player) event.getRemover();
+            whenBlockBreak(event, event.getEntity().getLocation().getBlock(), eventPlayer);
+        }
+    }
         
-        LCPlayer player = Players.get(event.getPlayer());
-        boolean diffrent_region = rm.isDiffrentRegion(event.getPlayer(), event.getBlock().getLocation());
+    private void whenBlockBreak(Cancellable event, Block block, Player eventPlayer) {
+        LCPlayer player = Players.get(eventPlayer);
+        boolean diffrent_region = rm.isDiffrentRegion(eventPlayer, block.getLocation());
         
         if (player.isActiveRegionGameMode() && diffrent_region) {
             // do not break outside of "gamemod-change-region" when in the region
-            if (rm.getRegionSet(event.getBlock()).getFlag(Flags.GAMEMODE, event.getPlayer()) != player.getActiveRegionGameMode()) {
-                event.getPlayer().sendMessage(L("blocked.outside_break"));
+            if (rm.getRegionSet(block).getFlag(Flags.GAMEMODE, eventPlayer) != player.getActiveRegionGameMode()) {
+                eventPlayer.sendMessage(L("blocked.outside_break"));
                 event.setCancelled(true);
             }
         } else if (diffrent_region) {
             // do not break inside of "survial-region in creative world" when outside
-            if (rm.getRegionSet(event.getBlock()).getFlag(Flags.GAMEMODE) != null) {
-                event.getPlayer().sendMessage(L("blocked.inside_break"));
+            if (rm.getRegionSet(block).getFlag(Flags.GAMEMODE) != null) {
+                eventPlayer.sendMessage(L("blocked.inside_break"));
                 event.setCancelled(true);
             }
         }
         if (!event.isCancelled()) {
             // prevent any drops for survival players in creative regions
-            if (event.getPlayer().getGameMode() != GameMode.CREATIVE && rm.getRegionSet(event.getBlock()).getFlag(Flags.GAMEMODE) == GameMode.CREATIVE) {
-                plugin.spawnblock.block(event.getBlock(), player);
+            if (eventPlayer.getGameMode() != GameMode.CREATIVE && rm.getRegionSet(block).getFlag(Flags.GAMEMODE) == GameMode.CREATIVE) {
+                plugin.spawnblock.block(block, player);
             }
         }
     }

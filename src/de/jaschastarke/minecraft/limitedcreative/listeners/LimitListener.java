@@ -25,9 +25,11 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.StorageMinecart;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -39,6 +41,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -76,7 +79,7 @@ public class LimitListener implements Listener {
             return;
         
         LCPlayer player = Players.get(event.getPlayer());
-        if (!plugin.config.getPermissionsEnabled() || !player.hasPermission(Perms.NoLimit.USE)) {
+        if (!player.hasPermission(Perms.NoLimit.USE)) {
             if (event.getItem() != null && BlackList.isBlackListed(plugin.config.getBlockedUse(), event.getItem())) {
                 event.setCancelled(true);
                 event.setUseItemInHand(Event.Result.DENY);
@@ -107,15 +110,24 @@ public class LimitListener implements Listener {
             return;
 
         LCPlayer player = Players.get(event.getPlayer());
-        if (!plugin.config.getPermissionsEnabled() || !player.hasPermission(Perms.NoLimit.USE)) {
+        if (!player.hasPermission(Perms.NoLimit.USE)) {
             if (event.getPlayer().getItemInHand() != null && BlackList.isBlackListed(plugin.config.getBlockedUse(), event.getPlayer().getItemInHand())) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(L("blocked.use"));
                 return;
             }
         }
-        
         Entity entity = event.getRightClicked();
+
+        // Temporary Solution: While dropping of Items is prevented we don't allow Interaction with ItemFrames, so no
+        // Items can be "placed" anywhere.
+        if (!player.hasPermission(Perms.NoLimit.DROP)) {
+            if (entity instanceof ItemFrame && plugin.config.getRemoveDrop()) {
+                event.setCancelled(true);
+                event.getPlayer().sendMessage(L("blocked.use"));
+                return;
+            }
+        }
 
         if (entity instanceof StorageMinecart) {
             player.onChestAccess(event);
@@ -168,25 +180,24 @@ public class LimitListener implements Listener {
         Players.get(event.getPlayer()).onRespawn(event);
     }*/
     
-    @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
-        if (event.isCancelled())
-            return;
-        if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
-            LCPlayer player = Players.get(event.getPlayer());
-            if (!plugin.config.getPermissionsEnabled() || !player.hasPermission(Perms.NoLimit.BREAK)) {
-                if (BlackList.isBlackListed(plugin.config.getBlockedBreaks(), event.getBlock())) {
+    
+    private void whenBlockBreak(Cancellable event, Block block, Player eventPlayer) {
+        if (eventPlayer.getGameMode() == GameMode.CREATIVE) {
+            LCPlayer player = Players.get(eventPlayer);
+            if (!player.hasPermission(Perms.NoLimit.BREAK)) {
+                if (BlackList.isBlackListed(plugin.config.getBlockedBreaks(), block)) {
                     event.setCancelled(true);
-                    event.getPlayer().sendMessage(L("blocked.break"));
+                    eventPlayer.sendMessage(L("blocked.break"));
                 }
             }
             
-            if (plugin.config.getPermissionsEnabled() && player.hasPermission(Perms.NoLimit.DROP))
+            if (player.hasPermission(Perms.NoLimit.DROP))
                 return;
             // Prevent dropping of doors and beds when destroying the wrong part
-            Block block = event.getBlock();
+            
+            // TODO: Fix, Remove, or make it god like, but this little thing is crap ;)
             Material mat = block.getType();
-            switch (event.getBlock().getType()) {
+            switch (block.getType()) {
                 case WOODEN_DOOR:
                     mat = Material.WOOD_DOOR;
                     plugin.spawnblock.block(block.getRelative(BlockFace.DOWN).getLocation(), mat);
@@ -203,9 +214,26 @@ public class LimitListener implements Listener {
                     plugin.spawnblock.block(block.getRelative(BlockFace.WEST).getLocation(), mat);
                     break;
                 default:
-                    plugin.spawnblock.block(event.getBlock().getLocation(), mat);
+                    plugin.spawnblock.block(block.getLocation(), mat);
             }
         }
+    }
+    
+    /* Doesn't make sense yet, as the block always will be Air. whenBlockBreak should be changed to use Material
+     * instead. Maybe in the Feature.
+    @EventHandler
+    public void onHangingBreak(HangingBreakByEntityEvent event) {
+        if (event.getRemover() instanceof Player) {
+            Player eventPlayer = (Player) event.getRemover();
+            whenBlockBreak(event, event.getEntity().getLocation().getBlock(), eventPlayer);
+        }
+    }*/
+    
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+        if (event.isCancelled())
+            return;
+        whenBlockBreak(event, event.getBlock(), event.getPlayer());
     }
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
@@ -213,7 +241,7 @@ public class LimitListener implements Listener {
             return;
         if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
             LCPlayer player = Players.get(event.getPlayer());
-            if (!plugin.config.getPermissionsEnabled() || !player.hasPermission(Perms.NoLimit.USE)) {
+            if (!player.hasPermission(Perms.NoLimit.USE)) {
                 if (BlackList.isBlackListed(plugin.config.getBlockedUse(), event.getBlock())) {
                     event.setCancelled(true);
                     event.getPlayer().sendMessage(L("blocked.place"));
