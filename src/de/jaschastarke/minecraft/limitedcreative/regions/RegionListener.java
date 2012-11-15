@@ -133,7 +133,7 @@ public class RegionListener implements Listener {
                     Block dest = source.getRelative(event.getDirection(), i);
                     Core.debug("dest "+i+": "+dest.getType());
                     if (regionSet(dest).getFlag(Flags.GAMEMODE) != GameMode.CREATIVE) {
-                        plugin.logger.warning(L("blocked.piston", source.getRelative(event.getDirection(), i - 1).getType().toString(), Util.toString(source.getLocation())));
+                        plugin.getLog().warning(L("blocked.piston", source.getRelative(event.getDirection(), i - 1).getType().toString(), Util.toString(source.getLocation())));
                         event.setCancelled(true);
                         break;
                     } else if (dest.getType() == Material.AIR) {
@@ -155,12 +155,12 @@ public class RegionListener implements Listener {
             Core.debug("dest "+dest.getType());
             if (regionSet(source).getFlag(Flags.GAMEMODE) == GameMode.CREATIVE) {
                 if (regionSet(dest).getFlag(Flags.GAMEMODE) != GameMode.CREATIVE) {
-                    plugin.logger.warning(L("blocked.piston", source.getType().toString(), Util.toString(source.getLocation())));
+                    plugin.getLog().warning(L("blocked.piston", source.getType().toString(), Util.toString(source.getLocation())));
                     event.setCancelled(true);
                 }
             } else if (regionSet(dest).getFlag(Flags.GAMEMODE) == GameMode.CREATIVE) {
                 // source isn't creative
-                plugin.logger.warning(L("blocked.piston_in", source.getType().toString(), Util.toString(source.getLocation())));
+                plugin.getLog().warning(L("blocked.piston_in", source.getType().toString(), Util.toString(source.getLocation())));
                 event.setCancelled(true);
             }
         }

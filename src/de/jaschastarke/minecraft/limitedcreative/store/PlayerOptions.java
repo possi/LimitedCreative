@@ -82,7 +82,7 @@ public class PlayerOptions {
         try {
             store.save(_store_file);
         } catch (IOException e) {
-            Core.plugin.logger.severe("Failed to save players.yml");
+            Core.plugin.getLog().severe("Failed to save players.yml");
             e.printStackTrace();
         }
     }

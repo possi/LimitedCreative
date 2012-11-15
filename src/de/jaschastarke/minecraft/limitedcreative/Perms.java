@@ -17,62 +17,56 @@
  */
 package de.jaschastarke.minecraft.limitedcreative;
 
-import de.jaschastarke.minecraft.utils.IPermission;
+import org.bukkit.permissions.PermissionDefault;
+
+import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
+import de.jaschastarke.minecraft.lib.permissions.IPermissionContainer;
+import de.jaschastarke.minecraft.lib.permissions.IPermission;
 
 public enum Perms implements IPermission {
-    CONFIG("config"),
-    REGIONS("regions"),
-    REGIONS_BYPASS("regions_bypass"),
-    GM("switch_gamemode"),
-    GM_BACKONLY("switch_gamemode.backonly"),
-    GM_SURVIVAL("switch_gamemode.survival"),
-    GM_CREATIVE("switch_gamemode.creative"),
-    GM_ADVENTURE("switch_gamemode.adventure"),
-    GM_OTHER("switch_gamemode.other"),
-    KEEPINVENTORY("keepinventory");
+    CONFIG("config", PermissionDefault.OP),
+    REGIONS("regions", PermissionDefault.OP),
+    REGIONS_BYPASS("regions_bypass", PermissionDefault.FALSE),
+    GM("switch_gamemode", PermissionDefault.OP),
+    GM_BACKONLY("switch_gamemode.backonly", PermissionDefault.FALSE),
+    GM_SURVIVAL("switch_gamemode.survival", PermissionDefault.FALSE),
+    GM_CREATIVE("switch_gamemode.creative", PermissionDefault.FALSE),
+    GM_ADVENTURE("switch_gamemode.adventure", PermissionDefault.FALSE),
+    GM_OTHER("switch_gamemode.other", PermissionDefault.OP),
+    KEEPINVENTORY("keepinventory", PermissionDefault.FALSE);
     
-    private static final String NS = "limitedcreative";
-    
-    private String perm;
-    private Perms(String permission) {
-        perm = permission;
-    }
-    @Override
-    public String toString() {
-        return NS + SEP + perm;
-    }
-    
-    public enum NoLimit implements IPermission {
-        DROP("drop"),
-        PICKUP("pickup"),
-        CHEST("chest"),
-        SIGN("sign"),
-        BUTTON("button"),
-        LEVER("lever"),
-        PVP("pvp"),
-        MOB_DAMAGE("mob_damage"),
-        USE("use"),
-        BREAK("break");
-        
-        private static final String NS = "nolimit";
-        
-        private String perm;
-        private NoLimit(String permission) {
-            perm = permission;
+    public static final IPermissionContainer Root = new IPermissionContainer() {
+        @Override
+        public IPermission[] getPermissions() {
+            return Perms.values();
         }
         @Override
-        public String toString() {
-            return Perms.NS + SEP + NoLimit.NS + SEP + perm;
+        public String getFullString() {
+            return "limitedcreative";
         }
+        @Override
+        public IAbstractPermission getParent() {
+            return null;
+        }
+    };
+    
+    private String perm;
+    private PermissionDefault def;
+    private Perms(String permission, PermissionDefault pdefault) {
+        perm = permission;
+        def = pdefault;
     }
     
-    public static final class CmdBlock { // not the best way, but this matches to everything in this plugin ;)
-        public static final String NS = "cmdblock";
-        
-        public static IPermission ALL = new IPermission() {
-            public String toString() {
-                return Perms.NS + SEP + CmdBlock.NS + SEP + "all";
-            }
-        };
+    @Override
+    public IAbstractPermission getParent() {
+        return Root;
+    }
+    @Override
+    public String getFullString() {
+        return getParent().getFullString() + SEP + perm;
+    }
+    @Override
+    public PermissionDefault getDefault() {
+        return def;
     }
 }

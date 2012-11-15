@@ -7,7 +7,6 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import de.jaschastarke.minecraft.limitedcreative.Core;
 import de.jaschastarke.minecraft.limitedcreative.LCPlayer;
-import de.jaschastarke.minecraft.limitedcreative.Perms;
 import de.jaschastarke.minecraft.limitedcreative.Players;
 
 public class CommandBlocker {
@@ -28,7 +27,7 @@ public class CommandBlocker {
                 for (ICmdBlockEntry blockentry : plugin.config.getCommandBlockList()) {
                     if (blockentry.test(cmd)) {
                         LCPlayer player = Players.get(event.getPlayer());
-                        if (!player.hasPermission(Perms.CmdBlock.ALL)) {
+                        if (!player.hasPermission(CmdBlockPerms.ALL)) {
                             Core.debug("CmdBlock: "+event.getPlayer().getName()+": '/"+cmd+"' blocked by rule '"+blockentry.toString()+"'");
                             event.setCancelled(true);
                             event.getPlayer().sendMessage(L("cmdblock.blocked"));

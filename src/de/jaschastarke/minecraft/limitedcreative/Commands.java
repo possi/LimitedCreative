@@ -18,6 +18,7 @@
 package de.jaschastarke.minecraft.limitedcreative;
 
 import static de.jaschastarke.minecraft.utils.Locale.L;
+import static de.jaschastarke.bukkit.lib.permissions.PermissionManager.hasPermission;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +30,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import de.jaschastarke.minecraft.utils.IPermission;
 import de.jaschastarke.minecraft.utils.Util;
 
 public class Commands {
@@ -201,9 +201,6 @@ public class Commands {
         if (plugin.worldguard == null) {
             plugin.getCommand("/region").setExecutor(new NotAvailableCommandExecutor());
         }
-    }
-    private static boolean hasPermission(CommandSender sender, IPermission permission) {
-        return plugin.perm.hasPermission(sender, permission);
     }
     
     abstract static public class CommandException extends Exception {

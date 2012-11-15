@@ -18,23 +18,21 @@
 package de.jaschastarke.minecraft.limitedcreative;
 import static de.jaschastarke.minecraft.utils.Locale.L;
 
-import java.util.logging.Logger;
-
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import de.jaschastarke.minecraft.integration.Communicator;
+import de.jaschastarke.minecraft.lib.annotations.PermissionGroup;
 import de.jaschastarke.minecraft.limitedcreative.cmdblock.CommandBlocker;
-import de.jaschastarke.minecraft.limitedcreative.listeners.LimitListener;
+import de.jaschastarke.minecraft.limitedcreative.limits.LimitListener;
 import de.jaschastarke.minecraft.limitedcreative.listeners.MainListener;
 import de.jaschastarke.minecraft.limitedcreative.regions.WorldGuardIntegration;
 import de.jaschastarke.minecraft.utils.Locale;
 import de.jaschastarke.minecraft.utils.Permissions;
 
 
-public class Core extends JavaPlugin {
-    public final Logger logger = Logger.getLogger("Minecraft");
+@PermissionGroup("limitedcreative")
+public class Core extends de.jaschastarke.bukkit.lib.Core {
     public Configuration config;
     public Permissions perm;
     public WorldGuardIntegration worldguard;
@@ -109,9 +107,9 @@ public class Core extends JavaPlugin {
         
         PluginDescriptionFile df = this.getDescription();
         if (worldguard != null)
-            logger.info("["+df.getName() + " v" + df.getVersion() + "] "+L("basic.loaded.worldguard"));
+            getLog().info("["+df.getName() + " v" + df.getVersion() + "] "+L("basic.loaded.worldguard"));
         else
-            logger.info("["+df.getName() + " v" + df.getVersion() + "] "+L("basic.loaded.no_worldguard"));
+            getLog().info("["+df.getName() + " v" + df.getVersion() + "] "+L("basic.loaded.no_worldguard"));
     }
     
     public void reload() {
@@ -122,13 +120,13 @@ public class Core extends JavaPlugin {
         setEnabled(true);
     }
     public void info(String s) {
-        logger.info("["+this.getDescription().getName()+"] " + s);
+        getLog().info("["+this.getDescription().getName()+"] " + s);
     }
     public void warn(String s) {
-        logger.warning("["+this.getDescription().getName()+"] " + s);
+        getLog().warning("["+this.getDescription().getName()+"] " + s);
     }
     public void error(String s) {
-        logger.severe("["+this.getDescription().getName()+"] " + s);
+        getLog().severe("["+this.getDescription().getName()+"] " + s);
     }
     public static void debug(String s) {
         if (isDebug())

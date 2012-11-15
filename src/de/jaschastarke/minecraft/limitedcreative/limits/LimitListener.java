@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.jaschastarke.minecraft.limitedcreative.listeners;
+package de.jaschastarke.minecraft.limitedcreative.limits;
 
 import static de.jaschastarke.minecraft.utils.Locale.L;
 
@@ -52,8 +52,8 @@ import org.bukkit.material.Lever;
 import de.jaschastarke.minecraft.limitedcreative.BlackList;
 import de.jaschastarke.minecraft.limitedcreative.Core;
 import de.jaschastarke.minecraft.limitedcreative.LCPlayer;
-import de.jaschastarke.minecraft.limitedcreative.Perms;
 import de.jaschastarke.minecraft.limitedcreative.Players;
+import de.jaschastarke.minecraft.limitedcreative.listeners.MainListener;
 
 public class LimitListener implements Listener {
     private Core plugin;
@@ -78,7 +78,7 @@ public class LimitListener implements Listener {
             return;
         
         LCPlayer player = Players.get(event.getPlayer());
-        if (!player.hasPermission(Perms.NoLimit.USE)) {
+        if (!player.hasPermission(NoLimitPerms.USE)) {
             if (event.getItem() != null && BlackList.isBlackListed(plugin.config.getBlockedUse(), event.getItem())) {
                 event.setCancelled(true);
                 event.setUseItemInHand(Event.Result.DENY);
@@ -109,7 +109,7 @@ public class LimitListener implements Listener {
             return;
 
         LCPlayer player = Players.get(event.getPlayer());
-        if (!player.hasPermission(Perms.NoLimit.USE)) {
+        if (!player.hasPermission(NoLimitPerms.USE)) {
             if (event.getPlayer().getItemInHand() != null && BlackList.isBlackListed(plugin.config.getBlockedUse(), event.getPlayer().getItemInHand())) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(L("blocked.use"));
@@ -120,7 +120,7 @@ public class LimitListener implements Listener {
 
         // Temporary Solution: While dropping of Items is prevented we don't allow Interaction with ItemFrames, so no
         // Items can be "placed" anywhere.
-        if (!player.hasPermission(Perms.NoLimit.DROP)) {
+        if (!player.hasPermission(NoLimitPerms.DROP)) {
             if (entity instanceof ItemFrame && plugin.config.getRemoveDrop()) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(L("blocked.use"));
@@ -183,14 +183,14 @@ public class LimitListener implements Listener {
     private void whenBlockBreak(Cancellable event, Block block, Player eventPlayer) {
         if (eventPlayer.getGameMode() == GameMode.CREATIVE) {
             LCPlayer player = Players.get(eventPlayer);
-            if (!player.hasPermission(Perms.NoLimit.BREAK)) {
+            if (!player.hasPermission(NoLimitPerms.BREAK)) {
                 if (BlackList.isBlackListed(plugin.config.getBlockedBreaks(), block)) {
                     event.setCancelled(true);
                     eventPlayer.sendMessage(L("blocked.break"));
                 }
             }
             
-            if (player.hasPermission(Perms.NoLimit.DROP))
+            if (player.hasPermission(NoLimitPerms.DROP))
                 return;
             // Prevent dropping of doors and beds when destroying the wrong part
             
@@ -240,7 +240,7 @@ public class LimitListener implements Listener {
             return;
         if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
             LCPlayer player = Players.get(event.getPlayer());
-            if (!player.hasPermission(Perms.NoLimit.USE)) {
+            if (!player.hasPermission(NoLimitPerms.USE)) {
                 if (BlackList.isBlackListed(plugin.config.getBlockedUse(), event.getBlock())) {
                     event.setCancelled(true);
                     event.getPlayer().sendMessage(L("blocked.place"));
