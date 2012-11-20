@@ -19,12 +19,22 @@ package de.jaschastarke.minecraft.limitedcreative;
 
 import org.bukkit.permissions.PermissionDefault;
 
+import de.jaschastarke.minecraft.lib.annotations.PermissionDescripted;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
 import de.jaschastarke.minecraft.lib.permissions.IPermissionContainer;
 import de.jaschastarke.minecraft.lib.permissions.IPermission;
 
+@PermissionDescripted(PermissionDescripted.Type.STATIC_ATTRIBUTES)
 public enum Perms implements IPermission {
+    
+    /**
+     * Test123
+     */
     CONFIG("config", PermissionDefault.OP),
+    
+    /**
+     * Test456
+     */
     REGIONS("regions", PermissionDefault.OP),
     REGIONS_BYPASS("regions_bypass", PermissionDefault.FALSE),
     GM("switch_gamemode", PermissionDefault.OP),

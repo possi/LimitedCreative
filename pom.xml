@@ -73,6 +73,7 @@
         <groupId>de.jaschastarke</groupId>
         <artifactId>plib</artifactId>
         <version>0.1-SNAPSHOT</version>
+        <!-- <scope>compile</scope> -->
     </dependency>
   </dependencies>
   
@@ -100,10 +101,13 @@
       <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.0.2</version>
+          <version>2.3.2</version>
           <configuration>
               <source>1.6</source>
               <target>1.6</target>
+              <annotationProcessors>
+                <annotationProcessor>de.jaschastarke.bukkit.maven.AnnotationProcessor</annotationProcessor>
+              </annotationProcessors>
           </configuration>
       </plugin>
       <plugin>
@@ -126,6 +130,9 @@
               <custom>
                 <dev-url>http://dev.bukkit.org/server-mods/limited-creative/</dev-url>
               </custom>
+              <registeredPermissions>
+                <param>de.jaschastarke.minecraft.limitedcreative.Perms.Root</param>
+              </registeredPermissions>
             </configuration>
           </execution>
         </executions>
@@ -150,7 +157,7 @@
                 <filter>
                   <artifact>de.jaschastarke:plib</artifact>
                   <excludes>
-                    <exclude>de/jaschastarke/bukkit/lib/maven/**</exclude>
+                    <exclude>de/jaschastarke/bukkit/maven/**</exclude>
                   </excludes>
                 </filter>
               </filters>

@@ -17,7 +17,7 @@
  */
 package de.jaschastarke.minecraft.limitedcreative;
 
-import static de.jaschastarke.minecraft.utils.Locale.L;
+import static de.jaschastarke.minecraft.limitedcreative.Core.L;
 import static de.jaschastarke.bukkit.lib.permissions.PermissionManager.hasPermission;
 
 import java.util.Arrays;
@@ -30,7 +30,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import de.jaschastarke.minecraft.utils.Util;
+import de.jaschastarke.utils.StringUtil;
 
 public class Commands {
     private static Core plugin;
@@ -48,7 +48,7 @@ public class Commands {
         
         @Override
         public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-            Core.debug(sender.getName() + ": /" + label + " " + Util.join(args));
+            Core.debug(sender.getName() + ": /" + label + " " + StringUtil.join(args));
             if (args.length > 0) {
                 Action act = null;
                 try {

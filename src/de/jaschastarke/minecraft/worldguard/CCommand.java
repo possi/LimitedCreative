@@ -17,7 +17,7 @@
  */
 package de.jaschastarke.minecraft.worldguard;
 
-import static de.jaschastarke.minecraft.utils.Locale.L;
+import static de.jaschastarke.minecraft.limitedcreative.Core.L;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -37,7 +37,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
-import de.jaschastarke.minecraft.utils.Util;
+import de.jaschastarke.utils.StringUtil;
 
 public class CCommand implements CommandExecutor {
     public enum Action {
@@ -168,10 +168,10 @@ public class CCommand implements CommandExecutor {
         if (args.length > 3 && args[3].equalsIgnoreCase("-g")) {
             flag = flag.getRegionGroupFlag();
             if (args.length > 4)
-                value = Util.join(args, 4);
+                value = StringUtil.join(args, 4);
         } else {
             if (args.length > 3)
-                value = Util.join(args, 3);
+                value = StringUtil.join(args, 3);
         }
         
         if (flag == null) {

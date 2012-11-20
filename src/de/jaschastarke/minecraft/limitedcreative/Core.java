@@ -16,22 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package de.jaschastarke.minecraft.limitedcreative;
-import static de.jaschastarke.minecraft.utils.Locale.L;
 
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginDescriptionFile;
 
+import de.jaschastarke.bukkit.lib.locale.PluginLang;
 import de.jaschastarke.minecraft.integration.Communicator;
-import de.jaschastarke.minecraft.lib.annotations.PermissionGroup;
 import de.jaschastarke.minecraft.limitedcreative.cmdblock.CommandBlocker;
 import de.jaschastarke.minecraft.limitedcreative.limits.LimitListener;
 import de.jaschastarke.minecraft.limitedcreative.listeners.MainListener;
 import de.jaschastarke.minecraft.limitedcreative.regions.WorldGuardIntegration;
-import de.jaschastarke.minecraft.utils.Locale;
 import de.jaschastarke.minecraft.utils.Permissions;
 
-
-@PermissionGroup("limitedcreative")
 public class Core extends de.jaschastarke.bukkit.lib.Core {
     public Configuration config;
     public Permissions perm;
@@ -46,9 +42,6 @@ public class Core extends de.jaschastarke.bukkit.lib.Core {
         plugin.getServer().getScheduler().cancelTasks(this);
         if (worldguard != null)
             worldguard.unload();
-        try {
-            Locale.unload();
-        } catch (NoClassDefFoundError e) {} // prevent unload issue
         
         plugin = null;
         worldguard = null;
@@ -65,7 +58,7 @@ public class Core extends de.jaschastarke.bukkit.lib.Core {
         perm = new Permissions(this);
         com = new Communicator(this);
         
-        new Locale(this, config.getLocale());
+        new PluginLang(this, config.getLocale());
 
         spawnblock = new NoBlockItemSpawn();
         
@@ -128,6 +121,14 @@ public class Core extends de.jaschastarke.bukkit.lib.Core {
     public void error(String s) {
         getLog().severe("["+this.getDescription().getName()+"] " + s);
     }
+    /**
+     * Static localization-access only works for first locale instance. if used by another plugin, you need to
+     * access the Locale-Instance get-Method
+     */
+    public static String L(String msg, Object... objects) {
+        return (plugin.getTranslation() != null) ? plugin.getTranslation().get(msg, objects) : msg;
+    }
+
     public static void debug(String s) {
         if (isDebug())
             plugin.info("DEBUG: " + s);

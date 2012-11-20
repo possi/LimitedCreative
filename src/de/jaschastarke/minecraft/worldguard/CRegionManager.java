@@ -39,7 +39,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import de.jaschastarke.minecraft.limitedcreative.Core;
-import de.jaschastarke.minecraft.utils.Util;
+import de.jaschastarke.utils.StringUtil;
 
 public class CRegionManager {
     protected YamlConfiguration c;
@@ -160,7 +160,7 @@ public class CRegionManager {
             if (ids.length > 1) {
                 Arrays.sort(ids);
             }
-            hash.append(Util.join(ids, ","));
+            hash.append(StringUtil.join(ids, ","));
         }
         return hash.toString();
     }

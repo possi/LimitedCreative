@@ -17,7 +17,7 @@
  */
 package de.jaschastarke.minecraft.limitedcreative.limits;
 
-import static de.jaschastarke.minecraft.utils.Locale.L;
+import static de.jaschastarke.minecraft.limitedcreative.Core.L;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;

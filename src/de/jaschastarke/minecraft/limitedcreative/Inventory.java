@@ -17,7 +17,7 @@
  */
 package de.jaschastarke.minecraft.limitedcreative;
 
-import static de.jaschastarke.minecraft.utils.Locale.L;
+import static de.jaschastarke.minecraft.limitedcreative.Core.L;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;

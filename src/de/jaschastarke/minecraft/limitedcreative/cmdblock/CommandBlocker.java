@@ -1,6 +1,6 @@
 package de.jaschastarke.minecraft.limitedcreative.cmdblock;
 
-import static de.jaschastarke.minecraft.utils.Locale.L;
+import static de.jaschastarke.minecraft.limitedcreative.Core.L;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;

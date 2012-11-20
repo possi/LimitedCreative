@@ -17,8 +17,8 @@
  */
 package de.jaschastarke.minecraft.limitedcreative;
 
-import static de.jaschastarke.minecraft.utils.Locale.L;
-import static de.jaschastarke.minecraft.utils.Util.copyFile;
+import static de.jaschastarke.minecraft.limitedcreative.Core.L;
+import static de.jaschastarke.utils.StringUtil.copyFile;
 
 import java.io.File;
 import java.util.ArrayList;

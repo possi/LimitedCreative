@@ -1,6 +1,6 @@
 package de.jaschastarke.minecraft.limitedcreative.regions;
 
-import static de.jaschastarke.minecraft.utils.Locale.L;
+import static de.jaschastarke.minecraft.limitedcreative.Core.L;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -18,10 +18,10 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 
+import de.jaschastarke.bukkit.lib.Utils;
 import de.jaschastarke.minecraft.limitedcreative.Core;
 import de.jaschastarke.minecraft.limitedcreative.LCPlayer;
 import de.jaschastarke.minecraft.limitedcreative.Players;
-import de.jaschastarke.minecraft.utils.Util;
 import de.jaschastarke.minecraft.worldguard.ApplicableRegions;
 import de.jaschastarke.minecraft.worldguard.CRegionManager;
 import de.jaschastarke.minecraft.worldguard.events.PlayerNewLocationAreaEvent;
@@ -133,7 +133,7 @@ public class RegionListener implements Listener {
                     Block dest = source.getRelative(event.getDirection(), i);
                     Core.debug("dest "+i+": "+dest.getType());
                     if (regionSet(dest).getFlag(Flags.GAMEMODE) != GameMode.CREATIVE) {
-                        plugin.getLog().warning(L("blocked.piston", source.getRelative(event.getDirection(), i - 1).getType().toString(), Util.toString(source.getLocation())));
+                        plugin.getLog().warning(L("blocked.piston", source.getRelative(event.getDirection(), i - 1).getType().toString(), Utils.toString(source.getLocation())));
                         event.setCancelled(true);
                         break;
                     } else if (dest.getType() == Material.AIR) {
@@ -155,12 +155,12 @@ public class RegionListener implements Listener {
             Core.debug("dest "+dest.getType());
             if (regionSet(source).getFlag(Flags.GAMEMODE) == GameMode.CREATIVE) {
                 if (regionSet(dest).getFlag(Flags.GAMEMODE) != GameMode.CREATIVE) {
-                    plugin.getLog().warning(L("blocked.piston", source.getType().toString(), Util.toString(source.getLocation())));
+                    plugin.getLog().warning(L("blocked.piston", source.getType().toString(), Utils.toString(source.getLocation())));
                     event.setCancelled(true);
                 }
             } else if (regionSet(dest).getFlag(Flags.GAMEMODE) == GameMode.CREATIVE) {
                 // source isn't creative
-                plugin.getLog().warning(L("blocked.piston_in", source.getType().toString(), Util.toString(source.getLocation())));
+                plugin.getLog().warning(L("blocked.piston_in", source.getType().toString(), Utils.toString(source.getLocation())));
                 event.setCancelled(true);
             }
         }
