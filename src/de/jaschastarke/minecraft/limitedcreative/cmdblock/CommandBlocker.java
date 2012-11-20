@@ -2,6 +2,7 @@ package de.jaschastarke.minecraft.limitedcreative.cmdblock;
 
 import static de.jaschastarke.minecraft.utils.Locale.L;
 
+import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
@@ -22,17 +23,19 @@ public class CommandBlocker {
     class Listener implements org.bukkit.event.Listener {
         @EventHandler
         public void onPreCommand(PlayerCommandPreprocessEvent event) {
-            String cmd = event.getMessage();
-            if (cmd.startsWith("/")) { // just to be sure ;)
-                cmd = cmd.substring(1);
-                for (ICmdBlockEntry blockentry : plugin.config.getCommandBlockList()) {
-                    if (blockentry.test(cmd)) {
-                        LCPlayer player = Players.get(event.getPlayer());
-                        if (!player.hasPermission(Perms.CmdBlock.ALL)) {
-                            Core.debug("CmdBlock: "+event.getPlayer().getName()+": '/"+cmd+"' blocked by rule '"+blockentry.toString()+"'");
-                            event.setCancelled(true);
-                            event.getPlayer().sendMessage(L("cmdblock.blocked"));
-                            return;
+            if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
+                String cmd = event.getMessage();
+                if (cmd.startsWith("/")) { // just to be sure ;)
+                    cmd = cmd.substring(1);
+                    for (ICmdBlockEntry blockentry : plugin.config.getCommandBlockList()) {
+                        if (blockentry.test(cmd)) {
+                            LCPlayer player = Players.get(event.getPlayer());
+                            if (!player.hasPermission(Perms.CmdBlock.ALL)) {
+                                Core.debug("CmdBlock: "+event.getPlayer().getName()+": '/"+cmd+"' blocked by rule '"+blockentry.toString()+"'");
+                                event.setCancelled(true);
+                                event.getPlayer().sendMessage(L("cmdblock.blocked"));
+                                return;
+                            }
                         }
                     }
                 }
