@@ -78,8 +78,14 @@ abstract public class InvConfStorage extends PlayerInventoryStorage {
     }
 
     protected Object serialize(ItemStack is) {
-        if (Core.plugin.config.getUnsafeStorage())
-            return is.serialize();
+        if (Core.plugin.config.getUnsafeStorage()) {
+            Map<String, Object> serialized = is.serialize();
+            Map<String, Object> tagData = NBTagSerializer.serializeTags(is);
+            if (tagData != null) {
+                serialized.put("tag", tagData);
+            }
+            return serialized;
+        }
         return is;
     }
     
@@ -99,6 +105,10 @@ abstract public class InvConfStorage extends PlayerInventoryStorage {
                         result.addUnsafeEnchantment(enchantment, (Integer) entry.getValue());
                     }
                 }
+            }
+            if (sect.contains("tag")) {
+                Map<String, Object> map = sect.getConfigurationSection("tag").getValues(false);
+                result = NBTagSerializer.unserializeTags(result, map);
             }
             return result;
         } else if (is instanceof Map) {
