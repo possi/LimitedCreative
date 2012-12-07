@@ -59,8 +59,10 @@ blocked:
     survival_flying: You should stay on ground, when leaving a creative-area
     outside_place: You can not place blocks outside of the gamemode-area
     outside_break: You can not destroy blocks outside of the gamemode-area
+    outside_interact: You can not interact with blocks outside of the gamemode-area
     inside_place: You can not place blocks inside of the gamemode-area
     inside_break: You can not destroy blocks inside of the gamemode-area
+    inside_interact: You can not interact with blocks inside of the gamemode-area
     use: You are not allowed to use this type of item
     place: You are not allowed to place this type of block
     break: You are not allowed to break this type of block

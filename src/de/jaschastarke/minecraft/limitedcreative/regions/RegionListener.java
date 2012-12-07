@@ -6,21 +6,28 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.material.Button;
+import org.bukkit.material.Lever;
 
 import de.jaschastarke.minecraft.limitedcreative.Core;
 import de.jaschastarke.minecraft.limitedcreative.LCPlayer;
 import de.jaschastarke.minecraft.limitedcreative.Players;
+import de.jaschastarke.minecraft.limitedcreative.listeners.MainListener;
 import de.jaschastarke.minecraft.utils.Util;
 import de.jaschastarke.minecraft.worldguard.ApplicableRegions;
 import de.jaschastarke.minecraft.worldguard.CRegionManager;
@@ -54,6 +61,40 @@ public class RegionListener implements Listener {
         if (event.getRemover() instanceof Player) {
             Player eventPlayer = (Player) event.getRemover();
             whenBlockBreak(event, event.getEntity().getLocation().getBlock(), eventPlayer);
+        }
+    }
+    
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (MainListener.isCancelled(event))
+            return;
+        
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
+            return;
+        
+        Block block = event.getClickedBlock();
+        
+        if (block.getState() instanceof InventoryHolder || block.getType() == Material.ENDER_CHEST || // Workaround, Bukkit not recognize a Enderchest
+                block.getState() instanceof Sign ||
+                block.getState() instanceof Lever || block.getState() instanceof Button ||
+                block.getType() == Material.WORKBENCH || block.getType() == Material.ANVIL) {
+
+            LCPlayer player = Players.get(event.getPlayer());
+            boolean diffrent_region = rm.isDiffrentRegion(event.getPlayer(), block.getLocation());
+            
+            if (player.isActiveRegionGameMode() && diffrent_region) {
+                // do not break outside of "gamemod-change-region" when in the region
+                if (rm.getRegionSet(block).getFlag(Flags.GAMEMODE, event.getPlayer()) != player.getActiveRegionGameMode()) {
+                    event.getPlayer().sendMessage(L("blocked.outside_interact"));
+                    event.setCancelled(true);
+                }
+            } else if (diffrent_region) {
+                // do not break inside of "survial-region in creative world" when outside
+                if (rm.getRegionSet(block).getFlag(Flags.GAMEMODE) != null) {
+                    event.getPlayer().sendMessage(L("blocked.inside_interact"));
+                    event.setCancelled(true);
+                }
+            }
         }
     }
         

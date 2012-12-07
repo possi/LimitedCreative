@@ -29,6 +29,7 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.StorageMinecart;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -98,7 +99,7 @@ public class LimitListener implements Listener {
             player.onSignAccess(event);
         } else if (block.getState() instanceof Lever || block.getState() instanceof Button) {
             player.onButtonAccess(event);
-        } else if (block.getType() == Material.WORKBENCH) {
+        } else if (block.getType() == Material.WORKBENCH || block.getType() == Material.ANVIL) {
             player.onBenchAccess(event);
         }
     }
@@ -120,6 +121,7 @@ public class LimitListener implements Listener {
 
         // Temporary Solution: While dropping of Items is prevented we don't allow Interaction with ItemFrames, so no
         // Items can be "placed" anywhere.
+        // TODO: Improve Configuration
         if (!player.hasPermission(Perms.NoLimit.DROP)) {
             if (entity instanceof ItemFrame && plugin.config.getRemoveDrop()) {
                 event.setCancelled(true);
@@ -130,6 +132,8 @@ public class LimitListener implements Listener {
 
         if (entity instanceof StorageMinecart) {
             player.onChestAccess(event);
+        } else if (entity instanceof Villager) {
+            player.onBenchAccess(event);
         }
     }
 

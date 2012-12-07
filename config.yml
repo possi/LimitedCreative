@@ -90,7 +90,7 @@ limit:
     button: false
     
     # BlockWorkbenches
-    # When enabled also blocks usage of workbenches like chests (so the creative player never can see his inventar).
+    # When enabled also blocks usage of workbenches, anvils and vendor-villagers like chests.
     # default: false
     workbench: false
     

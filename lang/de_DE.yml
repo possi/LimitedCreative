@@ -13,9 +13,9 @@ basic:
 command:
     player: Spieler
     switch:
-        survival: ÿndert den Spiel-Modus des Charakters zu ÿberleben
-        creative: ÿndert den Spiel-Modus des Charakters zu Kreativ
-        adventure: ÿndert den Spiel-Modus des Charakters zu Abenteuer
+        survival: Ändert den Spiel-Modus des Charakters zu Überleben
+        creative: Ändert den Spiel-Modus des Charakters zu Kreativ
+        adventure: Ändert den Spiel-Modus des Charakters zu Abenteuer
     config:
         overview: "[Einstellung] - liste durch weglassen"
         settings: "Verfügbare Einstellungen: "
@@ -57,10 +57,12 @@ blocked:
     button: Im Kreativ-Modus kann nicht mit Buttons interagiert werden
     lever: Im Kreativ-Modus kann nicht mit Schaltern interagiert werden
     survival_flying: Du solltest auf dem Boden stehen wenn du Kreativ-Regionen verlässt
-    outside_place: Du kannst keine Blöcke auÿerhalb von Spiel-Modus-Regionen setzen
-    outside_break: Du kannst keine Blöcke auÿerhalb von Spiel-Modus-Regionen zerstören
+    outside_place: Du kannst keine Blöcke außerhalb von Spiel-Modus-Regionen setzen
+    outside_break: Du kannst keine Blöcke außerhalb von Spiel-Modus-Regionen zerstören
+    outside_interact: Du kannst nicht mit Blöcken außerhalb von Spiel-Modus-Regionen interagieren
     inside_place: Du kannst keine Blöcke innerhalb von Spiel-Modus-Regionen setzen
     inside_break: Du kannst keine Blöcke innerhalb von Spiel-Modus-Regionen zerstören
+    inside_interact: Du kannst nicht mit Blöcken innerhalb von Spiel-Modus-Regionen interagieren
     use: Du darfst diese Art von Gegenständen im Kreativ-Modus verwenden
     place: Du darfst diese Art von Blöcken im Kreativ-Modus nicht setzen
     break: Du darfst diese Art von Blöcken im Kreativ-Modus nicht zerstören

@@ -356,6 +356,14 @@ public class LCPlayer {
         event.getPlayer().sendMessage(L("blocked.chest"));
         event.setCancelled(true);
     }
+    public void onBenchAccess(PlayerInteractEntityEvent event) {
+        if (!plugin.config.getBenchBlock() || event.getPlayer().getGameMode() != GameMode.CREATIVE)
+            return;
+        if (hasPermission(Perms.NoLimit.CHEST))
+            return;
+        event.getPlayer().sendMessage(L("blocked.chest"));
+        event.setCancelled(true);
+    }
     public void onSignAccess(PlayerInteractEvent event) {
         if (!plugin.config.getSignBlock() || event.getPlayer().getGameMode() != GameMode.CREATIVE)
             return;
