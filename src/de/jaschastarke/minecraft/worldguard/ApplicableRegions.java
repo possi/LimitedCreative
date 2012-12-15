@@ -65,33 +65,34 @@ public class ApplicableRegions {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Flag<V>, V> void extendRegionFlags() {
+    private void extendRegionFlags() {
         for (ProtectedRegion pr : regions) {
             for (FlagValue data : mgr.region(pr).getFlags()) {
-                T flag = (T) data.getFlag();
-                V value = (V) data.getValue();
+                Flag<Object> flag = (Flag<Object>) data.getFlag();
+                Object value = data.getValue();
                 pr.setFlag(flag, value);
             }
         }
         if (mgr.getGlobalRegion() != null) {
             for (FlagValue data : mgr.region(mgr.getGlobalRegion()).getFlags()) {
-                T flag = (T) data.getFlag();
-                V value = (V) data.getValue();
+                Flag<Object> flag = (Flag<Object>) data.getFlag();
+                Object value = data.getValue();
                 mgr.getGlobalRegion().setFlag(flag, value);
             }
         }
     }
+    
     @SuppressWarnings("unchecked")
-    private <T extends Flag<V>, V> void contractRegionFlags() {
+    private void contractRegionFlags() {
         for (ProtectedRegion pr : regions) {
             for (FlagValue data : mgr.region(pr).getFlags()) {
-                T flag = (T) data.getFlag();
+                Flag<Object> flag = (Flag<Object>) data.getFlag();
                 pr.setFlag(flag, null);
             }
         }
         if (mgr.getGlobalRegion() != null) {
             for (FlagValue data : mgr.region(mgr.getGlobalRegion()).getFlags()) {
-                T flag = (T) data.getFlag();
+                Flag<Object> flag = (Flag<Object>) data.getFlag();
                 mgr.getGlobalRegion().setFlag(flag, null);
             }
         }
