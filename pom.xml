@@ -11,6 +11,12 @@
   	<url>https://github.com/possi/LimitedCreative/tree/master</url>
   </scm>
   <repositories>
+    <!-- The result with cloudbees SHOULD be stored here for public
+    <repository>
+      <id>de-jaschastarke</id>
+      <url>https://repository-possi.forge.cloudbees.com/release</url>
+    </repository>
+     -->
     <!-- Required dependencies for optional integrations, that aren't hosted yet -->
     <repository>
       <id>opt-dep</id>
@@ -78,6 +84,12 @@
         <groupId>org.bukkit</groupId>
         <artifactId>craftbukkit</artifactId>
         <version>1.4.5-R0.2</version>
+    </dependency>
+    <dependency>
+        <groupId>com.sk89q</groupId>
+        <artifactId>worldedit</artifactId>
+        <version>5.4.4</version>
+        <scope>compile</scope>
     </dependency>
   	<dependency>
   		<groupId>com.sk89q</groupId>
