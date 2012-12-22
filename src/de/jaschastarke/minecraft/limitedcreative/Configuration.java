@@ -122,9 +122,9 @@ public class Configuration {
     public boolean getStoreCreative() {
         return this.getBoolean(Option.STORECREATIVE);
     }
-    public boolean getUnsafeStorage() {
+    /*public boolean getUnsafeStorage() {
         return c.getBoolean("store.unsafe", false);
-    }
+    }*/
     public String getInventoryFolder() {
         return c.getString("store.folder", "inventories");
     }

@@ -26,8 +26,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import de.jaschastarke.minecraft.limitedcreative.Core;
-
 public class Fallback {
 
     public static void loadVersion1(PlayerInventory inv, ConfigurationSection sect) {
@@ -64,14 +62,14 @@ public class Fallback {
         }
 
         public static void sectionSetItem(ConfigurationSection section, String path, ItemStack item) {
-            if (!Core.plugin.config.getUnsafeStorage()) {
+            //if (!Core.plugin.config.getUnsafeStorage()) {
                 section.set(path, item);
-            } else { // unsafe enchants fallback
+            /*} else { // unsafe enchants fallback
                 Map<String, Object> serialize = item.serialize();
                 if (serialize.containsKey("type") && serialize.get("type") instanceof Material)
                     serialize.put("type", serialize.get("type").toString());
                 section.createSection(path, serialize);
-            };
+            };*/
         }
         public static ItemStack sectionGetItem(ConfigurationSection section, String path) {
             if (section.isItemStack(path)) {

@@ -24,6 +24,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import de.jaschastarke.minecraft.limitedcreative.Core;
 import de.jaschastarke.minecraft.limitedcreative.Inventory;
@@ -33,9 +34,9 @@ abstract public class InvConfStorage extends PlayerInventoryStorage {
     
     public void store(Inventory pinv, ConfigurationSection sect) {
         PlayerInventory inv = pinv.getPlayer().getInventory();
-        sect.set("version", 2);
-        if (Core.plugin.config.getUnsafeStorage())
-            sect.set("unsafe", true);
+        sect.set("version", 4);
+        /*if (Core.plugin.config.getUnsafeStorage())
+            sect.set("unsafe", true);*/
         storeItems(sect.createSection("armor"), inv.getArmorContents());
         storeItems(sect.createSection("inv"), inv.getContents());
     }
@@ -77,15 +78,10 @@ abstract public class InvConfStorage extends PlayerInventoryStorage {
         return items;
     }
 
-    protected Object serialize(ItemStack is) {
+    protected Object serialize(ItemStack is) {/*
         if (Core.plugin.config.getUnsafeStorage()) {
-            Map<String, Object> serialized = is.serialize();
-            Map<String, Object> tagData = NBTagSerializer.serializeTags(is);
-            if (tagData != null) {
-                serialized.put("tag", tagData);
-            }
-            return serialized;
-        }
+            return getRecursiveSerialized(is);
+        }*/
         return is;
     }
     
@@ -98,7 +94,7 @@ abstract public class InvConfStorage extends PlayerInventoryStorage {
             int amount = sect.getInt("amount", 1);
             
             ItemStack result = new ItemStack(type, amount, damage);
-            if (sect.contains("enchantments")) {
+            if (sect.contains("enchantments")) { // conf-version 2
                 for (Map.Entry<String, Object> entry : sect.getConfigurationSection("enchantments").getValues(false).entrySet()) {
                     Enchantment enchantment = Enchantment.getByName(entry.getKey().toString());
                     if ((enchantment != null) && (entry.getValue() instanceof Integer)) {
@@ -106,9 +102,11 @@ abstract public class InvConfStorage extends PlayerInventoryStorage {
                     }
                 }
             }
-            if (sect.contains("tag")) {
-                Map<String, Object> map = sect.getConfigurationSection("tag").getValues(false);
-                result = NBTagSerializer.unserializeTags(result, map);
+            if (sect.contains("tag")) { // Backward compatibility for 1.4.5-R0.2; Was Conf-Version 2, but should be 3 ;)
+                ConfigurationSection tag = sect.getConfigurationSection("tag");
+                ItemMeta meta = result.getItemMeta();
+                meta.setDisplayName(tag.getString("name"));
+                result.setItemMeta(meta);
             }
             return result;
         } else if (is instanceof Map) {
@@ -118,4 +116,15 @@ abstract public class InvConfStorage extends PlayerInventoryStorage {
             return null;
         }
     }
+    
+    /*protected static Map<String, Object> getRecursiveSerialized(ConfigurationSerializable conf) {
+        Map<String, Object> serialized = new HashMap<String, Object>(conf.serialize()); // de-immutable
+        for (Map.Entry<String, Object> entry : serialized.entrySet()) {
+            if (entry.getValue() instanceof ConfigurationSerializable) {
+                entry.setValue(getRecursiveSerialized((ConfigurationSerializable) entry.getValue())); // immutable
+                //serialized.put(entry.getKey(), getRecursiveSerialized((ConfigurationSerializable) entry.getValue()));
+            }
+        }
+        return serialized;
+    }*/
 }

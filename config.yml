@@ -18,13 +18,6 @@ store:
     # default: true
     creative: true
     
-    # UnsafeStore (for storing invalid enchants)
-    # By default the new and upgrade-safe storage method for items is used. This method doesn't allow the use
-    # of "invalid" enchants, like given by different plugins. Enable it, to allow invalid enchants (not recommended).
-    # (May be removed with 1.2, as bukkit then allows unsafed enchants by default)
-    # default: false
-    unsafe: false
-    
     # CreativeArmor
     # When set, all creative Player automatically wears the given items as Armor. So they are better seen by other
     # Players.

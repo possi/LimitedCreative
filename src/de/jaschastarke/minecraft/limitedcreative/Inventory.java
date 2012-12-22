@@ -17,9 +17,6 @@
  */
 package de.jaschastarke.minecraft.limitedcreative;
 
-import static de.jaschastarke.minecraft.utils.Locale.L;
-
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -79,11 +76,11 @@ public class Inventory {
         try {
             storage.load(this, Target.getTarget(gm));
         } catch (IllegalArgumentException e) {
-            if (Core.plugin.config.getUnsafeStorage()) {
+            //if (Core.plugin.config.getUnsafeStorage()) {
                 throw e;
-            } else {
-                getPlayer().sendMessage(ChatColor.DARK_RED + L("exception.storage.load"));
-            }
+            //} else {
+                //getPlayer().sendMessage(ChatColor.DARK_RED + L("exception.storage.load"));
+            //}
         }
     }
     
