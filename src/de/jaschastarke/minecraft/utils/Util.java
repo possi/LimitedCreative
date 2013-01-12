@@ -91,4 +91,39 @@ final public class Util {
     public static String toString(Location loc) {
         return "{X: "+loc.getBlockX()+", Y: "+loc.getBlockY()+", Z: "+loc.getBlockZ()+"}";
     }
+    
+    /**
+     * Compares 2 Version Strings
+     * 
+     * Only Numbers are interpreted. Any non-numeric char separates sub-versions.
+     * 
+     * @param v1 First version String
+     * @param v2 Version String to compare with
+     * @return -1 when v1 < v2; 1 when v1 > v2; 0 when equal
+     */
+    public static int compareVersion(String v1, String v2) {
+        String[] ver1 = v1.split("[^0-9]+");
+        String[] ver2 = v2.split("[^0-9]+");
+        
+        for (int i = 0; i < Math.min(ver1.length, ver2.length); i++) {
+            int diff = new Integer(ver1[i]).compareTo(new Integer(ver2[i]));
+            if (diff != 0)
+                return diff < 0 ? -1 : 1;
+        }
+        return ver1.length == ver2.length ? 0 : ver1.length < ver2.length ? -1 : 1;
+        
+        /*String[] vals1 = v1.split("\\.");
+        String[] vals2 = v2.split("\\.");
+        int i=0;
+        while (i < vals1.length && i < vals2.length && vals1[i].equals(vals2[i])) {
+          i++;
+        }
+
+        if (i < vals1.length && i < vals2.length) {
+            int diff = new Integer(vals1[i]).compareTo(new Integer(vals2[i]));
+            return diff < 0 ? -1 : diff == 0 ? 0 : 1;
+        }
+
+        return vals1.length < vals2.length ? -1 : vals1.length == vals2.length ? 0 : 1;*/
+    }
 }

@@ -62,7 +62,7 @@ public class LCPlayer {
         //name = player.getName();
         //touch();
         
-        if (!this.isActiveRegionGameMode(player.getGameMode())) {
+        if (!this.isActiveRegionGameMode(player.getGameMode()) && plugin.com.isLoggedInComplete(getPlayer())) {
             setInPermanentGameMode(player.getGameMode());
         }
     }
@@ -170,22 +170,24 @@ public class LCPlayer {
     
     public boolean onSetGameMode(GameMode gm) {
         Core.debug(getName() + " going into " + gm);
-        if (isActiveRegionGameMode()) { // change to the other gamemode as the area defines
-            if (!isActiveRegionGameMode(gm)) { // only when we are not switching to the mode the region allows
-                if (!plugin.config.getRegionOptional() && !hasPermission(Perms.REGIONS_BYPASS)) {
-                    getPlayer().sendMessage(ChatColor.RED + L("exception.region.not_optional", gm.toString().toLowerCase()));
-                    Core.debug("... denied");
-                    return false;
+        if (plugin.com.isLoggedInComplete(getPlayer())) { // if authme is changing GameMode before going to teleport, this should be remembered
+            if (isActiveRegionGameMode()) { // change to the other gamemode as the area defines
+                if (!isActiveRegionGameMode(gm)) { // only when we are not switching to the mode the region allows
+                    if (!plugin.config.getRegionOptional() && !hasPermission(Perms.REGIONS_BYPASS)) {
+                        getPlayer().sendMessage(ChatColor.RED + L("exception.region.not_optional", gm.toString().toLowerCase()));
+                        Core.debug("... denied");
+                        return false;
+                    } else {
+                        setOptionalRegionGameMode(gm);
+                    }
                 } else {
-                    setOptionalRegionGameMode(gm);
+                    // we are changing to the mode the region defines, thats not permanent
+                    setOptionalRegionGameMode(null);
+                    setInPermanentGameMode(null);
                 }
             } else {
-                // we are changing to the mode the region defines, thats not permanent
-                setOptionalRegionGameMode(null);
-                setInPermanentGameMode(null);
+                setInPermanentGameMode(gm); // we are not in a region, so the mode change is permanent
             }
-        } else {
-            setInPermanentGameMode(gm); // we are not in a region, so the mode change is permanent
         }
         
         /*
@@ -412,9 +414,6 @@ public class LCPlayer {
         return true;
     }
     
-    /*
-     * Attention: "Creative" stands for "the other gamemode". So true may mean, "be survival in creative world".
-     */
     public void setRegionGameMode(GameMode region_gamemode, PlayerAreaEvent area_event) {
         Core.debug(getName()+": changed region: "+region_gamemode+": " + area_event);
         
@@ -458,6 +457,11 @@ public class LCPlayer {
             // 3. (because of else) we are not longer in that mode
             // result: advise him to not longer allowed to that region
             storeActiveRegionGameMode(null);
+        } else if (region_gamemode == CURRENT_GAMEMODE && !this.isInPermanentGameMode(CURRENT_GAMEMODE)) {
+            if (!isActiveRegionGameMode(region_gamemode)) {
+                // we have no information why we are already in this gamemode, so this may be because of an AuthMe change-and-teleport
+                storeActiveRegionGameMode(region_gamemode);
+            }
         }
         /** At the moment, in permanent game mode, it ignores all regions
         else if (this.isRegionGameMode()) {

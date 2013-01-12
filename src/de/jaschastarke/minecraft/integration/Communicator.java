@@ -31,11 +31,24 @@ public class Communicator extends AbstractCommunicator {
     }
 
     public boolean isLoggedIn(Player player) {
-        if (isPluginEnabled("AuthMe") && !AuthMe.isLoggedInComplete(player))
+        if (isPluginEnabled("AuthMe") && !AuthMe.isLoggedIn(player))
             return false;
         if (isPluginEnabled("xAuth") && !xAuth.isLoggedInNotGuest(player))
             return false;
         return true;
+    }
+
+    public boolean isLoggedInComplete(Player player) {
+        if (isPluginEnabled("AuthMe") && !AuthMe.isLoggedInComplete(player))
+            return false;
+        return true;
+    }
+    
+    
+    public void hookAuthInvs() {
+        if (isPluginEnabled("AuthMe", "2.7.0b2")) {
+            new AuthMeInventories(this.plugin);
+        }
     }
     
     public boolean isCreative(World world) {

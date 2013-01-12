@@ -20,6 +20,8 @@ package de.jaschastarke.minecraft.integration;
 //import java.util.HashMap;
 //import java.util.Map;
 
+import static de.jaschastarke.minecraft.utils.Util.compareVersion;
+
 //import org.bukkit.event.EventHandler;
 //import org.bukkit.event.Listener;
 /*import org.bukkit.event.server.PluginDisableEvent;
@@ -27,7 +29,7 @@ import org.bukkit.event.server.PluginEnableEvent;*/
 import org.bukkit.plugin.java.JavaPlugin;
 
 abstract public class AbstractCommunicator /*implements Listener*/ {
-    private JavaPlugin plugin;
+    protected JavaPlugin plugin;
     //private Map<Class<?>, CommunicationBridge> bridges = new HashMap<Class<?>, CommunicationBridge>();
     
     public AbstractCommunicator(JavaPlugin plugin) {
@@ -36,6 +38,13 @@ abstract public class AbstractCommunicator /*implements Listener*/ {
     }
     protected boolean isPluginEnabled(String plugin) {
         return this.plugin.getServer().getPluginManager().isPluginEnabled(plugin);
+    }
+    protected boolean isPluginEnabled(String plugin, String minVersion) {
+        if (isPluginEnabled(plugin)) {
+            String ver = this.plugin.getServer().getPluginManager().getPlugin(plugin).getDescription().getVersion();
+            return compareVersion(ver, minVersion) > 0;
+        }
+        return false;
     }
     /*@SuppressWarnings("unchecked")
     protected <T extends CommunicationBridge> T getBridge(Class<T> cls) {

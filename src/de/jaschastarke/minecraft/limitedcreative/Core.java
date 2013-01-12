@@ -76,6 +76,9 @@ public class Core extends JavaPlugin {
             warn(L("basic.conflict", "MultiInv", L("basic.feature.store")));
             config.setTempStoreEnabled(false);
         }
+        if (config.getStoreEnabled()) {
+            com.hookAuthInvs();
+        }
         getServer().getPluginManager().registerEvents(new MainListener(this), this);
         
         // 2nd Feature: Creative Limitations (Restrictions)
