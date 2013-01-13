@@ -19,12 +19,14 @@ package de.jaschastarke.minecraft.limitedcreative;
 
 import org.bukkit.permissions.PermissionDefault;
 
+import de.jaschastarke.maven.ArchiveDocComments;
 import de.jaschastarke.minecraft.lib.annotations.PermissionDescripted;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
 import de.jaschastarke.minecraft.lib.permissions.IPermissionContainer;
 import de.jaschastarke.minecraft.lib.permissions.IPermission;
 
 @PermissionDescripted(PermissionDescripted.Type.STATIC_ATTRIBUTES)
+@ArchiveDocComments
 public enum Perms implements IPermission {
     
     /**

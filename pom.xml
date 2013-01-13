@@ -106,7 +106,8 @@
               <source>1.6</source>
               <target>1.6</target>
               <annotationProcessors>
-                <annotationProcessor>de.jaschastarke.bukkit.maven.AnnotationProcessor</annotationProcessor>
+                <!-- Needed to fetch DocComments from Source -->
+                <annotationProcessor>de.jaschastarke.maven.AnnotationProcessor</annotationProcessor>
               </annotationProcessors>
           </configuration>
       </plugin>
@@ -131,7 +132,7 @@
                 <dev-url>http://dev.bukkit.org/server-mods/limited-creative/</dev-url>
               </custom>
               <registeredPermissions>
-                <param>de.jaschastarke.minecraft.limitedcreative.Perms.Root</param>
+                <param>de.jaschastarke.minecraft.limitedcreative.Perms:Root</param>
               </registeredPermissions>
             </configuration>
           </execution>
@@ -157,6 +158,7 @@
                 <filter>
                   <artifact>de.jaschastarke:plib</artifact>
                   <excludes>
+                    <exclude>de/jaschastarke/maven/**</exclude>
                     <exclude>de/jaschastarke/bukkit/maven/**</exclude>
                   </excludes>
                 </filter>

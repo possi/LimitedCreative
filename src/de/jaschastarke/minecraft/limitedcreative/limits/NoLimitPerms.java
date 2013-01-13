@@ -2,11 +2,13 @@ package de.jaschastarke.minecraft.limitedcreative.limits;
 
 import org.bukkit.permissions.PermissionDefault;
 
+import de.jaschastarke.maven.ArchiveDocComments;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
 import de.jaschastarke.minecraft.lib.permissions.IPermissionContainer;
 import de.jaschastarke.minecraft.lib.permissions.IPermission;
 import de.jaschastarke.minecraft.limitedcreative.Perms;
 
+@ArchiveDocComments
 public enum NoLimitPerms implements IPermission {
     DROP("drop", PermissionDefault.FALSE),
     PICKUP("pickup", PermissionDefault.FALSE),
