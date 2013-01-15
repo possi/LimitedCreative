@@ -3,7 +3,7 @@
   <groupId>de.jaschastarke</groupId>
   <artifactId>LimitedCreative</artifactId>
   <name>LimitedCreative</name>
-  <version>1.4.6b</version>
+  <version>1.4.6c</version>
   <url>https://github.com/possi/LimitedCreative</url>
   <scm>
   	<connection>scm:git:git://github.com/possi/LimitedCreative.git</connection>
