@@ -75,6 +75,9 @@ public class Core extends JavaPlugin {
         if (config.getStoreEnabled() && getServer().getPluginManager().isPluginEnabled("MultiInv")) {
             warn(L("basic.conflict", "MultiInv", L("basic.feature.store")));
             config.setTempStoreEnabled(false);
+        } else if (config.getStoreEnabled() && getServer().getPluginManager().isPluginEnabled("Multiverse-Inventories")) {
+            warn(L("basic.conflict", "Multiverse-Inventories", L("basic.feature.store")));
+            config.setTempStoreEnabled(false);
         }
         if (config.getStoreEnabled()) {
             com.hookAuthInvs();
