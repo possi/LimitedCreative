@@ -99,7 +99,7 @@ public class LimitListener implements Listener {
             player.onSignAccess(event);
         } else if (block.getState() instanceof Lever || block.getState() instanceof Button) {
             player.onButtonAccess(event);
-        } else if (block.getType() == Material.WORKBENCH || block.getType() == Material.ANVIL) {
+        } else if (block.getType() == Material.WORKBENCH || block.getType() == Material.ANVIL || block.getType() == Material.ENCHANTMENT_TABLE) {
             player.onBenchAccess(event);
         }
     }
