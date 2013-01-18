@@ -1,12 +1,11 @@
 package de.jaschastarke.minecraft.limitedcreative;
 
-import de.jaschastarke.bukkit.lib.Core;
 import de.jaschastarke.bukkit.lib.CoreModule;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
 
-public class ModCreativeLimits extends CoreModule {
-    public ModCreativeLimits(Core plugin) {
+public class ModCreativeLimits extends CoreModule<LimitedCreative> {
+    public ModCreativeLimits(LimitedCreative plugin) {
         super(plugin);
     }
     

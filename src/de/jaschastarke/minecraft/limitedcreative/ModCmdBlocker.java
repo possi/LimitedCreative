@@ -1,11 +1,10 @@
 package de.jaschastarke.minecraft.limitedcreative;
 
-import de.jaschastarke.bukkit.lib.Core;
 import de.jaschastarke.bukkit.lib.CoreModule;
 
-public class ModCmdBlocker extends CoreModule {
+public class ModCmdBlocker extends CoreModule<LimitedCreative> {
 
-    public ModCmdBlocker(Core plugin) {
+    public ModCmdBlocker(LimitedCreative plugin) {
         super(plugin);
     }
 

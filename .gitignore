@@ -8,3 +8,6 @@
 
 # maven
 /target
+
+# Mac stuff
+.DS_Store

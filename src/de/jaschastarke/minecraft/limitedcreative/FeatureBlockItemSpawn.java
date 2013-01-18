@@ -15,11 +15,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.inventory.ItemStack;
 
-import de.jaschastarke.bukkit.lib.Core;
 import de.jaschastarke.bukkit.lib.CoreModule;
 
-public class FeatureBlockItemSpawn extends CoreModule implements Listener {
-    public FeatureBlockItemSpawn(Core plugin) {
+public class FeatureBlockItemSpawn extends CoreModule<LimitedCreative> implements Listener {
+    public FeatureBlockItemSpawn(LimitedCreative plugin) {
         super(plugin);
     }
     public final static long TIME_OFFSET = 250;

@@ -17,12 +17,13 @@
  */
 package de.jaschastarke.minecraft.limitedcreative.inventories;
 
+import org.bukkit.GameMode;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import de.jaschastarke.minecraft.limitedcreative.Hooks;
 import de.jaschastarke.minecraft.limitedcreative.ModInventories;
@@ -60,9 +61,9 @@ public class PlayerListener implements Listener {
     }
     
     @EventHandler
-    public void onLogout(PlayerQuitEvent event) {
-        if (event.getPlayer() != null) {
-            //mod.getInventories().remove(event.getPlayer());
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
+            mod.setCreativeArmor(event.getPlayer());
         }
     }
 }
