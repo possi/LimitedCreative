@@ -1,7 +1,7 @@
 name: LimitedCreative
 main: de.jaschastarke.minecraft.limitedcreative.Core
-version: 1.4.6c
-softdepend: [WorldGuard, WorldEdit, MultiInv]
+version: 1.4.7a
+softdepend: [WorldGuard, WorldEdit, MultiInv, xAuth, AuthMe, MultiInv, Multiverse-Inventories]
 dev-url: http://dev.bukkit.org/server-mods/limited-creative/
 commands:
     limitedcreative:
