@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.material.MaterialData;
 
 import de.jaschastarke.bukkit.lib.ModuleLogger;
@@ -11,14 +12,14 @@ import de.jaschastarke.bukkit.lib.configuration.Configuration;
 import de.jaschastarke.bukkit.lib.items.MaterialDataNotRecognizedException;
 import de.jaschastarke.bukkit.lib.items.MaterilNotRecognizedException;
 import de.jaschastarke.bukkit.lib.items.Utils;
-import de.jaschastarke.configuration.annotations.IConfigurationSubGroup;
+import de.jaschastarke.configuration.IConfigurationSubGroup;
 import de.jaschastarke.configuration.annotations.IsConfigurationNode;
 import de.jaschastarke.maven.ArchiveDocComments;
 import de.jaschastarke.minecraft.limitedcreative.LimitedCreative;
 import de.jaschastarke.minecraft.limitedcreative.ModInventories;
 
 /**
- * CreativeArmor
+ * InventoryCreativeArmor
  * 
  * When set, all creative Player automatically wears the given items as Armor. So they are better seen by other Players.
  */
@@ -29,14 +30,28 @@ public class ArmoryConfig extends Configuration implements IConfigurationSubGrou
         mod = modInventories;
     }
     @Override
-    public String getNodeName() {
-        return "armor";
+    public void setValues(ConfigurationSection sect) {
+        if (sect == null || sect.getValues(false).size() == 0) {
+            ConfigurationSection parent_sect = mod.getConfig().getValues();
+            if (parent_sect.contains("armor")) {
+                sect = parent_sect.createSection(this.getName(), parent_sect.getConfigurationSection("armor").getValues(true));
+            }
+        }
+        super.setValues(sect);
+    }
+    @Override
+    public String getName() {
+        return "creativeArmor";
+    }
+    @Override
+    public int getOrder() {
+        return 1000;
     }
 
     /**
-     * CreativeArmorEnabled
+     * InventoryCreativeArmorEnabled
      * 
-     * When disabled, the players Armor isn't swapped
+     * When disabled, the players Armor isn't changed.
      * 
      * default: true
      */
@@ -44,14 +59,6 @@ public class ArmoryConfig extends Configuration implements IConfigurationSubGrou
     public boolean getEnabled() {
         return config.getBoolean("enabled", true);
     }
-    
-    /**
-     * CreativeArmor-Items
-     * 
-     * Allows changing of the "Creative-Armor" to be wear when in creative mode
-     * 
-     * *see Blacklist for details on Item-Types
-     */
     public Map<String, MaterialData> getCreativeArmor() {
         if (getEnabled()) {
             Map<String, MaterialData> armor = new HashMap<String, MaterialData>();
@@ -73,6 +80,30 @@ public class ArmoryConfig extends Configuration implements IConfigurationSubGrou
             return armor.size() > 0 ? armor : null;
         }
         return null;
+    }
+    
+    /**
+     * InventoryCreativeArmorItems
+     * 
+     * Allows changing of the "Creative-Armor" to be wear when in creative mode
+     * 
+     * *see Blacklist for details on Item-Types
+     */
+    @IsConfigurationNode(order = 500)
+    public String getHead() {
+        return config.getString("head", "CHAINMAIL_HELMET");
+    }
+    @IsConfigurationNode(order = 501)
+    public String getChest() {
+        return config.getString("chest", "CHAINMAIL_CHESTPLATE");
+    }
+    @IsConfigurationNode(order = 502)
+    public String getLegs() {
+        return config.getString("legs", "CHAINMAIL_LEGGINGS");
+    }
+    @IsConfigurationNode(order = 503)
+    public String getFeet() {
+        return config.getString("feet", "CHAINMAIL_BOOTS");
     }
 
     @Deprecated

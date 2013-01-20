@@ -30,6 +30,10 @@ public class ModInventories extends CoreModule<LimitedCreative> {
     public ModInventories(LimitedCreative plugin) {
         super(plugin);
     }
+    @Override
+    public String getName() {
+        return "Inventory";
+    }
 
     @Override
     public void Initialize(ModuleEntry<IModule> entry) {
@@ -37,12 +41,18 @@ public class ModInventories extends CoreModule<LimitedCreative> {
         listeners.addListener(new PlayerListener(this));
         config = plugin.getPluginConfig().registerSection(new InventoryConfig(this));
         armor_config = config.registerSection(new ArmoryConfig(this));
+        
+        String incomp = Hooks.InventoryIncompatible.test();
+        if (incomp != null) {
+            getLog().warn(plugin.getLocale().trans("basic.conflict", incomp, this.getName()));
+        }
     }
     @Override
     public void OnEnable() {
         super.OnEnable();
         storage = new InvYamlStorage(this, new File(plugin.getDataFolder(), config.getFolder()));
         inventories = new WeakHashMap<Player, Inventory>();
+        getLog().info(plugin.getLocale().trans("basic.loaded.module"));
     }
     public InventoryConfig getConfig() {
         return config;

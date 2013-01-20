@@ -2,6 +2,7 @@ package de.jaschastarke.minecraft.limitedcreative;
 
 import de.jaschastarke.i18n;
 import de.jaschastarke.bukkit.lib.Core;
+import de.jaschastarke.bukkit.lib.PluginLang;
 
 public class LimitedCreative extends Core {
     private i18n lang;
@@ -9,13 +10,18 @@ public class LimitedCreative extends Core {
     
     @Override
     public void OnInitialize() {
+        super.OnInitialize();
         config = new Config(this);
-        lang = new i18n("lang/messages");
+        this.debug = config.getDebug();
+        
+        lang = new PluginLang("lang/messages", this);
+        
+        Hooks.inizializeHooks(this);
+        
         addModule(new ModInventories(this));
         addModule(new ModCreativeLimits(this));
         addModule(new ModRegions(this));
         addModule(new ModCmdBlocker(this));
-        Hooks.inizializeHooks(this);
         
         config.save();
     }

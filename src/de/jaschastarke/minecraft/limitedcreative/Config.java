@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import de.jaschastarke.bukkit.lib.Core;
 import de.jaschastarke.bukkit.lib.configuration.PluginConfiguration;
+import de.jaschastarke.configuration.annotations.IsConfigurationNode;
 import de.jaschastarke.maven.ArchiveDocComments;
 import de.jaschastarke.utils.ClassDescriptorStorage;
 
@@ -17,7 +18,6 @@ public class Config extends PluginConfiguration {
     public Config(Core plugin) {
         super(plugin);
     }
-
     @Override
     public void save() {
         try {
@@ -27,5 +27,12 @@ public class Config extends PluginConfiguration {
         }
         super.save();
     }
-
+    
+    /**
+     * Debug
+     */
+    @IsConfigurationNode(order = 9999)
+    public boolean getDebug() {
+        return config.getBoolean("debug", false);
+    }
 }
