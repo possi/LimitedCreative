@@ -21,7 +21,7 @@ public class MultiVerseHooks {
         });
         Hooks.DefaultWorldGameMode.register(new WorldTypeHooker.Check() {
             @Override
-            public GameMode test(World world) {
+            public GameMode get(World world) {
                 MultiverseWorld mvWorld = getMV().getMVWorldManager().getMVWorld(world);
                 if (mvWorld == null)
                     return null;

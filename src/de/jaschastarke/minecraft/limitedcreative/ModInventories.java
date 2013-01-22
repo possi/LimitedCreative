@@ -7,10 +7,8 @@ import java.util.WeakHashMap;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 
 import de.jaschastarke.bukkit.lib.CoreModule;
-import de.jaschastarke.bukkit.lib.permissions.PermissionManager;
 import de.jaschastarke.minecraft.limitedcreative.inventories.ArmoryConfig;
 import de.jaschastarke.minecraft.limitedcreative.inventories.Inventory;
 import de.jaschastarke.minecraft.limitedcreative.inventories.InventoryConfig;
@@ -73,7 +71,7 @@ public class ModInventories extends CoreModule<LimitedCreative> {
     }
 
     public void onSetGameMode(Player player, GameMode gm) {
-        if (PermissionManager.hasPermission(player, InventoryPermissions.KEEP_INVENTORY))
+        if (plugin.getPermManager().hasPermission(player, InventoryPermissions.KEEP_INVENTORY))
             return;
         player.closeInventory();
         
@@ -107,17 +105,17 @@ public class ModInventories extends CoreModule<LimitedCreative> {
     }
     
     public void setCreativeArmor(Player player) {
-        Map<String, MaterialData> armor = armor_config.getCreativeArmor();
+        Map<String, ItemStack> armor = armor_config.getCreativeArmor();
         if (armor != null) {
             ItemStack[] is = new ItemStack[4];
             if (armor.containsKey("feet"))
-                is[0] = armor.get("feet").toItemStack(1);
+                is[0] = armor.get("feet");
             if (armor.containsKey("legs"))
-                is[1] = armor.get("legs").toItemStack(1);
+                is[1] = armor.get("legs");
             if (armor.containsKey("chest"))
-                is[2] = armor.get("chest").toItemStack(1);
+                is[2] = armor.get("chest");
             if (armor.containsKey("head"))
-                is[3] = armor.get("head").toItemStack(1);
+                is[3] = armor.get("head");
             player.getInventory().setArmorContents(is);
         }
     }

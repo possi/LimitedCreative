@@ -102,7 +102,7 @@
     <finalName>${project.artifactId}</finalName>
     
     <resources>
-      <resource>
+      <!-- <resource>
         <targetPath>.</targetPath>
         <filtering>true</filtering>
         <directory>${basedir}/</directory>
@@ -111,19 +111,19 @@
           <include>config.yml</include>
           <include>META-INF/descriptions.jos</include>
         </includes>
-      </resource>
+      </resource>-->
       <resource>
         <targetPath>lang/</targetPath>
         <directory>${basedir}/lang/</directory>
       </resource>
-      <resource>
+      <!-- <resource>
         <targetPath>META-INF/</targetPath>
         <filtering>true</filtering>
         <directory>${project.build.directory}/generated-sources/annotations/META-INF/</directory>
         <includes>
           <include>descriptions.jos</include>
         </includes>
-      </resource>
+      </resource> -->
     </resources>
     
   	<plugins>
@@ -157,14 +157,22 @@
                 <param>WorldGuard</param>
                 <param>WorldEdit</param>
                 <param>MultiInv</param>
+                <param>xAuth</param>
+                <param>AuthMe</param>
+                <param>MultiInv</param>
+                <param>Multiverse-Inventories</param>
               </softdepend>
               <custom>
                 <dev-url>http://dev.bukkit.org/server-mods/limited-creative/</dev-url>
               </custom>
               <registeredPermissions>
-                <param>de.jaschastarke.minecraft.limitedcreative.Permissions</param>
+                <param>de.jaschastarke.minecraft.limitedcreative.Permissions:CONTAINER</param>
                 <param>de.jaschastarke.minecraft.limitedcreative.inventories.InventoryPermissions</param>
+                <param>de.jaschastarke.minecraft.limitedcreative.SwitchGameModePermissions:ALL</param>
               </registeredPermissions>
+              <registeredCommands>
+                <param>de.jaschastarke.minecraft.limitedcreative.MainCommand</param>
+              </registeredCommands>
             </configuration>
           </execution>
         </executions>

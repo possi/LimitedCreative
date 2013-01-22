@@ -25,11 +25,16 @@ import de.jaschastarke.minecraft.lib.permissions.IPermission;
 import de.jaschastarke.minecraft.lib.permissions.SimplePermissionContainer;
 import de.jaschastarke.minecraft.limitedcreative.Permissions;
 
+/**
+ * 
+ * @internal Doesn't represent a node, is only a list of additional permissions with an other parent.
+ *
+ */
 @ArchiveDocComments
 public class InventoryPermissions extends SimplePermissionContainer {
     
     /**
      * Allows bypassing the inventory separation
      */
-    public static final IPermission KEEP_INVENTORY = new BasicPermission(Permissions.getInstance(), "keepinventory", PermissionDefault.FALSE);
+    public static final IPermission KEEP_INVENTORY = new BasicPermission(Permissions.CONTAINER, "keepinventory", PermissionDefault.FALSE);
 }

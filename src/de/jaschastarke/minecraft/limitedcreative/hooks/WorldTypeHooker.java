@@ -8,12 +8,12 @@ import de.jaschastarke.hooking.AbstractHooker;
 
 public class WorldTypeHooker extends AbstractHooker<WorldTypeHooker.Check> {
     public interface Check {
-        GameMode test(World world);
+        GameMode get(World world);
     }
     
-    public GameMode test(World world) {
+    public GameMode get(World world) {
         for (Check c : hooks) {
-            return c.test(world);
+            return c.get(world);
         }
         return Bukkit.getServer().getDefaultGameMode();
     }

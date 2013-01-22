@@ -5,8 +5,8 @@ import de.jaschastarke.bukkit.lib.Core;
 import de.jaschastarke.bukkit.lib.PluginLang;
 
 public class LimitedCreative extends Core {
-    private i18n lang;
     protected Config config = null;
+    protected MainCommand command = null;
     
     @Override
     public void OnInitialize() {
@@ -14,16 +14,20 @@ public class LimitedCreative extends Core {
         config = new Config(this);
         this.debug = config.getDebug();
         
-        lang = new PluginLang("lang/messages", this);
+        setLang(new PluginLang("lang/messages", this));
+        
+        command = new MainCommand(this);
+        commands.registerCommand(command);
         
         Hooks.inizializeHooks(this);
         
+        addModule(new FeatureSwitchGameMode(this));
         addModule(new ModInventories(this));
         addModule(new ModCreativeLimits(this));
         addModule(new ModRegions(this));
         addModule(new ModCmdBlocker(this));
         
-        config.save();
+        config.saveDefault();
     }
     
     public Config getPluginConfig() {
@@ -32,9 +36,13 @@ public class LimitedCreative extends Core {
 
     @Deprecated
     public String L(String msg, Object... objects) {
-        return lang.trans(msg, objects);
+        return getLang().trans(msg, objects);
     }
     public i18n getLocale() {
-        return lang;
+        return getLang();
+    }
+
+    public MainCommand getMainCommand() {
+        return command;
     }
 }

@@ -5,12 +5,13 @@ import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
 import de.jaschastarke.bukkit.lib.ModuleLogger;
 import de.jaschastarke.bukkit.lib.configuration.Configuration;
 import de.jaschastarke.bukkit.lib.items.MaterialDataNotRecognizedException;
-import de.jaschastarke.bukkit.lib.items.MaterilNotRecognizedException;
+import de.jaschastarke.bukkit.lib.items.MaterialNotRecognizedException;
 import de.jaschastarke.bukkit.lib.items.Utils;
 import de.jaschastarke.configuration.IConfigurationSubGroup;
 import de.jaschastarke.configuration.annotations.IsConfigurationNode;
@@ -59,22 +60,26 @@ public class ArmoryConfig extends Configuration implements IConfigurationSubGrou
     public boolean getEnabled() {
         return config.getBoolean("enabled", true);
     }
-    public Map<String, MaterialData> getCreativeArmor() {
+    public Map<String, ItemStack> getCreativeArmor() {
         if (getEnabled()) {
-            Map<String, MaterialData> armor = new HashMap<String, MaterialData>();
+            Map<String, ItemStack> armor = new HashMap<String, ItemStack>();
             for (Map.Entry<String, Object> entry : config.getValues(false).entrySet()) {
                 if (!entry.getKey().equals("enabled")) {
-                    MaterialData md = null;
-                    try {
-                        md = Utils.parseMaterial((String) entry.getValue());
-                    } catch (MaterilNotRecognizedException e) {
-                        getLog().warn(L("exception.config.material_not_found", entry.getValue()));
-                    } catch (MaterialDataNotRecognizedException e) {
-                        getLog().warn(L("exception.config.materiak_data_not_found", entry.getValue()));
+                    if (entry instanceof ItemStack) {
+                        armor.put(entry.getKey(), (ItemStack) entry);
+                    } else {
+                        MaterialData md = null;
+                        try {
+                            md = Utils.parseMaterial((String) entry.getValue());
+                        } catch (MaterialNotRecognizedException e) {
+                            getLog().warn(L("exception.config.material_not_found", entry.getValue()));
+                        } catch (MaterialDataNotRecognizedException e) {
+                            getLog().warn(L("exception.config.materiak_data_not_found", entry.getValue()));
+                        }
+                        
+                        if (md != null)
+                            armor.put(entry.getKey(), md.toItemStack());
                     }
-                    
-                    if (md != null)
-                        armor.put(entry.getKey(), md);
                 }
             }
             return armor.size() > 0 ? armor : null;
@@ -90,20 +95,20 @@ public class ArmoryConfig extends Configuration implements IConfigurationSubGrou
      * *see Blacklist for details on Item-Types
      */
     @IsConfigurationNode(order = 500)
-    public String getHead() {
-        return config.getString("head", "CHAINMAIL_HELMET");
+    public Object getHead() {
+        return config.get("head", "CHAINMAIL_HELMET");
     }
     @IsConfigurationNode(order = 501)
-    public String getChest() {
-        return config.getString("chest", "CHAINMAIL_CHESTPLATE");
+    public Object getChest() {
+        return config.get("chest", "CHAINMAIL_CHESTPLATE");
     }
     @IsConfigurationNode(order = 502)
-    public String getLegs() {
-        return config.getString("legs", "CHAINMAIL_LEGGINGS");
+    public Object getLegs() {
+        return config.get("legs", "CHAINMAIL_LEGGINGS");
     }
     @IsConfigurationNode(order = 503)
-    public String getFeet() {
-        return config.getString("feet", "CHAINMAIL_BOOTS");
+    public Object getFeet() {
+        return config.get("feet", "CHAINMAIL_BOOTS");
     }
 
     @Deprecated
