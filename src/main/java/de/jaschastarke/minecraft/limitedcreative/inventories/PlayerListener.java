@@ -18,11 +18,9 @@
 package de.jaschastarke.minecraft.limitedcreative.inventories;
 
 import org.bukkit.GameMode;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import de.jaschastarke.minecraft.limitedcreative.Hooks;
@@ -32,16 +30,6 @@ public class PlayerListener implements Listener {
     private ModInventories mod;
     public PlayerListener(ModInventories mod) {
         this.mod = mod;
-    }
-    
-    /**
-     * The isCancelled in PlayerInteractEvent doesn't check useItemInHand, even this decides (when clicking on
-     * entity with e.g. a bucket)
-     * @param event
-     * @return The relevant "isCancelled"
-     */
-    public static boolean isCancelled(PlayerInteractEvent event) {
-        return event.useInteractedBlock() == Event.Result.DENY && event.useItemInHand() == Event.Result.DENY;
     }
     
     @EventHandler

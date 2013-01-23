@@ -98,11 +98,12 @@
   </dependencies>
   
   <build>
-    <sourceDirectory>${basedir}/src</sourceDirectory>
+    <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
     <finalName>${project.artifactId}</finalName>
     
+    <!-- 
     <resources>
-      <!-- <resource>
+      <!- - <resource>
         <targetPath>.</targetPath>
         <filtering>true</filtering>
         <directory>${basedir}/</directory>
@@ -111,20 +112,20 @@
           <include>config.yml</include>
           <include>META-INF/descriptions.jos</include>
         </includes>
-      </resource>-->
+      </resource>- ->
       <resource>
         <targetPath>lang/</targetPath>
         <directory>${basedir}/lang/</directory>
       </resource>
-      <!-- <resource>
+      <!- - <resource>
         <targetPath>META-INF/</targetPath>
         <filtering>true</filtering>
         <directory>${project.build.directory}/generated-sources/annotations/META-INF/</directory>
         <includes>
           <include>descriptions.jos</include>
         </includes>
-      </resource> -->
-    </resources>
+      </resource> - ->
+    </resources> -->
     
   	<plugins>
       <plugin>

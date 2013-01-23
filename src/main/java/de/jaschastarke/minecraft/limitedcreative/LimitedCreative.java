@@ -34,10 +34,6 @@ public class LimitedCreative extends Core {
         return config;
     }
 
-    @Deprecated
-    public String L(String msg, Object... objects) {
-        return getLang().trans(msg, objects);
-    }
     public i18n getLocale() {
         return getLang();
     }

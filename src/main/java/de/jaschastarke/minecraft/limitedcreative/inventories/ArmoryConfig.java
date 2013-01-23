@@ -3,7 +3,6 @@ package de.jaschastarke.minecraft.limitedcreative.inventories;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -16,7 +15,6 @@ import de.jaschastarke.bukkit.lib.items.Utils;
 import de.jaschastarke.configuration.IConfigurationSubGroup;
 import de.jaschastarke.configuration.annotations.IsConfigurationNode;
 import de.jaschastarke.maven.ArchiveDocComments;
-import de.jaschastarke.minecraft.limitedcreative.LimitedCreative;
 import de.jaschastarke.minecraft.limitedcreative.ModInventories;
 
 /**
@@ -78,7 +76,7 @@ public class ArmoryConfig extends Configuration implements IConfigurationSubGrou
                         }
                         
                         if (md != null)
-                            armor.put(entry.getKey(), md.toItemStack());
+                            armor.put(entry.getKey(), md.toItemStack(1));
                     }
                 }
             }
@@ -111,12 +109,10 @@ public class ArmoryConfig extends Configuration implements IConfigurationSubGrou
         return config.get("feet", "CHAINMAIL_BOOTS");
     }
 
-    @Deprecated
     public String L(String msg, Object... objects) {
-        return ((LimitedCreative) Bukkit.getPluginManager().getPlugin("LimitedCreative")).getLocale().trans(msg, objects);
+        return mod.getPlugin().getLocale().trans(msg, objects);
     }
-    @Deprecated
     public ModuleLogger getLog() {
-        return ((LimitedCreative) Bukkit.getPluginManager().getPlugin("LimitedCreative")).getModule(ModInventories.class).getLog();
+        return mod.getLog();
     }
 }

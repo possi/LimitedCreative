@@ -1,5 +1,6 @@
 package de.jaschastarke.minecraft.limitedcreative;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -49,9 +50,9 @@ public class FeatureSwitchGameMode extends CoreModule<LimitedCreative> {
     }
 
     public class Commands extends AbstractCommandList implements IMethodCommandContainer, IHasName {
-        private List<ICommand> commands = MethodCommand.getMethodCommandsFor(this);
+        private MethodCommand[] commands = MethodCommand.getMethodCommandsFor(this);
         public List<ICommand> getCommandList() {
-            return commands;
+            return Arrays.asList((ICommand[]) commands);
         }
         
         @Override
