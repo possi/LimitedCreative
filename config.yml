@@ -140,7 +140,14 @@ region:
     # Hint: Is very confusing, if MultiVerse "enforce gamemode" swaps your state.
     # default: false
     remember: false
-
+    
+    # RegionSafeMode
+    # When a player leaves a region he always will get back to the world gamemode, even if he entered the region already
+    # in the region-gamemode. So its the opposite analog to RegionRememberOptional.
+    # That means: If a GM in creative-mode walks/flies through a creative-region in a survival world, he will get back
+    # to survival on leaving the region.
+    # default: false
+    safemode: false
 
 cmdblock:
     # CommandBlockerEnabled
@@ -168,3 +175,10 @@ cmdblock:
 # System-Locale is used (selected by Java depending on LC_LANG-Environment-Variable
 # default: none (Use System-Default Locale)
 #locale: en_US
+
+# Metrics
+# This settings allows the Addon-Author to track the Servers using this plugin. It will not track any player
+# related data like names, ips, online time or such. Please do not disable the option! As more servers are using
+# the plugin and the author knows, as more he is willing to support the plugin! Its a win-win for both.
+# default: true
+metrics: true

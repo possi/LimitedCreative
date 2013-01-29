@@ -3,7 +3,7 @@
   <groupId>de.jaschastarke</groupId>
   <artifactId>LimitedCreative</artifactId>
   <name>LimitedCreative</name>
-  <version>1.4.7a</version>
+  <version>1.4.7b</version>
   <url>https://github.com/possi/LimitedCreative</url>
   <scm>
   	<connection>scm:git:git://github.com/possi/LimitedCreative.git</connection>
@@ -57,6 +57,7 @@
         <includes>
           <include>plugin.yml</include>
           <include>config.yml</include>
+          <include>settings.properties</include>
         </includes>
       </resource>
       <resource>
@@ -81,13 +82,13 @@
   	<dependency>
   		<groupId>org.bukkit</groupId>
   		<artifactId>bukkit</artifactId>
-  		<version>1.4.6-R0.1</version>
+  		<version>1.4.7-R0.1</version>
   	</dependency>
     <dependency>
         <!-- http://dl.bukkit.org/ -->
         <groupId>org.bukkit</groupId>
         <artifactId>craftbukkit</artifactId>
-        <version>1.4.6-R0.1</version>
+        <version>1.4.7-R0.1</version>
     </dependency>
     <dependency>
         <!-- http://dev.bukkit.org/server-mods/worldedit/ -->

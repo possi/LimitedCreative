@@ -49,6 +49,7 @@ public class Configuration {
         ADVENTUREINV("store.adventure", false),
         REGION_OPTIONAL("region.optional", true),
         REGION_REMEMBER("region.remember", false),
+        REGION_SAFEMODE("region.safemode", false),
         BLOCKPICKUP("limit.pickup", true),
         BLOCKSIGN("limit.sign", true),
         BLOCKBUTTON("limit.button", false),
@@ -58,6 +59,7 @@ public class Configuration {
         REMOVEPICKUP("limit.remove_pickup", false),
         PERM_WEPIF("permissions.wepif", true),
         CMDBLOCKER("cmdblocker.enabled", true),
+        METRICS("metrics", true),
         DEBUG("debug", false);
         
         private String key;
@@ -161,6 +163,9 @@ public class Configuration {
     }
     public boolean getRegionRememberOptional() {
         return this.getRegionOptional() && this.getBoolean(Option.REGION_REMEMBER);
+    }
+    public boolean getRegionSafeMode() {
+        return this.getBoolean(Option.REGION_SAFEMODE);
     }
     
     public String getLocale() {

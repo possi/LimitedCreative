@@ -161,9 +161,13 @@ public class LCPlayer {
         _permanent_gamemode = temp;
     }
     public boolean isInPermanentGameMode() {
+        if (plugin.config.getRegionSafeMode())
+            return false;
         return isInPermanentGameMode(getPlayer().getGameMode());
     }
     public boolean isInPermanentGameMode(GameMode temp) {
+        if (plugin.config.getRegionSafeMode())
+            return false;
         Core.debug(getName()+": get permanent game mode: " + _permanent_gamemode);
         return temp.equals(_permanent_gamemode);
     }

@@ -24,7 +24,9 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import de.jaschastarke.bukkit.tools.stats.PiwikStatistics;
 import de.jaschastarke.minecraft.integration.Communicator;
+import de.jaschastarke.minecraft.limitedcreative.Configuration.Option;
 import de.jaschastarke.minecraft.limitedcreative.cmdblock.CommandBlocker;
 import de.jaschastarke.minecraft.limitedcreative.listeners.LimitListener;
 import de.jaschastarke.minecraft.limitedcreative.listeners.MainListener;
@@ -105,6 +107,9 @@ public class Core extends JavaPlugin {
         debug("CmdBlock: " + config.getCommandBlockerEnabled());
         
         Commands.register(this);
+        
+        if (config.getBoolean(Option.METRICS))
+            new PiwikStatistics(this);
         
         /*plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
             @Override
