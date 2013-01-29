@@ -180,5 +180,6 @@ cmdblock:
 # This settings allows the Addon-Author to track the Servers using this plugin. It will not track any player
 # related data like names, ips, online time or such. Please do not disable the option! As more servers are using
 # the plugin and the author knows, as more he is willing to support the plugin! Its a win-win for both.
+# Changing the option via command requires a reload to take effect.
 # default: true
 metrics: true
