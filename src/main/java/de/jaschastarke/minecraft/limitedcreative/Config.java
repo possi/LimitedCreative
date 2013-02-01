@@ -29,7 +29,26 @@ public class Config extends PluginConfiguration {
     }
     
     /**
+     * Metrics
+     * 
+     * This settings allows the Addon-Author to track the Servers using this plugin. It will not track any player
+     * related data like names, ips, online time or such. Please do not disable the option! As more servers are using
+     * the plugin and the author knows, as more he is willing to support the plugin! Its a win-win for both.
+     * 
+     * default: true
+     * @TODO Move to a sub-class modular configuration 
+     */
+    @IsConfigurationNode(order = 1000)
+    public boolean getMetrics() {
+        return config.getBoolean("metrics", true);
+    }
+    
+    /**
      * Debug
+     * 
+     * The debug modus spams much details about the plugin to the server-log (console) which can help to solve issues.
+     * 
+     * default: false
      */
     @IsConfigurationNode(order = 9999)
     public boolean getDebug() {

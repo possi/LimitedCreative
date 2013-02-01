@@ -3,10 +3,14 @@ package de.jaschastarke.minecraft.limitedcreative.inventories;
 import org.bukkit.configuration.ConfigurationSection;
 
 import de.jaschastarke.bukkit.lib.configuration.Configuration;
+import de.jaschastarke.configuration.IConfigurationNode;
 import de.jaschastarke.configuration.IConfigurationSubGroup;
+import de.jaschastarke.configuration.InvalidValueException;
 import de.jaschastarke.configuration.annotations.IsConfigurationNode;
 import de.jaschastarke.maven.ArchiveDocComments;
 import de.jaschastarke.minecraft.limitedcreative.ModInventories;
+import de.jaschastarke.modularize.IModule;
+import de.jaschastarke.modularize.ModuleEntry;
 
 /**
  * Inventory-Feature
@@ -15,10 +19,32 @@ import de.jaschastarke.minecraft.limitedcreative.ModInventories;
  */
 @ArchiveDocComments
 public class InventoryConfig extends Configuration implements IConfigurationSubGroup {
+
     protected ModInventories mod;
-    public InventoryConfig(ModInventories modInventories) {
+    protected ModuleEntry<IModule> entry;
+    
+    public InventoryConfig(ModInventories modInventories, ModuleEntry<IModule> modEntry) {
         mod = modInventories;
+        entry = modEntry;
     }
+    
+    @Override
+    public boolean isReadOnly() {
+        return false;
+    }
+    
+    @Override
+    public void setValue(IConfigurationNode node, Object pValue) throws InvalidValueException {
+        super.setValue(node, pValue);
+        if (node.getName().equals("enabled")) {
+            if ((Boolean) pValue) {
+                entry.activate();
+            } else {
+                entry.disable();
+            }
+        }
+    }
+
     @Override
     public void setValues(ConfigurationSection sect) {
         if (sect == null || sect.getValues(false).size() == 0) {
@@ -91,7 +117,7 @@ public class InventoryConfig extends Configuration implements IConfigurationSubG
      * 
      * default: "inventories"
      */
-    @IsConfigurationNode(order = 400)
+    @IsConfigurationNode(order = 400, readonly = true)
     public String getFolder() {
         return config.getString("folder", "inventories");
     }

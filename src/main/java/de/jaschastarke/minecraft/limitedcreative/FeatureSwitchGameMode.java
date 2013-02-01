@@ -16,7 +16,7 @@ import de.jaschastarke.bukkit.lib.commands.ICommand;
 import de.jaschastarke.bukkit.lib.commands.MethodCommand;
 import de.jaschastarke.bukkit.lib.commands.IMethodCommandContainer;
 import de.jaschastarke.bukkit.lib.commands.MissingPermissionCommandException;
-import de.jaschastarke.bukkit.lib.commands.NeedsPlayerCommandException;
+import de.jaschastarke.bukkit.lib.commands.NeedsPlayerArgumentCommandException;
 import de.jaschastarke.bukkit.lib.commands.annotations.Alias;
 import de.jaschastarke.bukkit.lib.commands.annotations.Description;
 import de.jaschastarke.bukkit.lib.commands.annotations.IsCommand;
@@ -37,14 +37,14 @@ public class FeatureSwitchGameMode extends CoreModule<LimitedCreative> {
     }
 
     @Override
-    public void OnEnable() {
+    public void onEnable() {
         if (commands == null)
             commands = new Commands();
         plugin.getMainCommand().getHandler().registerCommands(commands.getCommandList());
     }
 
     @Override
-    public void OnDisable() {
+    public void onDisable() {
         if (commands != null)
             plugin.getMainCommand().getHandler().removeCommands(commands.getCommandList());
     }
@@ -66,20 +66,23 @@ public class FeatureSwitchGameMode extends CoreModule<LimitedCreative> {
         
         protected boolean changeGameMode(CommandContext context, String player, GameMode tgm, IAbstractPermission permission) throws MissingPermissionCommandException, CommandException {
             Player target = null;
-            if (player != null && !player.isEmpty())
+            if (player != null && !player.isEmpty()) {
                 target = Bukkit.getPlayer(player);
-            else if (context.isPlayer())
+                if (target == null)
+                    throw new CommandException("Player " + player + " not found");
+            } else if (context.isPlayer()) {
                 target = context.getPlayer();
+            }
             
             if (target == null)
-                throw new NeedsPlayerCommandException();
+                throw new NeedsPlayerArgumentCommandException();
             
             if (!target.equals(context.getSender()) && !context.checkPermission(SwitchGameModePermissions.OTHER))
                 throw new MissingPermissionCommandException(SwitchGameModePermissions.OTHER);
             
             GameMode wgm = Hooks.DefaultWorldGameMode.get(target.getWorld());
             
-            if (context.checkPermission(permission) || (wgm == tgm && context.checkPermission(SwitchGameModePermissions.BACKONLY)))
+            if (!context.checkPermission(permission) && !(wgm != tgm || !context.checkPermission(SwitchGameModePermissions.BACKONLY)))
                 throw new MissingPermissionCommandException(permission);
             
             target.setGameMode(tgm);

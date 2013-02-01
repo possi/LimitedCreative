@@ -18,6 +18,7 @@ import de.jaschastarke.minecraft.limitedcreative.inventories.store.InvYamlStorag
 import de.jaschastarke.minecraft.limitedcreative.inventories.store.PlayerInventoryStorage;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
+import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 
 public class ModInventories extends CoreModule<LimitedCreative> {
     protected PlayerInventoryStorage storage;
@@ -34,20 +35,30 @@ public class ModInventories extends CoreModule<LimitedCreative> {
     }
 
     @Override
-    public void Initialize(ModuleEntry<IModule> entry) {
-        super.Initialize(entry);
+    public void initialize(ModuleEntry<IModule> entry) {
+        super.initialize(entry);
         listeners.addListener(new PlayerListener(this));
-        config = plugin.getPluginConfig().registerSection(new InventoryConfig(this));
+        config = plugin.getPluginConfig().registerSection(new InventoryConfig(this, entry));
         armor_config = config.registerSection(new ArmoryConfig(this));
+        
+        if (!config.getEnabled()) {
+            entry.initialState = ModuleState.DISABLED;
+            return;
+        }
         
         String incomp = Hooks.InventoryIncompatible.test();
         if (incomp != null) {
             getLog().warn(plugin.getLocale().trans("basic.conflict", incomp, this.getName()));
+            entry.initialState = ModuleState.NOT_INITIALIZED;
         }
     }
     @Override
-    public void OnEnable() {
-        super.OnEnable();
+    public void onEnable() {
+        String incomp = Hooks.InventoryIncompatible.test();
+        if (incomp != null) {
+            throw new IllegalAccessError(plugin.getLocale().trans("basic.conflict", incomp, this.getName()));
+        }
+        super.onEnable();
         storage = new InvYamlStorage(this, new File(plugin.getDataFolder(), config.getFolder()));
         inventories = new WeakHashMap<Player, Inventory>();
         getLog().info(plugin.getLocale().trans("basic.loaded.module"));

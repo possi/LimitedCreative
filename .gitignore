@@ -5,6 +5,7 @@
 /.classpath
 /.settings
 /.buildpath
+/.checkstyle
 
 # maven
 /target

@@ -11,7 +11,7 @@ import de.jaschastarke.bukkit.lib.ModuleLogger;
 import de.jaschastarke.bukkit.lib.configuration.Configuration;
 import de.jaschastarke.bukkit.lib.items.MaterialDataNotRecognizedException;
 import de.jaschastarke.bukkit.lib.items.MaterialNotRecognizedException;
-import de.jaschastarke.bukkit.lib.items.Utils;
+import de.jaschastarke.bukkit.lib.items.ItemUtils;
 import de.jaschastarke.configuration.IConfigurationSubGroup;
 import de.jaschastarke.configuration.annotations.IsConfigurationNode;
 import de.jaschastarke.maven.ArchiveDocComments;
@@ -28,6 +28,12 @@ public class ArmoryConfig extends Configuration implements IConfigurationSubGrou
     public ArmoryConfig(ModInventories modInventories) {
         mod = modInventories;
     }
+    
+    @Override
+    public boolean isReadOnly() {
+        return false;
+    }
+
     @Override
     public void setValues(ConfigurationSection sect) {
         if (sect == null || sect.getValues(false).size() == 0) {
@@ -68,7 +74,7 @@ public class ArmoryConfig extends Configuration implements IConfigurationSubGrou
                     } else {
                         MaterialData md = null;
                         try {
-                            md = Utils.parseMaterial((String) entry.getValue());
+                            md = ItemUtils.parseMaterial((String) entry.getValue());
                         } catch (MaterialNotRecognizedException e) {
                             getLog().warn(L("exception.config.material_not_found", entry.getValue()));
                         } catch (MaterialDataNotRecognizedException e) {
