@@ -29,16 +29,11 @@ public class InventoryConfig extends Configuration implements IConfigurationSubG
     }
     
     @Override
-    public boolean isReadOnly() {
-        return false;
-    }
-    
-    @Override
     public void setValue(IConfigurationNode node, Object pValue) throws InvalidValueException {
         super.setValue(node, pValue);
         if (node.getName().equals("enabled")) {
-            if ((Boolean) pValue) {
-                entry.activate();
+            if (getEnabled()) {
+                entry.enable();
             } else {
                 entry.disable();
             }

@@ -40,8 +40,8 @@ public class MainCommand extends BukkitCommand implements IHelpDescribed {
         return new IAbstractPermission[]{Permissions.COMMAND};
     }
     @Override
-    public String getUsage() {
-        return "<subcommand>";
+    public String[] getUsages() {
+        return null;
     }
     @Override
     public CharSequence getDescription() {

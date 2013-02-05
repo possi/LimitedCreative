@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
 import de.jaschastarke.bukkit.lib.configuration.Configuration;
+import de.jaschastarke.bukkit.lib.configuration.IToGeneric;
 import de.jaschastarke.configuration.IConfigurationNode;
 import de.jaschastarke.configuration.IConfigurationSubGroup;
 import de.jaschastarke.configuration.InvalidValueException;
@@ -30,22 +31,18 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
     }
     
     @Override
-    public boolean isReadOnly() {
-        return false;
-    }
-    
-    @Override
     public void setValue(IConfigurationNode node, Object pValue) throws InvalidValueException {
-        super.setValue(node, pValue);
+        if (!(pValue instanceof BlackList))
+            super.setValue(node, pValue);
         if (node.getName().equals("enabled")) {
-            if ((Boolean) pValue) {
-                entry.activate();
+            if (getEnabled()) {
+                entry.enable();
             } else {
                 entry.disable();
             }
         }
     }
-
+    
     @Override
     public void setValues(ConfigurationSection sect) {
         super.setValues(sect);
@@ -54,7 +51,7 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
         if (!sect.contains("interact") && sect.contains("sign")) {
             interactList = new BlackList();
             if (config.getBoolean("sign", true)) {
-                interactList.add(new BlackList.Blacklisted(Material.SIGN));
+                interactList.add(new BlackList.Blacklisted(Material.WALL_SIGN));
                 interactList.add(new BlackList.Blacklisted(Material.SIGN_POST));
             }
             if (config.getBoolean("button", false)) {
@@ -114,9 +111,14 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
     }
     
     
-    public static enum BlockPickup {
+    public static enum BlockPickup implements IToGeneric {
         PREVENT,
         REMOVE;
+        
+        @Override
+        public Object toGeneric() {
+            return name().toLowerCase();
+        }
     }
     
     /**
@@ -176,7 +178,7 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
         if (interactList == null) {
             interactList = new BlackList(config.getList("interact"));
             if (!config.contains("interact")) {
-                interactList.add(new BlackList.Blacklisted(Material.SIGN));
+                interactList.add(new BlackList.Blacklisted(Material.WALL_SIGN));
                 interactList.add(new BlackList.Blacklisted(Material.SIGN_POST));
                 interactList.add(new BlackList.Blacklisted(Material.LEVER));
                 interactList.add(new BlackList.Blacklisted(Material.STONE_BUTTON));

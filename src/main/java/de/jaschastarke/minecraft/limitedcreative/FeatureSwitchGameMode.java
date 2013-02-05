@@ -21,7 +21,7 @@ import de.jaschastarke.bukkit.lib.commands.annotations.Alias;
 import de.jaschastarke.bukkit.lib.commands.annotations.Description;
 import de.jaschastarke.bukkit.lib.commands.annotations.IsCommand;
 import de.jaschastarke.bukkit.lib.commands.annotations.NeedsPermission;
-import de.jaschastarke.bukkit.lib.commands.annotations.Usage;
+import de.jaschastarke.bukkit.lib.commands.annotations.Usages;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
 import de.jaschastarke.minecraft.lib.permissions.IPermission;
 
@@ -93,7 +93,7 @@ public class FeatureSwitchGameMode extends CoreModule<LimitedCreative> {
         @Alias("s")
         @Description(value = "command.switch.survival", translate = true)
         @NeedsPermission(value={"survival", "backonly"}, optional = true)
-        @Usage("[player]")
+        @Usages("[player]")
         public boolean survival(CommandContext context, String player) throws MissingPermissionCommandException, CommandException {
             return changeGameMode(context, player, GameMode.SURVIVAL, SwitchGameModePermissions.SURVIVAL);
         }
@@ -101,7 +101,7 @@ public class FeatureSwitchGameMode extends CoreModule<LimitedCreative> {
         @Alias("c")
         @Description(value = "command.switch.creative", translate = true)
         @NeedsPermission(value={"creative", "backonly"}, optional = true)
-        @Usage("[player]")
+        @Usages("[player]")
         public boolean creative(CommandContext context, String player) throws MissingPermissionCommandException, CommandException {
             return changeGameMode(context, player, GameMode.CREATIVE, SwitchGameModePermissions.CREATIVE);
         }
@@ -109,7 +109,7 @@ public class FeatureSwitchGameMode extends CoreModule<LimitedCreative> {
         @Alias("a")
         @Description(value = "command.switch.adventure", translate = true)
         @NeedsPermission(value={"adventure", "backonly"}, optional = true)
-        @Usage("[player]")
+        @Usages("[player]")
         public boolean adventure(CommandContext context, String player) throws MissingPermissionCommandException, CommandException {
             return changeGameMode(context, player, GameMode.ADVENTURE, SwitchGameModePermissions.ADVENTURE);
         }

@@ -104,7 +104,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (!isCancelled(event) && event.getPlayer().getGameMode() == GameMode.CREATIVE) {
-            if (mod.getConfig().getBlockUse().isListed(event.getItem())) {
+            if (event.getItem() != null && mod.getConfig().getBlockUse().isListed(event.getItem())) {
                 if (!checkPermission(event, NoLimitPermissions.USE(event.getItem().getData()))) {
                     event.setCancelled(true);
                     event.setUseItemInHand(Event.Result.DENY);
@@ -112,6 +112,11 @@ public class PlayerListener implements Listener {
                     return;
                 }
             }
+            
+            // Well, the action could be ignored, if the player is sneaking, as MC now let you place block on workbench
+            // and other while crouching.
+            // But we don't trust other plugins, like chest-shops that do something while right-clicking a block even
+            // when crouching.
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 Block block = event.getClickedBlock();
                 if (isChest(block)) {
@@ -130,6 +135,7 @@ public class PlayerListener implements Listener {
             }
         }
     }
+    
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
         if (!event.isCancelled() && event.getPlayer().getGameMode() == GameMode.CREATIVE) {

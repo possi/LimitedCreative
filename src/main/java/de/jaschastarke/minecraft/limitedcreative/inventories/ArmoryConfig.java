@@ -28,11 +28,6 @@ public class ArmoryConfig extends Configuration implements IConfigurationSubGrou
     public ArmoryConfig(ModInventories modInventories) {
         mod = modInventories;
     }
-    
-    @Override
-    public boolean isReadOnly() {
-        return false;
-    }
 
     @Override
     public void setValues(ConfigurationSection sect) {

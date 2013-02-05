@@ -3,7 +3,7 @@ package de.jaschastarke.minecraft.limitedcreative;
 import de.jaschastarke.I18n;
 import de.jaschastarke.bukkit.lib.Core;
 import de.jaschastarke.bukkit.lib.PluginLang;
-import de.jaschastarke.bukkit.lib.configuration.ConfigCommand;
+import de.jaschastarke.bukkit.lib.configuration.command.ConfigCommand;
 
 public class LimitedCreative extends Core {
     protected Config config = null;

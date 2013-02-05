@@ -10,11 +10,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
 import de.jaschastarke.bukkit.lib.configuration.ConfigurableList;
+import de.jaschastarke.bukkit.lib.configuration.IToGeneric;
 import de.jaschastarke.bukkit.lib.items.ItemUtils;
 import de.jaschastarke.bukkit.lib.items.MaterialDataNotRecognizedException;
 import de.jaschastarke.bukkit.lib.items.MaterialNotRecognizedException;
+import de.jaschastarke.configuration.InvalidValueException;
 
-public class BlackList extends ArrayList<BlackList.Blacklisted> implements ConfigurableList {
+public class BlackList extends ArrayList<BlackList.Blacklisted> implements ConfigurableList<BlackList.Blacklisted>, IToGeneric {
     private static final long serialVersionUID = -3701659163474405152L;
 
     public static class Blacklisted {
@@ -22,15 +24,15 @@ public class BlackList extends ArrayList<BlackList.Blacklisted> implements Confi
         private MaterialData md;
         private boolean hasData = false;
         
-        public Blacklisted(String rep) {
+        public Blacklisted(String rep) throws InvalidValueException {
             stringRep = rep;
             try {
                 md = ItemUtils.parseMaterial(rep);
                 hasData = rep.contains(ItemUtils.MATERIAL_DATA_SEP);
             } catch (MaterialNotRecognizedException e) {
-                throw new IllegalArgumentException(e);
+                throw new InvalidValueException(e);
             } catch (MaterialDataNotRecognizedException e) {
-                throw new IllegalArgumentException(e);
+                throw new InvalidValueException(e);
             }
         }
         public Blacklisted(Material m) {
@@ -51,7 +53,7 @@ public class BlackList extends ArrayList<BlackList.Blacklisted> implements Confi
         }
         public boolean matches(Block block) {
             if (hasData) {
-                return md.equals(block.getData());
+                return md.equals(new MaterialData(block.getType(), block.getData()));
             } else {
                 return block.getType().equals(md.getItemType());
             }
@@ -68,17 +70,22 @@ public class BlackList extends ArrayList<BlackList.Blacklisted> implements Confi
     public BlackList(List<?> list) {
         if (list != null) {
             for (Object el : list) {
-                if (el instanceof Blacklisted)
+                if (el instanceof Blacklisted) {
                     add((Blacklisted) el);
-                else
-                    add(el.toString());
+                } else {
+                    try {
+                        add(el.toString());
+                    } catch (InvalidValueException e) {
+                        System.err.println(e.getCause().getMessage());
+                    }
+                }
             }
         }
     }
 
     public boolean contains(String e) {
         for (Blacklisted bl : this) {
-            if (bl.toString().equals(e))
+            if (bl.toString().equalsIgnoreCase(e))
                 return true;
         }
         return false;
@@ -100,7 +107,7 @@ public class BlackList extends ArrayList<BlackList.Blacklisted> implements Confi
     }
 
     @Override // ConfigurableList, not List<E>
-    public void add(String e) {
+    public void add(String e) throws InvalidValueException {
         if (!contains(e)) {
             add(new Blacklisted(e));
         }
@@ -110,11 +117,24 @@ public class BlackList extends ArrayList<BlackList.Blacklisted> implements Confi
     public boolean remove(String e) {
         Iterator<Blacklisted> it = iterator();
         while (it.hasNext()) {
-            if (it.next().toString().equals(e)) {
+            if (it.next().toString().equalsIgnoreCase(e)) {
                 it.remove();
                 return true;
             }
         }
         return false;
+    }
+
+    public List<String> toStringList() {
+        List<String> list = new ArrayList<String>(size());
+        for (Blacklisted bl : this) {
+            list.add(bl.toString());
+        }
+        return list;
+    }
+
+    @Override
+    public List<String> toGeneric() {
+        return toStringList();
     }
 }
