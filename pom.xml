@@ -144,7 +144,7 @@
       <plugin>
         <groupId>de.jaschastarke</groupId>
         <artifactId>plib</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>1.0-SNAPSHOT</version>
         <executions>
           <execution>
             <phase>compile</phase>
