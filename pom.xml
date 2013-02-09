@@ -15,6 +15,12 @@
   	<developerConnection>scm:git:git@github.com:possi/LimitedCreative.git</developerConnection>
   	<url>https://github.com/possi/LimitedCreative/tree/master</url>
   </scm>
+  <distributionManagement>
+    <repository>
+      <id>de-jas-repo</id>
+      <url>scp://repo@ja-s.de/var/customers/webs/repo/mvn</url>
+    </repository>
+  </distributionManagement>
   
   <repositories>
     <!-- Possible public Maven Repository, containing LimitedCreative builds and other dependencies without own rep.
@@ -100,32 +106,6 @@
   <build>
     <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
     <finalName>${project.artifactId}</finalName>
-    
-    <!-- 
-    <resources>
-      <!- - <resource>
-        <targetPath>.</targetPath>
-        <filtering>true</filtering>
-        <directory>${basedir}/</directory>
-        <includes>
-          <include>plugin.yml</include>
-          <include>config.yml</include>
-          <include>META-INF/descriptions.jos</include>
-        </includes>
-      </resource>- ->
-      <resource>
-        <targetPath>lang/</targetPath>
-        <directory>${basedir}/lang/</directory>
-      </resource>
-      <!- - <resource>
-        <targetPath>META-INF/</targetPath>
-        <filtering>true</filtering>
-        <directory>${project.build.directory}/generated-sources/annotations/META-INF/</directory>
-        <includes>
-          <include>descriptions.jos</include>
-        </includes>
-      </resource> - ->
-    </resources> -->
     
   	<plugins>
       <plugin>
@@ -246,5 +226,13 @@
   			</plugin>
   		</plugins>
   	</pluginManagement>
+    <extensions>
+      <!-- Enabling the use of SCP -->
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+         <artifactId>wagon-ssh</artifactId>
+         <version>1.0</version>
+      </extension>
+    </extensions>
   </build>
 </project>
