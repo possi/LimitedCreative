@@ -92,7 +92,7 @@
     <dependency>
         <groupId>de.jaschastarke</groupId>
         <artifactId>plib</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>1.0-SNAPSHOT</version>
         <!-- <scope>compile</scope> -->
     </dependency>
   </dependencies>
@@ -162,17 +162,22 @@
                 <param>AuthMe</param>
                 <param>MultiInv</param>
                 <param>Multiverse-Inventories</param>
+                <param>Vault</param>
               </softdepend>
               <custom>
                 <dev-url>http://dev.bukkit.org/server-mods/limited-creative/</dev-url>
               </custom>
               <registeredPermissions>
                 <param>de.jaschastarke.minecraft.limitedcreative.Permissions:CONTAINER</param>
-                <param>de.jaschastarke.minecraft.limitedcreative.inventories.InventoryPermissions</param>
                 <param>de.jaschastarke.minecraft.limitedcreative.SwitchGameModePermissions:ALL</param>
+                <param>de.jaschastarke.minecraft.limitedcreative.inventories.InventoryPermissions</param>
+                <param>de.jaschastarke.minecraft.limitedcreative.limits.NoLimitPermissions:PARENT</param>
+                <param>de.jaschastarke.minecraft.limitedcreative.cmdblocker.CmdBlockPermissions:CONTAINER</param>
+                <param>de.jaschastarke.minecraft.limitedcreative.regions.RegionPermissions:REGION</param>
               </registeredPermissions>
               <registeredCommands>
                 <param>de.jaschastarke.minecraft.limitedcreative.MainCommand</param>
+                <param>de.jaschastarke.minecraft.limitedcreative.regions.RegionsCommand</param>
               </registeredCommands>
             </configuration>
           </execution>

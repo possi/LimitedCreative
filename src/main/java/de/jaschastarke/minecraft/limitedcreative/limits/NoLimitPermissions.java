@@ -31,22 +31,23 @@ import de.jaschastarke.minecraft.lib.permissions.IDynamicPermission;
 import de.jaschastarke.minecraft.lib.permissions.IPermission;
 import de.jaschastarke.minecraft.lib.permissions.IPermissionContainer;
 import de.jaschastarke.minecraft.lib.permissions.IsChildPermission;
+import de.jaschastarke.minecraft.lib.permissions.ParentPermissionContainerNode;
 import de.jaschastarke.minecraft.lib.permissions.SimplePermissionContainerNode;
 import de.jaschastarke.minecraft.limitedcreative.Permissions;
 
 @ArchiveDocComments
-public class NoLimitPermissions extends BasicPermission {
-    public NoLimitPermissions(IAbstractPermission parent, String name, PermissionDefault defaultValue) {
-        super(parent, name, defaultValue);
+public class NoLimitPermissions extends SimplePermissionContainerNode {
+    public NoLimitPermissions(IAbstractPermission parent, String name) {
+        super(parent, name);
     }
     
     
-    public static final IPermissionContainer PARENT = new SimplePermissionContainerNode(Permissions.CONTAINER, "nolimit");
+    public static final IPermissionContainer PARENT = new NoLimitPermissions(Permissions.CONTAINER, "nolimit");
     
     /**
      * Grants bypassing of all nolimit-permissions.
      */
-    public static final IPermission ALL = new NoLimitPermissions(PARENT, "*", PermissionDefault.OP);
+    public static final IPermission ALL = new ParentPermissionContainerNode(PARENT, "*", PermissionDefault.OP, PARENT);
 
     /**
      * Allows bypassing the "do not open a chest"-limitation
