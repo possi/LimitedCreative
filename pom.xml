@@ -3,20 +3,37 @@
   <groupId>de.jaschastarke</groupId>
   <artifactId>LimitedCreative</artifactId>
   <name>LimitedCreative</name>
-  <version>1.4.7b</version>
+  <version>1.4.7c-SNAPSHOT</version>
   <url>https://github.com/possi/LimitedCreative</url>
+  
   <scm>
   	<connection>scm:git:git://github.com/possi/LimitedCreative.git</connection>
   	<developerConnection>scm:git:git@github.com:possi/LimitedCreative.git</developerConnection>
   	<url>https://github.com/possi/LimitedCreative/tree/master</url>
   </scm>
+  
+  <distributionManagement>
+    <repository>
+      <id>de-jas-repo</id>
+      <url>scp://repo@ja-s.de/var/customers/webs/repo/mvn</url>
+    </repository>
+  </distributionManagement>
+  <ciManagement>
+    <system>jenkins</system>
+    <url>http://ci.ja-s.de:8080/</url>
+  </ciManagement>
+  <issueManagement>
+    <system>BukkitDev</system>
+    <url>http://dev.bukkit.org/server-mods/limited-creative/tickets/</url>
+  </issueManagement>
+  
   <repositories>
     <!-- Possible public Maven Repository, containing LimitedCreative builds and other dependencies without own rep.
          like AuthMe, etc.
-         Supports http & https -->
+         Supports http only -->
     <repository>
-      <id>de-jas-mvn</id>
-      <url>https://repository-possi.forge.cloudbees.com/release</url>
+      <id>de-jas-repo</id>
+      <url>http://repo.ja-s.de/mvn</url>
     </repository>
     
     <!-- Official (Craft-)Bukkit repository -->
@@ -77,18 +94,26 @@
           </configuration>
       </plugin>
   	</plugins>
+    <extensions>
+      <!-- Enabling the use of SCP -->
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+         <artifactId>wagon-ssh</artifactId>
+         <version>1.0</version>
+      </extension>
+    </extensions>
   </build>
   <dependencies>
   	<dependency>
   		<groupId>org.bukkit</groupId>
   		<artifactId>bukkit</artifactId>
-  		<version>1.4.7-R0.1</version>
+  		<version>1.4.7-R1.0</version>
   	</dependency>
     <dependency>
         <!-- http://dl.bukkit.org/ -->
         <groupId>org.bukkit</groupId>
         <artifactId>craftbukkit</artifactId>
-        <version>1.4.7-R0.1</version>
+        <version>1.4.7-R1.0</version>
     </dependency>
     <dependency>
         <!-- http://dev.bukkit.org/server-mods/worldedit/ -->
