@@ -8,12 +8,16 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 import de.jaschastarke.bukkit.lib.CoreModule;
 import de.jaschastarke.bukkit.lib.commands.AliasHelpedCommand;
+import de.jaschastarke.minecraft.limitedcreative.regions.BlockListener;
 import de.jaschastarke.minecraft.limitedcreative.regions.Flags;
 import de.jaschastarke.minecraft.limitedcreative.regions.PlayerData;
+import de.jaschastarke.minecraft.limitedcreative.regions.PlayerListener;
 import de.jaschastarke.minecraft.limitedcreative.regions.RegionConfig;
+import de.jaschastarke.minecraft.limitedcreative.regions.RegionListener;
 import de.jaschastarke.minecraft.limitedcreative.regions.RegionsCommand;
 import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.CustomRegionManager;
 import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.FlagList;
+import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.PlayerRegionListener;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
 import de.jaschastarke.modularize.ModuleEntry.ModuleState;
@@ -42,7 +46,12 @@ public class ModRegions extends CoreModule<LimitedCreative> {
         
         command = new RegionsCommand(this);
         plugin.getCommandHandler().registerCommand(command);
-        plugin.getMainCommand().registerCommand(new AliasHelpedCommand<RegionsCommand>(command, "region"));
+        plugin.getMainCommand().registerCommand(new AliasHelpedCommand<RegionsCommand>(command, "region", new String[]{"r"}));
+        
+        listeners.registerEvents(new PlayerListener(this));
+        listeners.registerEvents(new BlockListener(this));
+        listeners.registerEvents(new RegionListener(this));
+        listeners.registerEvents(new PlayerRegionListener(this));
         
         FlagList.addFlags(Flags.getList());
         

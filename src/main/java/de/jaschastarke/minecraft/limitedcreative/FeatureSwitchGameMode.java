@@ -82,7 +82,7 @@ public class FeatureSwitchGameMode extends CoreModule<LimitedCreative> {
             
             GameMode wgm = Hooks.DefaultWorldGameMode.get(target.getWorld());
             
-            if (!context.checkPermission(permission) && !(wgm != tgm || !context.checkPermission(SwitchGameModePermissions.BACKONLY)))
+            if (!context.checkPermission(permission) && (wgm != tgm || !context.checkPermission(SwitchGameModePermissions.BACKONLY)))
                 throw new MissingPermissionCommandException(permission);
             
             target.setGameMode(tgm);

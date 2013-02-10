@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.InvalidFlagFormat;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -147,12 +148,14 @@ public class RegionsCommand extends BukkitCommand implements IHelpDescribed {
     public boolean getInfo(CommandContext context, String... args) throws CommandException {
         DefinedParameterParser params = new DefinedParameterParser(args, new String[]{"s"}, 1);
         
-        /*
-         * WorldEdits intercepting Servers privates commandMap via Reflections realy sucks!
-         * Just because they are to lazy to add all the lines commands to plugin.yml
-         */
-        String orgCmd = ("region info " + StringUtils.join(args)).trim();
-        mod.getPlugin().getServer().dispatchCommand(context.getSender(), orgCmd);
+        if (context.isPlayer()) {
+            /*
+             * WorldEdits intercepting Servers privates commandMap via Reflections realy sucks!
+             * Just because they are to lazy to add all the lines commands to plugin.yml
+             */
+            String orgCmd = ("region info " + StringUtils.join(args)).trim();
+            mod.getPlugin().getServer().dispatchCommand(context.getSender(), orgCmd);
+        }
         
         World w = context.isPlayer() ? context.getPlayer().getWorld() : null;
         if (params.getArgumentCount() > 1)
@@ -160,12 +163,21 @@ public class RegionsCommand extends BukkitCommand implements IHelpDescribed {
         if (w == null)
             throw new CommandException(L("command.worldguard.world_not_found"));
         
-        int rpc = params.getArgumentCount() > 1 ? 2 : 1;
-        RegionManager mgr = mod.getWorldGuard().getGlobalRegionManager().get(w);
-        ProtectedRegion region = mgr.getRegion(params.getArgument(rpc));
-        if (region == null && params.getArgument(rpc).equalsIgnoreCase("__global__")) {
-            region = new GlobalProtectedRegion(params.getArgument(rpc));
-            mgr.addRegion(region);
+        ProtectedRegion region = null;
+        if (params.getArgumentCount() == 0 && context.isPlayer()) {
+            RegionManager mgr = mod.getWorldGuard().getGlobalRegionManager().get(context.getPlayer().getWorld());
+            ApplicableRegionSet set = mgr.getApplicableRegions(context.getPlayer().getLocation());
+            if (set.size() > 0) {
+                region = set.iterator().next();
+            }
+        } else {
+            int rpc = params.getArgumentCount() > 1 ? 1 : 0;
+            RegionManager mgr = mod.getWorldGuard().getGlobalRegionManager().get(w);
+            region = mgr.getRegion(params.getArgument(rpc));
+            if (region == null && params.getArgument(rpc).equalsIgnoreCase("__global__")) {
+                region = new GlobalProtectedRegion(params.getArgument(rpc));
+                mgr.addRegion(region);
+            }
         }
         if (region == null)
             throw new CommandException(L("command.worldguard.region_not_found"));

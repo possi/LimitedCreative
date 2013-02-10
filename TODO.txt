@@ -1,0 +1,5 @@
+ - Region-Config? Where are the missing options?
+ - Region: permanent gamemode storage? (safemode, if not permanent: region!) maybe only if regionsset empty?
+ - remove config.yml and plugin.yml
+ - cleanup localize-messages
+ - rework german localization

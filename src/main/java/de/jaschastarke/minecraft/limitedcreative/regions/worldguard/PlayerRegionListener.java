@@ -32,10 +32,10 @@ import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.events.Playe
 import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.events.PlayerNewLocationAreaEvent;
 import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.events.PlayerSetAreaEvent;
 
-public class PlayerListener implements Listener {
+public class PlayerRegionListener implements Listener {
     private ModRegions mod;
     
-    public PlayerListener(ModRegions mod) {
+    public PlayerRegionListener(ModRegions mod) {
         this.mod = mod;
     }
     
@@ -50,6 +50,7 @@ public class PlayerListener implements Listener {
                 || !event.getFrom().getWorld().equals(event.getTo().getWorld())) { // he really moved, and not just looked around
 
             String current_hash = mod.getPlayerData(event.getPlayer()).getHash();
+            mod.getLog().debug(event.getPlayer().getName()+" "+current_hash);
             if (current_hash == null) {
                 String new_hash = mod.getRegionManager().getRegionsHash(event.getTo());
                 Bukkit.getServer().getPluginManager().callEvent(new PlayerSetAreaEvent(mod.getRegionManager(), event.getPlayer(), new_hash, event.getTo()));
