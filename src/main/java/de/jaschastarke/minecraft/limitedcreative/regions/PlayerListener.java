@@ -39,17 +39,17 @@ public class PlayerListener extends Listener {
                 block.getType() == Material.WORKBENCH || block.getType() == Material.ANVIL) {
 
             PlayerMeta pmeta = new PlayerMeta(event.getPlayer());
-            boolean diffrent_region = rm.isDiffrentRegion(event.getPlayer(), block.getLocation());
+            boolean diffrent_region = getRM().isDiffrentRegion(event.getPlayer(), block.getLocation());
             
             if (pmeta.isActiveRegionGameMode() && diffrent_region) {
                 // do not break outside of "gamemod-change-region" when in the region
-                if (rm.getRegionSet(block).getFlag(Flags.GAMEMODE, event.getPlayer()) != pmeta.getActiveRegionGameMode()) {
+                if (getRM().getRegionSet(block).getFlag(Flags.GAMEMODE, event.getPlayer()) != pmeta.getActiveRegionGameMode()) {
                     event.getPlayer().sendMessage(L("blocked.outside_interact"));
                     event.setCancelled(true);
                 }
             } else if (diffrent_region) {
                 // do not break inside of "survial-region in creative world" when outside
-                if (rm.getRegionSet(block).getFlag(Flags.GAMEMODE) != null) {
+                if (getRM().getRegionSet(block).getFlag(Flags.GAMEMODE) != null) {
                     event.getPlayer().sendMessage(L("blocked.inside_interact"));
                     event.setCancelled(true);
                 }

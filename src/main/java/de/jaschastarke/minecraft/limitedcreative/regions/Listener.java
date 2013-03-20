@@ -13,11 +13,9 @@ import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.CustomRegion
 
 abstract public class Listener implements org.bukkit.event.Listener {
     protected ModRegions mod;
-    protected CustomRegionManager rm;
     
     public Listener(ModRegions mod) {
         this.mod = mod;
-        rm = mod.getRegionManager();
     }
     
     /**
@@ -31,10 +29,13 @@ abstract public class Listener implements org.bukkit.event.Listener {
     }
 
     protected ApplicableRegions regionSet(Location loc) {
-        return rm.getRegionSet(loc);
+        return getRM().getRegionSet(loc);
     }
     protected ApplicableRegions regionSet(Block block) {
-        return rm.getRegionSet(block);
+        return getRM().getRegionSet(block);
+    }
+    protected CustomRegionManager getRM() {
+        return mod.getRegionManager();
     }
     
     class PlayerMeta {

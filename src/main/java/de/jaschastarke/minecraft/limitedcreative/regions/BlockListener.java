@@ -38,26 +38,26 @@ public class BlockListener extends Listener {
     }
     
     private void whenBlockBreak(Cancellable event, Block block, Player player) {
-        boolean diffrent_region = rm.isDiffrentRegion(player, block.getLocation());
+        boolean diffrent_region = getRM().isDiffrentRegion(player, block.getLocation());
 
         PlayerMeta pdata = new PlayerMeta(player);
         
         if (pdata.isActiveRegionGameMode() && diffrent_region) {
             // do not break outside of "gamemod-change-region" when in the region
-            if (rm.getRegionSet(block).getFlag(Flags.GAMEMODE, player) != pdata.getActiveRegionGameMode()) {
+            if (getRM().getRegionSet(block).getFlag(Flags.GAMEMODE, player) != pdata.getActiveRegionGameMode()) {
                 player.sendMessage(L("blocked.outside_break"));
                 event.setCancelled(true);
             }
         } else if (diffrent_region) {
             // do not break inside of "survial-region in creative world" when outside
-            if (rm.getRegionSet(block).getFlag(Flags.GAMEMODE) != null) {
+            if (getRM().getRegionSet(block).getFlag(Flags.GAMEMODE) != null) {
                 player.sendMessage(L("blocked.inside_break"));
                 event.setCancelled(true);
             }
         }
         if (!event.isCancelled()) {
             // prevent any drops for survival players in creative regions
-            if (player.getGameMode() != GameMode.CREATIVE && rm.getRegionSet(block).getFlag(Flags.GAMEMODE) == GameMode.CREATIVE) {
+            if (player.getGameMode() != GameMode.CREATIVE && getRM().getRegionSet(block).getFlag(Flags.GAMEMODE) == GameMode.CREATIVE) {
                 mod.getBlockSpawn().block(block, player);
             }
         }
@@ -69,17 +69,17 @@ public class BlockListener extends Listener {
             return;
         
         PlayerMeta pdata = new PlayerMeta(event.getPlayer());
-        boolean diffrent_region = rm.isDiffrentRegion(event.getPlayer(), event.getBlock().getLocation());
+        boolean diffrent_region = getRM().isDiffrentRegion(event.getPlayer(), event.getBlock().getLocation());
         
         if (pdata.isActiveRegionGameMode() && diffrent_region) {
             // do not build outside of "gamemod-change-region" when in the region
-            if (rm.getRegionSet(event.getBlock()).getFlag(Flags.GAMEMODE, event.getPlayer()) != pdata.getActiveRegionGameMode()) { 
+            if (getRM().getRegionSet(event.getBlock()).getFlag(Flags.GAMEMODE, event.getPlayer()) != pdata.getActiveRegionGameMode()) { 
                 event.getPlayer().sendMessage(L("blocked.outside_place"));
                 event.setCancelled(true);
             }
         } else if (diffrent_region) {
             // do not build inside of "survial-region in creative world" when outside
-            if (rm.getRegionSet(event.getBlock()).getFlag(Flags.GAMEMODE) != null) {
+            if (getRM().getRegionSet(event.getBlock()).getFlag(Flags.GAMEMODE) != null) {
                 event.getPlayer().sendMessage(L("blocked.inside_place"));
                 event.setCancelled(true);
             }

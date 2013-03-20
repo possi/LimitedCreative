@@ -7,6 +7,7 @@ import de.jaschastarke.configuration.IConfigurationNode;
 import de.jaschastarke.configuration.IConfigurationSubGroup;
 import de.jaschastarke.configuration.InvalidValueException;
 import de.jaschastarke.configuration.annotations.IsConfigurationNode;
+import de.jaschastarke.maven.ArchiveDocComments;
 import de.jaschastarke.minecraft.limitedcreative.ModRegions;
 import de.jaschastarke.minecraft.limitedcreative.limits.BlackList;
 import de.jaschastarke.modularize.IModule;
@@ -17,6 +18,7 @@ import de.jaschastarke.modularize.ModuleEntry;
  * 
  * http://dev.bukkit.org/server-mods/limited-creative/pages/features/region/
  */
+@ArchiveDocComments
 public class RegionConfig extends Configuration implements IConfigurationSubGroup {
     protected ModRegions mod;
     protected ModuleEntry<IModule> entry;

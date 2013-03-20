@@ -1,5 +1,7 @@
 package de.jaschastarke.minecraft.limitedcreative;
 
+import java.io.IOException;
+
 import org.bukkit.event.Listener;
 
 import de.jaschastarke.bukkit.lib.CoreModule;
@@ -33,7 +35,7 @@ public class FeatureMetrics extends CoreModule<LimitedCreative> implements Liste
         metric.unregister();
     }
 
-    public void track(String event) {
+    public void track(String event) throws IOException {
         if (metric == null)
             throw new IllegalAccessError("The feature hasn't been enabled");
         metric.trackEvent(event);

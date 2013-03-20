@@ -5,10 +5,17 @@ import de.jaschastarke.configuration.IConfigurationNode;
 import de.jaschastarke.configuration.IConfigurationSubGroup;
 import de.jaschastarke.configuration.InvalidValueException;
 import de.jaschastarke.configuration.annotations.IsConfigurationNode;
+import de.jaschastarke.maven.ArchiveDocComments;
 import de.jaschastarke.minecraft.limitedcreative.ModCmdBlocker;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
 
+/**
+ * CommandBlocker-Feature
+ * 
+ * http://dev.bukkit.org/server-mods/limited-creative/pages/features/command-blocker/
+ */
+@ArchiveDocComments
 public class CmdBlockerConfig extends Configuration implements IConfigurationSubGroup {
     protected ModCmdBlocker mod;
     protected ModuleEntry<IModule> entry;
