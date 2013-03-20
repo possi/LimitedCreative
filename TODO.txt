@@ -1,5 +1,4 @@
- - Region-Config? Where are the missing options?
- - Region: permanent gamemode storage? (safemode, if not permanent: region!) maybe only if regionsset empty?
- - remove config.yml and plugin.yml
  - cleanup localize-messages
+ - region command descriptions
  - rework german localization
+ - fix DocComment formatting for config and permissions 

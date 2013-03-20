@@ -1,37 +1,26 @@
 package de.jaschastarke.minecraft.limitedcreative.regions;
 
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.event.Event;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.material.Button;
 import org.bukkit.material.Lever;
 
+import de.jaschastarke.minecraft.limitedcreative.Hooks;
 import de.jaschastarke.minecraft.limitedcreative.ModRegions;
-import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.CustomRegionManager;
 
-public class PlayerListener implements Listener {
-    private ModRegions mod;
-    private CustomRegionManager rm;
-    
+public class PlayerListener extends Listener {
     public PlayerListener(ModRegions mod) {
-        this.mod = mod;
-        rm = mod.getRegionManager();
-    }
-    
-    /**
-     * The isCancelled in PlayerInteractEvent doesn't check useItemInHand, even this decides (when clicking on
-     * entity with e.g. a bucket)
-     * @param event
-     * @return The relevant "isCancelled"
-     */
-    private static boolean isCancelled(PlayerInteractEvent event) {
-        return event.useInteractedBlock() == Event.Result.DENY && event.useItemInHand() == Event.Result.DENY;
+        super(mod);
     }
     
     @EventHandler
@@ -49,12 +38,12 @@ public class PlayerListener implements Listener {
                 block.getState() instanceof Lever || block.getState() instanceof Button ||
                 block.getType() == Material.WORKBENCH || block.getType() == Material.ANVIL) {
 
-            PlayerData.Data pdata = mod.getPlayerData(event.getPlayer());
+            PlayerMeta pmeta = new PlayerMeta(event.getPlayer());
             boolean diffrent_region = rm.isDiffrentRegion(event.getPlayer(), block.getLocation());
             
-            if (pdata.isActiveRegionGameMode() && diffrent_region) {
+            if (pmeta.isActiveRegionGameMode() && diffrent_region) {
                 // do not break outside of "gamemod-change-region" when in the region
-                if (rm.getRegionSet(block).getFlag(Flags.GAMEMODE, event.getPlayer()) != pdata.getActiveRegionGameMode()) {
+                if (rm.getRegionSet(block).getFlag(Flags.GAMEMODE, event.getPlayer()) != pmeta.getActiveRegionGameMode()) {
                     event.getPlayer().sendMessage(L("blocked.outside_interact"));
                     event.setCancelled(true);
                 }
@@ -68,7 +57,36 @@ public class PlayerListener implements Listener {
         }
     }
     
-    private String L(String msg, Object... args) {
-        return mod.getPlugin().getLocale().trans(msg, args);
+    private boolean isRegionOptional(Player player) {
+        return mod.getRegionManager().getRegionSet(player.getLocation()).allows(Flags.GAMEMODE_OPTIONAL, player);
+    }
+    
+    @EventHandler(priority = EventPriority.LOW)
+    public void onGameModeChange(PlayerGameModeChangeEvent event) {
+        Player player = event.getPlayer();
+        PlayerMeta pmeta = new PlayerMeta(player);
+        GameMode gm = event.getNewGameMode();
+        
+        if (mod.isDebug())
+            mod.getLog().debug(player.getName() + " is changing to GameMode " + gm);;
+        if (Hooks.IsLoggedIn.test(player)) { // if authme is changing GameMode before going to teleport, this should be remembered
+            if (pmeta.isActiveRegionGameMode()) { // change to the other gamemode as the area defines
+                if (!pmeta.isActiveRegionGameMode(gm)) { // only when we are not switching to the mode the region allows
+                    if (!mod.getPlugin().getPermManager().hasPermission(player, RegionPermissions.BYPASS) && !isRegionOptional(player)) {
+                        player.sendMessage(ChatColor.RED + L("exception.region.not_optional", gm.toString().toLowerCase()));
+                        mod.getLog().debug("... denied");
+                        event.setCancelled(true);
+                    } else {
+                        pmeta.setOptionalRegionGameMode(gm);
+                    }
+                } else {
+                    // we are changing to the mode the region defines, thats not permanent
+                    pmeta.setOptionalRegionGameMode(null);
+                    pmeta.setPermanentGameMode(null);
+                }
+            } else if (mod.getRegionManager().getRegionSet(player.getLocation()).getFlag(Flags.GAMEMODE, player) == null) {
+                pmeta.setPermanentGameMode(gm); // we are not in a region, so the mode change is permanent
+            }
+        }
     }
 }

@@ -48,7 +48,7 @@ public class ModInventories extends CoreModule<LimitedCreative> {
         
         String incomp = Hooks.InventoryIncompatible.test();
         if (incomp != null) {
-            getLog().warn(plugin.getLocale().trans("basic.conflict", incomp, this.getName()));
+            getLog().warn(plugin.getLocale().trans("inventory.warning.conflict", incomp, this.getName()));
             entry.initialState = ModuleState.NOT_INITIALIZED;
         }
     }
@@ -56,7 +56,7 @@ public class ModInventories extends CoreModule<LimitedCreative> {
     public void onEnable() {
         String incomp = Hooks.InventoryIncompatible.test();
         if (incomp != null) {
-            throw new IllegalAccessError(plugin.getLocale().trans("basic.conflict", incomp, this.getName()));
+            throw new IllegalAccessError(plugin.getLocale().trans("inventory.warning.conflict", incomp, this.getName()));
         }
         super.onEnable();
         storage = new InvYamlStorage(this, new File(plugin.getDataFolder(), config.getFolder()));

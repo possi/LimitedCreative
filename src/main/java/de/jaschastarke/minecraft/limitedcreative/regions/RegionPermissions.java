@@ -23,6 +23,9 @@ final public class RegionPermissions extends SimplePermissionContainerNode imple
         return PermissionDefault.OP;
     }
     
+    /**
+     * Grants access to the /lcr command, which allows to define Limited Creatives region-flags 
+     */
     public static final RegionPermissions REGION = new RegionPermissions(Permissions.CONTAINER, "region");
 
     /**

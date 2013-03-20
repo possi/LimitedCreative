@@ -80,26 +80,19 @@ public class PlayerData {
             return player.get().getName();
         }
         
-        public boolean isActiveRegionGameMode() {
-            return getActiveRegionGameMode() != null;
-        }
-        public boolean isActiveRegionGameMode(GameMode regionGameMode) {
-            return getActiveRegionGameMode() == regionGameMode;
-        }
         public GameMode getActiveRegionGameMode() {
             return getGameMode("region_gamemode");
         }
         public void storeActiveRegionGameMode(GameMode regionGameMode) {
             getSect(n()).set("region_gamemode", regionGameMode);
-        }
-        public boolean isInPermanentGameMode(GameMode currentGameMode) {
-            return getPermanentRegionGameMode() == currentGameMode;
-        }
-        public void storePermanentGameMode(GameMode currentGameMode) {
-            getSect(n()).set("permanent_gamemode", currentGameMode);
+            cleanUp();
         }
         public GameMode getPermanentRegionGameMode() {
             return getGameMode("permanent_gamemode");
+        }
+        public void storePermanentGameMode(GameMode currentGameMode) {
+            getSect(n()).set("permanent_gamemode", currentGameMode);
+            cleanUp();
         }
         public GameMode getOptionalRegionGameMode(String regionHash) {
             return getGameMode("optional_gamemode." + regionHash);

@@ -85,7 +85,14 @@ public class FeatureSwitchGameMode extends CoreModule<LimitedCreative> {
             if (!context.checkPermission(permission) && (wgm != tgm || !context.checkPermission(SwitchGameModePermissions.BACKONLY)))
                 throw new MissingPermissionCommandException(permission);
             
-            target.setGameMode(tgm);
+            if (target.getGameMode() != tgm) {
+                target.setGameMode(tgm);
+                if (!context.isPlayer() || !target.equals(context.getPlayer())) {
+                    context.response(context.getFormatter().getString("command.gamemode.changed", target.getName()));
+                }
+            } else {
+                context.response(context.getFormatter().getString("command.gamemode.no_change"));
+            }
             return true;
         }
 

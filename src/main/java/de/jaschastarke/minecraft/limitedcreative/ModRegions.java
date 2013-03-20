@@ -45,19 +45,20 @@ public class ModRegions extends CoreModule<LimitedCreative> {
         config = plugin.getPluginConfig().registerSection(new RegionConfig(this, entry));
         
         command = new RegionsCommand(this);
-        plugin.getCommandHandler().registerCommand(command);
-        plugin.getMainCommand().registerCommand(new AliasHelpedCommand<RegionsCommand>(command, "region", new String[]{"r"}));
         
         listeners.registerEvents(new PlayerListener(this));
         listeners.registerEvents(new BlockListener(this));
         listeners.registerEvents(new RegionListener(this));
-        listeners.registerEvents(new PlayerRegionListener(this));
+        listeners.registerEvents(new PlayerRegionListener(this)); // Fires Custom-Events listen by RegionListener
         
         FlagList.addFlags(Flags.getList());
         
         if (!config.getEnabled()) {
             entry.initialState = ModuleState.DISABLED;
             return;
+        } else if (!plugin.getServer().getPluginManager().isPluginEnabled("WorldGuard")) {
+            getLog().warn(plugin.getLocale().trans("region.warning.worldguard_not_found", getName()));
+            entry.initialState = ModuleState.NOT_INITIALIZED;
         }
     }
     
@@ -67,10 +68,24 @@ public class ModRegions extends CoreModule<LimitedCreative> {
         
         mgr = new CustomRegionManager(new File(plugin.getDataFolder(), "regions.yml"), this);
         wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
+        if (wg == null)
+            throw new IllegalAccessError("Missing Plugin WorldGuard");
+
+        plugin.getCommandHandler().registerCommand(command);
+        plugin.getMainCommand().registerCommand(new AliasHelpedCommand<RegionsCommand>(command, "region", new String[]{"r"}));
+        
         pdata = new PlayerData(this);
         getLog().info(plugin.getLocale().trans("basic.loaded.module"));
     }
     
+    @Override
+    public void onDisable() {
+        super.onDisable();
+        
+        plugin.getCommandHandler().removeCommand(command);
+        plugin.getMainCommand().removeCommand(command);
+    }
+
     public RegionConfig getConfig() {
         return config;
     }

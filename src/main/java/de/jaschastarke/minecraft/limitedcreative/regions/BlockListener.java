@@ -1,14 +1,12 @@
 package de.jaschastarke.minecraft.limitedcreative.regions;
 
 import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
@@ -18,23 +16,10 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 
 import de.jaschastarke.bukkit.lib.Utils;
 import de.jaschastarke.minecraft.limitedcreative.ModRegions;
-import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.ApplicableRegions;
-import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.CustomRegionManager;
 
-public class BlockListener implements Listener {
-    private ModRegions mod;
-    private CustomRegionManager rm;
-    
+public class BlockListener extends Listener {
     public BlockListener(ModRegions mod) {
-        this.mod = mod;
-        rm = mod.getRegionManager();
-    }
-
-    private ApplicableRegions regionSet(Location loc) {
-        return rm.getRegionSet(loc);
-    }
-    private ApplicableRegions regionSet(Block block) {
-        return rm.getRegionSet(block);
+        super(mod);
     }
     
     @EventHandler
@@ -54,8 +39,8 @@ public class BlockListener implements Listener {
     
     private void whenBlockBreak(Cancellable event, Block block, Player player) {
         boolean diffrent_region = rm.isDiffrentRegion(player, block.getLocation());
-        
-        PlayerData.Data pdata = mod.getPlayerData(player);
+
+        PlayerMeta pdata = new PlayerMeta(player);
         
         if (pdata.isActiveRegionGameMode() && diffrent_region) {
             // do not break outside of "gamemod-change-region" when in the region
@@ -83,7 +68,7 @@ public class BlockListener implements Listener {
         if (event.isCancelled())
             return;
         
-        PlayerData.Data pdata = mod.getPlayerData(event.getPlayer());
+        PlayerMeta pdata = new PlayerMeta(event.getPlayer());
         boolean diffrent_region = rm.isDiffrentRegion(event.getPlayer(), event.getBlock().getLocation());
         
         if (pdata.isActiveRegionGameMode() && diffrent_region) {
@@ -116,7 +101,7 @@ public class BlockListener implements Listener {
                     if (mod.isDebug())
                         mod.getLog().debug("dest "+i+": "+dest.getType());
                     if (regionSet(dest).getFlag(Flags.GAMEMODE) != GameMode.CREATIVE) {
-                        mod.getLog().warn(L("blocked.piston", source.getRelative(event.getDirection(), i - 1).getType().toString(), Utils.toString(source.getLocation())));
+                        mod.getLog().warn(L("blocked.region.piston", source.getRelative(event.getDirection(), i - 1).getType().toString(), Utils.toString(source.getLocation())));
                         event.setCancelled(true);
                         break;
                     } else if (dest.getType() == Material.AIR) {
@@ -140,12 +125,12 @@ public class BlockListener implements Listener {
                 mod.getLog().debug("dest "+dest.getType());
             if (regionSet(source).getFlag(Flags.GAMEMODE) == GameMode.CREATIVE) {
                 if (regionSet(dest).getFlag(Flags.GAMEMODE) != GameMode.CREATIVE) {
-                    mod.getLog().warn(L("blocked.piston", source.getType().toString(), Utils.toString(source.getLocation())));
+                    mod.getLog().warn(L("blocked.region.piston", source.getType().toString(), Utils.toString(source.getLocation())));
                     event.setCancelled(true);
                 }
             } else if (regionSet(dest).getFlag(Flags.GAMEMODE) == GameMode.CREATIVE) {
                 // source isn't creative
-                mod.getLog().warn(L("blocked.piston_in", source.getType().toString(), Utils.toString(source.getLocation())));
+                mod.getLog().warn(L("blocked.region.piston_in", source.getType().toString(), Utils.toString(source.getLocation())));
                 event.setCancelled(true);
             }
         }
@@ -159,9 +144,5 @@ public class BlockListener implements Listener {
             if (!regionSet(event.getLocation()).allows(Flags.SPAWNDROPS))
                 event.setCancelled(true);
         }
-    }
-    
-    private String L(String msg, Object... args) {
-        return mod.getPlugin().getLocale().trans(msg, args);
     }
 }

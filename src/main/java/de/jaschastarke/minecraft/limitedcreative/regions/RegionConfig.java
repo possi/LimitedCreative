@@ -1,5 +1,7 @@
 package de.jaschastarke.minecraft.limitedcreative.regions;
 
+import org.bukkit.configuration.ConfigurationSection;
+
 import de.jaschastarke.bukkit.lib.configuration.Configuration;
 import de.jaschastarke.configuration.IConfigurationNode;
 import de.jaschastarke.configuration.IConfigurationSubGroup;
@@ -36,6 +38,13 @@ public class RegionConfig extends Configuration implements IConfigurationSubGrou
             }
         }
     }
+    @Override
+    public void setValues(ConfigurationSection sect) {
+        super.setValues(sect);
+        // Config Upgrade
+        if (!sect.contains("rememberOptional") && sect.contains("remember"))
+            sect.set("rememberOptional", sect.getBoolean("remember"));
+    }
 
     @Override
     public String getName() {
@@ -59,6 +68,37 @@ public class RegionConfig extends Configuration implements IConfigurationSubGrou
     public boolean getEnabled() {
         return config.getBoolean("enabled", true);
     }
+    
+    /**
+     * RegionRememberOptional
+     * 
+     * Remembers if players disables the Region-GameMode (by switching in an optional region to World-Default-GameMode
+     * with /lc creative|survival). So when the player re-enters the region, he keep his GameMode which he left it in.
+     * Hint: This is very confusing, if MultiVerse "enforce gamemode" swaps your state (default). So better don't use
+     * with Multiverse.
+     * 
+     * default: false
+     */
+    @IsConfigurationNode(order = 200)
+    public boolean getRememberOptional() {
+        return config.getBoolean("rememberOptional", false);
+    }
+
+    /**
+     * RegionSafeMode
+     * 
+     * When a player leaves a region he always will get back to the World-GameMode, even if he entered the region already
+     * in the Region-GameMode. So its the opposite analog to RegionRememberOptional.
+     * That means: If a GM in creative-mode walks/flies through a creative-region in a survival world, he will get back
+     * to survival on leaving the region.
+     * 
+     * default: false
+     */
+    @IsConfigurationNode(order = 300)
+    public boolean getSafeMode() {
+        return config.getBoolean("safemode", false);
+    }
+    
 
     /**
      * RegionMaximumFallingHeight
