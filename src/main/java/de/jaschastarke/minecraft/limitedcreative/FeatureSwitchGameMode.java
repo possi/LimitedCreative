@@ -38,6 +38,7 @@ public class FeatureSwitchGameMode extends CoreModule<LimitedCreative> {
 
     @Override
     public void onEnable() {
+        super.onEnable();
         if (commands == null)
             commands = new Commands();
         plugin.getMainCommand().getHandler().registerCommands(commands.getCommandList());
@@ -45,6 +46,7 @@ public class FeatureSwitchGameMode extends CoreModule<LimitedCreative> {
 
     @Override
     public void onDisable() {
+        super.onDisable();
         if (commands != null)
             plugin.getMainCommand().getHandler().removeCommands(commands.getCommandList());
     }

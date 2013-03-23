@@ -11,6 +11,7 @@ import de.jaschastarke.maven.ArchiveDocComments;
 import de.jaschastarke.minecraft.limitedcreative.ModInventories;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
+import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 
 /**
  * Inventory-Feature
@@ -33,7 +34,8 @@ public class InventoryConfig extends Configuration implements IConfigurationSubG
         super.setValue(node, pValue);
         if (node.getName().equals("enabled")) {
             if (getEnabled()) {
-                entry.enable();
+                if (entry.initialState != ModuleState.NOT_INITIALIZED)
+                    entry.enable();
             } else {
                 entry.disable();
             }
@@ -50,6 +52,8 @@ public class InventoryConfig extends Configuration implements IConfigurationSubG
         }
         
         super.setValues(sect);
+        if (entry.initialState != ModuleState.NOT_INITIALIZED)
+            entry.initialState = getEnabled() ? ModuleState.ENABLED : ModuleState.DISABLED;
         // Config Upgrade
         if (!sect.contains("storeCreative") && sect.contains("creative"))
             sect.set("storeCreative", sect.getBoolean("creative"));

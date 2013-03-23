@@ -2,6 +2,7 @@ package de.jaschastarke.minecraft.limitedcreative.limits;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.EntityType;
 
 import de.jaschastarke.bukkit.lib.configuration.Configuration;
 import de.jaschastarke.bukkit.lib.configuration.IToGeneric;
@@ -13,6 +14,7 @@ import de.jaschastarke.maven.ArchiveDocComments;
 import de.jaschastarke.minecraft.limitedcreative.ModCreativeLimits;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
+import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 
 /**
  * Creative Limits-Feature
@@ -36,7 +38,8 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
             super.setValue(node, pValue);
         if (node.getName().equals("enabled")) {
             if (getEnabled()) {
-                entry.enable();
+                if (entry.initialState != ModuleState.NOT_INITIALIZED)
+                    entry.enable();
             } else {
                 entry.disable();
             }
@@ -46,6 +49,8 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
     @Override
     public void setValues(ConfigurationSection sect) {
         super.setValues(sect);
+        if (entry.initialState != ModuleState.NOT_INITIALIZED)
+            entry.initialState = getEnabled() ? ModuleState.ENABLED : ModuleState.DISABLED;
         
         // Config Upgrade
         if (!sect.contains("interact") && sect.contains("sign")) {
@@ -147,6 +152,11 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
      */
     @IsConfigurationNode(name = "pickup", order = 300)
     public BlockPickup getBlockPickup() {
+        if (config.contains("pickup") && config.isBoolean("pickup") && config.getBoolean("pickup")) {
+            return !config.contains("remove_pickup") || config.getBoolean("remove_pickup")
+                        ? BlockPickup.REMOVE
+                        : BlockPickup.PREVENT;
+        }
         return getEnum(BlockPickup.class, "pickup", BlockPickup.PREVENT);
     }
     
@@ -155,10 +165,10 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
     /**
      * LimitInteraction
      * 
-     * Prevents players of using interacting with specific blocks as addition to chests in creative mode (and only in
+     * Prevents players of interacting with specific blocks as addition to chests in creative mode (and only in
      * creative).
      * 
-     * You can use the technical name (see http://jd.bukkit.org/doxygen/d6/d0e/enumorg_1_1bukkit_1_1Material.html) or
+     * You can use the technical name (http://tinyurl.com/bukkit-material) or
      * the id of the block/item (better use the id, if you're not sure). You may add the data separated with a colon
      * e.g.: "WOOL:11" blocks blue wool. But be sure to put it in quotes, to not break yml-configuration! Named data
      * values aren't supported yet. If you don't add a data-value, all blocks of this material are blocked.
@@ -189,6 +199,36 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
             }
         }
         return interactList;
+    }
+    private BlackListEntity interactEntityList;
+    /**
+     * LimitEntityInteraction
+     * 
+     * Prevents players of interacting with specific entities in creative mode (and only in creative).
+     * 
+     * You can use the technical name (see http://tinyurl.com/bukkit-entity) or the id of the entity (better use the id,
+     * if you're not sure). 
+     * 
+     * default:
+     *  - MINECART_CHEST
+     *  - MINECART_FURNACE
+     *  - MINECART_HOPPER
+     *  - ITEM_FRAME
+     *  - VILLAGER
+     */
+    @IsConfigurationNode(name = "entityInteract", order = 650)
+    public BlackListEntity getBlockEntityInteraction() {
+        if (interactEntityList == null) {
+            interactEntityList = new BlackListEntity(config.getList("entityInteract"));
+            if (!config.contains("entityInteract")) {
+                interactEntityList.add(new BlackListEntity.Blacklisted(EntityType.MINECART_CHEST));
+                interactEntityList.add(new BlackListEntity.Blacklisted(EntityType.MINECART_FURNACE));
+                interactEntityList.add(new BlackListEntity.Blacklisted(EntityType.MINECART_HOPPER));
+                interactEntityList.add(new BlackListEntity.Blacklisted(EntityType.ITEM_FRAME));
+                interactEntityList.add(new BlackListEntity.Blacklisted(EntityType.VILLAGER));
+            }
+        }
+        return interactEntityList;
     }
     
     private BlackList useList;
@@ -241,5 +281,16 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
             }
         }
         return breakList;
+    }
+    
+
+    @Override
+    public Object getValue(final IConfigurationNode node) {
+        Object val = super.getValue(node);
+        if (node.getName().equals("pickup") && val == null) {
+            return new Boolean(false);
+        } else {
+            return val;
+        }
     }
 }

@@ -31,6 +31,7 @@ public class LimitedCreative extends Core {
         addModule(new ModCmdBlocker(this));
         addModule(new FeatureMetrics(this));
         
+        config.setModuleStates();
         config.saveDefault();
     }
     

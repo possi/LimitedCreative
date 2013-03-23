@@ -46,17 +46,14 @@ public class ModRegions extends CoreModule<LimitedCreative> {
         
         command = new RegionsCommand(this);
         
-        listeners.registerEvents(new PlayerListener(this));
-        listeners.registerEvents(new BlockListener(this));
-        listeners.registerEvents(new RegionListener(this));
-        listeners.registerEvents(new PlayerRegionListener(this)); // Fires Custom-Events listen by RegionListener
+        listeners.addListener(new PlayerListener(this));
+        listeners.addListener(new BlockListener(this));
+        listeners.addListener(new RegionListener(this));
+        listeners.addListener(new PlayerRegionListener(this)); // Fires Custom-Events listen by RegionListener
         
         FlagList.addFlags(Flags.getList());
         
-        if (!config.getEnabled()) {
-            entry.initialState = ModuleState.DISABLED;
-            return;
-        } else if (!plugin.getServer().getPluginManager().isPluginEnabled("WorldGuard")) {
+        if (!plugin.getServer().getPluginManager().isPluginEnabled("WorldGuard")) {
             getLog().warn(plugin.getLocale().trans("region.warning.worldguard_not_found", getName()));
             entry.initialState = ModuleState.NOT_INITIALIZED;
         }

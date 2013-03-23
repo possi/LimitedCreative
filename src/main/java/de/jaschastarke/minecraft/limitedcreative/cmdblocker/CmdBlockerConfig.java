@@ -1,5 +1,7 @@
 package de.jaschastarke.minecraft.limitedcreative.cmdblocker;
 
+import org.bukkit.configuration.ConfigurationSection;
+
 import de.jaschastarke.bukkit.lib.configuration.Configuration;
 import de.jaschastarke.configuration.IConfigurationNode;
 import de.jaschastarke.configuration.IConfigurationSubGroup;
@@ -9,6 +11,7 @@ import de.jaschastarke.maven.ArchiveDocComments;
 import de.jaschastarke.minecraft.limitedcreative.ModCmdBlocker;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
+import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 
 /**
  * CommandBlocker-Feature
@@ -26,11 +29,19 @@ public class CmdBlockerConfig extends Configuration implements IConfigurationSub
     }
     
     @Override
+    public void setValues(ConfigurationSection sect) {
+        super.setValues(sect);
+        if (entry.initialState != ModuleState.NOT_INITIALIZED)
+            entry.initialState = getEnabled() ? ModuleState.ENABLED : ModuleState.DISABLED;
+    }
+
+    @Override
     public void setValue(IConfigurationNode node, Object pValue) throws InvalidValueException {
         super.setValue(node, pValue);
         if (node.getName().equals("enabled")) {
             if (getEnabled()) {
-                entry.enable();
+                if (entry.initialState != ModuleState.NOT_INITIALIZED)
+                    entry.enable();
             } else {
                 entry.disable();
             }

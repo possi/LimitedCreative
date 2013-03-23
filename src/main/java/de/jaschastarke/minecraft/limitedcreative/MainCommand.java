@@ -66,12 +66,18 @@ public class MainCommand extends BukkitCommand implements IHelpDescribed, IMetho
     @Description(value = "command.config.reload", translate = true)
     @NeedsPermission(value={"config"})
     public boolean doReload(final CommandContext context) {
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+        plugin.getServer().getScheduler().runTask(plugin, new Runnable() {
             @Override
             public void run() {
                 plugin.onDisable();
-                plugin.onEnable();
-                context.response(context.getFormatter().getString("command.config.reload.success"));
+                plugin.getPluginConfig().reload();
+                plugin.getServer().getScheduler().runTask(plugin, new Runnable() {
+                    @Override
+                    public void run() {
+                        plugin.onEnable();
+                        context.response(context.getFormatter().getString("command.config.reload.success"));
+                    }
+                });
             }
         });
         return true;

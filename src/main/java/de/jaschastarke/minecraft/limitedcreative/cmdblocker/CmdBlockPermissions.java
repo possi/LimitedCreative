@@ -32,7 +32,7 @@ public class CmdBlockPermissions extends SimplePermissionContainerNode {
      * 
      * Example:
      * A Command "/execute a fuzzy command -n 256" is entered by the player which is blocked by the configuration the
-     * following Permissions are tested, and if one is present for the user, he is allowed to execute the command:
+     * following permissions are tested, and if one is present for the user, he is allowed to execute the command:
      *  - limitedcreative.cmdblock.*
      *  - limitedcreative.cmdblock.execute
      *  - limitedcreative.cmdblock.execute.a
@@ -40,9 +40,6 @@ public class CmdBlockPermissions extends SimplePermissionContainerNode {
      *  - limitedcreative.cmdblock.execute.a.fuzzy.command
      *  - limitedcreative.cmdblock.execute.a.fuzzy.command.-n
      *  - limitedcreative.cmdblock.execute.a.fuzzy.command.-n.256
-     * 
-     * Isn't this flexible enough for you? Than PermisssionsEx may help you, it allows you to configure Permissions with
-     * Regular Expressions. 
      */
     public static IDynamicPermission COMMAND(String cmd) {
         return new CommandPermission(ALL, cmd);

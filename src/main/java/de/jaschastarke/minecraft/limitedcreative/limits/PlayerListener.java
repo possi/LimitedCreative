@@ -18,15 +18,11 @@
 package de.jaschastarke.minecraft.limitedcreative.limits;
 
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.entity.StorageMinecart;
-import org.bukkit.entity.Villager;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -39,7 +35,9 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.BeaconInventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.material.DirectionalContainer;
 
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
 import de.jaschastarke.minecraft.lib.permissions.IDynamicPermission;
@@ -147,13 +145,7 @@ public class PlayerListener implements Listener {
                 }
             }
             Entity entity = event.getRightClicked();
-            if (isChest(entity)) {
-                if (!checkPermission(event, NoLimitPermissions.CHEST)) {
-                    event.setCancelled(true);
-                    event.getPlayer().sendMessage(mod.getPlugin().getLocale().trans("blocked.chest"));
-                    return;
-                }
-            } else if (entity instanceof Villager && mod.getConfig().getBlockInteraction().size() > 0) {
+            if (mod.getConfig().getBlockEntityInteraction().isListed(entity)) {
                 if (!checkPermission(event, NoLimitPermissions.BASE_INTERACT)) {
                     event.setCancelled(true);
                     event.getPlayer().sendMessage(mod.getPlugin().getLocale().trans("blocked.entity"));
@@ -194,13 +186,8 @@ public class PlayerListener implements Listener {
      */
     private boolean isChest(Block block) {
         return block.getState() instanceof InventoryHolder ||
-                block.getType() == Material.ENDER_CHEST || block.getType() == Material.BEACON; // Workaround, Bukkit not recognize a Enderchests/Beacons
-    }
-    /**
-     * Returns if the entity can hold items. Like storage minecarts or item-frames.
-     */
-    private boolean isChest(Entity entity) {
-        return entity instanceof StorageMinecart || entity instanceof ItemFrame;
+               block.getState() instanceof DirectionalContainer ||
+               block.getState() instanceof BeaconInventory;
     }
 
     private boolean checkPermission(Player player, IAbstractPermission perm) {
