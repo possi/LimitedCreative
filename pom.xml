@@ -80,13 +80,6 @@
         <version>1.5.1-R0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
-        <!-- http://dev.bukkit.org/server-mods/worldedit/ -->
-        <groupId>com.sk89q</groupId>
-        <artifactId>worldedit</artifactId>
-        <version>5.5.4</version>
-        <scope>compile</scope>
-    </dependency>
-    <dependency>
         <!-- http://dev.bukkit.org/server-mods/worldguard/ -->
         <groupId>com.sk89q</groupId>
         <artifactId>worldguard</artifactId>
