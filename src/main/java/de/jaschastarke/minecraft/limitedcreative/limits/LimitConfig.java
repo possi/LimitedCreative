@@ -237,7 +237,7 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
      * 
      * Prevents players of using or placing specific items/blocks in creative mode (and only in creative).
      * 
-     * You can use the technical name (see http://jd.bukkit.org/doxygen/d6/d0e/enumorg_1_1bukkit_1_1Material.html) or
+     * You can use the technical name (see http://tinyurl.com/bukkit-material) or
      * the id of the block/item (better use the id, if you're not sure). You may add the data separated with a colon
      * e.g.: "WOOL:11" blocks blue wool. But be sure to put it in quotes, to not break yml-configuration! Named data
      * values aren't supported yet. If you don't add a data-value, all blocks of this material are blocked.
@@ -264,7 +264,7 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
      * 
      * Prevents players of destroying specific blocks in creative mode (and only in creative).
      * 
-     * You can use the technical name (see http://jd.bukkit.org/doxygen/d6/d0e/enumorg_1_1bukkit_1_1Material.html) or
+     * You can use the technical name (see http://tinyurl.com/bukkit-material) or
      * the id of the block/item (better use the id, if you're not sure). You may add the data separated with a colon
      * e.g.: "WOOL:11" blocks blue wool. But be sure to put it in quotes, to not break yml-configuration! Named data
      * values aren't supported yet. If you don't add a data-value, all blocks of this material are blocked.
