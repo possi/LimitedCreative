@@ -53,7 +53,7 @@ public class ModRegions extends CoreModule<LimitedCreative> {
         
         FlagList.addFlags(Flags.getList());
         
-        if (!plugin.getServer().getPluginManager().isPluginEnabled("WorldGuard")) {
+        if (config.getEnabled() && !plugin.getServer().getPluginManager().isPluginEnabled("WorldGuard")) {
             getLog().warn(plugin.getLocale().trans("region.warning.worldguard_not_found", getName()));
             entry.initialState = ModuleState.NOT_INITIALIZED;
         }

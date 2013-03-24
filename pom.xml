@@ -55,11 +55,6 @@
         <id>onarandombox</id>
         <url>http://repo.onarandombox.com/content/groups/public</url>
     </repository>
-    <!-- Official Vault repository -->
-    <repository>
-        <id>vault-repo</id>
-        <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
-    </repository>
     <!-- Official xAuth repository; it is no good! we keep our own dep-files of it - ->
     <repository>
         <id>luricos.de-repo</id>
@@ -72,12 +67,6 @@
         <groupId>de.jaschastarke</groupId>
         <artifactId>plib</artifactId>
         <version>${plib.version}</version>
-    </dependency>
-    <dependency>
-        <!-- http://dl.bukkit.org/ -->
-        <groupId>org.bukkit</groupId>
-        <artifactId>bukkit</artifactId>
-        <version>1.5.1-R0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
         <!-- http://dev.bukkit.org/server-mods/worldguard/ -->

@@ -47,7 +47,7 @@ public class ModInventories extends CoreModule<LimitedCreative> {
         }
         
         String incomp = Hooks.InventoryIncompatible.test();
-        if (incomp != null) {
+        if (config.getEnabled() && incomp != null) {
             getLog().warn(plugin.getLocale().trans("inventory.warning.conflict", incomp, this.getName()));
             entry.initialState = ModuleState.NOT_INITIALIZED;
         }

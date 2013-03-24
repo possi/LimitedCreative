@@ -29,6 +29,7 @@ public class LimitedCreative extends Core {
         addModule(new ModCreativeLimits(this));
         addModule(new ModRegions(this));
         addModule(new ModCmdBlocker(this));
+        addModule(new ModGameModePerm(this));
         addModule(new FeatureMetrics(this));
         
         config.setModuleStates();
