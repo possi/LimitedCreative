@@ -1,11 +1,8 @@
 package de.jaschastarke.minecraft.limitedcreative;
 
-import net.milkbowl.vault.permission.Permission;
-
-import org.bukkit.plugin.RegisteredServiceProvider;
-
 import de.jaschastarke.bukkit.lib.CoreModule;
 import de.jaschastarke.minecraft.limitedcreative.gmperm.GMPermConfig;
+import de.jaschastarke.minecraft.limitedcreative.gmperm.PermissionInterface;
 import de.jaschastarke.minecraft.limitedcreative.gmperm.PlayerListener;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
@@ -13,8 +10,7 @@ import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 
 public class ModGameModePerm extends CoreModule<LimitedCreative> {
     private GMPermConfig config;
-    private Permission permission = null;
-    private RegisteredServiceProvider<Permission> permissionProvider;
+    private PermissionInterface permission = null;
 
     public ModGameModePerm(LimitedCreative plugin) {
         super(plugin);
@@ -31,15 +27,24 @@ public class ModGameModePerm extends CoreModule<LimitedCreative> {
         config = new GMPermConfig(this, entry);
         plugin.getPluginConfig().registerSection(config);
         
-        permissionProvider = plugin.getServer().getServicesManager().getRegistration(Permission.class);
+        if (!plugin.getServer().getPluginManager().isPluginEnabled("Vault")) {
+            if (config.getEnabled())
+                getLog().warn(plugin.getLocale().trans("gmperm.warning.vault_not_found", getName()));
+            entry.initialState = ModuleState.NOT_INITIALIZED;
+            return;
+        }
+        
+        permission = new PermissionInterface(this);
         
         if (config.getEnabled()) {
-            if (!plugin.getServer().getPluginManager().isPluginEnabled("Vault")) {
+            if (!permission.isPresent()) {
                 getLog().warn(plugin.getLocale().trans("gmperm.warning.vault_not_found", getName()));
                 entry.initialState = ModuleState.NOT_INITIALIZED;
+                return;
             } /*else if (!getVaultPermission().hasGroupSupport()) {
                 getLog().warn(plugin.getLocale().trans("gmperm.warning.no_group_support", getName()));
                 entry.initialState = ModuleState.NOT_INITIALIZED;
+                return;
             }*/
         }
     }
@@ -52,15 +57,12 @@ public class ModGameModePerm extends CoreModule<LimitedCreative> {
     @Override
     public void onDisable() {
         super.onDisable();
-        permission = null;
+        permission.clear();
     }
     public GMPermConfig getConfig() {
         return config;
     }
-    public Permission getVaultPermission() {
-        if (permissionProvider != null && permission == null) {
-            permission = permissionProvider.getProvider();
-        }
+    public PermissionInterface getPermissionInterface() {
         return permission;
     }
 }

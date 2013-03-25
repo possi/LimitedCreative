@@ -33,6 +33,10 @@ public class ModRegions extends CoreModule<LimitedCreative> {
     public ModRegions(LimitedCreative plugin) {
         super(plugin);
     }
+    @Override
+    public String getName() {
+        return "Regions";
+    }
     
     @Override
     public void initialize(ModuleEntry<IModule> pEntry) {
@@ -44,6 +48,13 @@ public class ModRegions extends CoreModule<LimitedCreative> {
         
         config = plugin.getPluginConfig().registerSection(new RegionConfig(this, entry));
         
+        if (!plugin.getServer().getPluginManager().isPluginEnabled("WorldGuard")) {
+            if (config.getEnabled())
+                getLog().warn(plugin.getLocale().trans("region.warning.worldguard_not_found", getName()));
+            entry.initialState = ModuleState.NOT_INITIALIZED;
+            return;
+        }
+        
         command = new RegionsCommand(this);
         
         listeners.addListener(new PlayerListener(this));
@@ -52,11 +63,6 @@ public class ModRegions extends CoreModule<LimitedCreative> {
         listeners.addListener(new PlayerRegionListener(this)); // Fires Custom-Events listen by RegionListener
         
         FlagList.addFlags(Flags.getList());
-        
-        if (config.getEnabled() && !plugin.getServer().getPluginManager().isPluginEnabled("WorldGuard")) {
-            getLog().warn(plugin.getLocale().trans("region.warning.worldguard_not_found", getName()));
-            entry.initialState = ModuleState.NOT_INITIALIZED;
-        }
     }
     
     @Override

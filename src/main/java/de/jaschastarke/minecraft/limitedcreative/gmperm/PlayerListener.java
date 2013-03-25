@@ -38,7 +38,7 @@ public class PlayerListener implements Listener {
     }
     
     protected Permission v() {
-        return mod.getVaultPermission();
+        return mod.getPermissionInterface().getPermission();
     }
     
     @EventHandler(priority = EventPriority.MONITOR)
