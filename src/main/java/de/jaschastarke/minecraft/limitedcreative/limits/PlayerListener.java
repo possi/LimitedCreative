@@ -18,6 +18,7 @@
 package de.jaschastarke.minecraft.limitedcreative.limits;
 
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -35,7 +36,6 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.inventory.BeaconInventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.material.DirectionalContainer;
 
@@ -186,8 +186,9 @@ public class PlayerListener implements Listener {
      */
     private boolean isChest(Block block) {
         return block.getState() instanceof InventoryHolder ||
-               block.getState() instanceof DirectionalContainer ||
-               block.getState() instanceof BeaconInventory;
+               block.getState().getData() instanceof DirectionalContainer ||
+               block.getType().equals(Material.ENDER_CHEST) ||
+               block.getType().equals(Material.BEACON);
     }
 
     private boolean checkPermission(Player player, IAbstractPermission perm) {
