@@ -125,6 +125,7 @@
             <configuration>
               <!-- plugin.yml -->
               <mainClass>de.jaschastarke.minecraft.limitedcreative.LimitedCreative</mainClass>
+              <database>true</database>
               <softdepend>
                 <param>WorldGuard</param>
                 <param>WorldEdit</param>
