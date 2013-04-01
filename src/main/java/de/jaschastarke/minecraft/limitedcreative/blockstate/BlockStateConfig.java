@@ -31,7 +31,10 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
     
     @Override
     public void setValue(IConfigurationNode node, Object pValue) throws InvalidValueException {
-        super.setValue(node, pValue);
+        if (node.getName().equals("tool"))
+            setTool(pValue);
+        else
+            super.setValue(node, pValue);
         if (node.getName().equals("enabled")) {
             if (getEnabled()) {
                 if (entry.initialState != ModuleState.NOT_INITIALIZED)
@@ -75,10 +78,10 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
      * The id or technical name (http://tinyurl.com/bukkit-material) of an item that displays information about the
      * right-clicked block.
      * 
-     * default: WOOD_AXE
+     * default: WOOD_PICKAXE
      */
     @IsConfigurationNode(order = 200)
-    public Material getToolType() {
+    public Material getTool() {
         if (config.isString("tool")) {
             Material v = Material.getMaterial(config.getString("tool"));
             if (v != null)
@@ -88,12 +91,40 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
             if (v != null)
                 return v;
         } else {
-            Object v = config.get("tool", Material.WOOD_AXE);
+            Object v = config.get("tool", Material.WOOD_PICKAXE);
             if (v instanceof Material)
                 return (Material) v;
         }
         mod.getLog().warn("Unknown BlockStateTool: " + config.get("tool"));
-        return Material.WOOD_AXE;
+        return Material.WOOD_PICKAXE;
     }
     
+    protected void setTool(Object val) throws InvalidValueException {
+        String v = (String) val;
+        Material m = null;
+        try {
+            int i = Integer.parseInt(v);
+            if (i > 0)
+                m = Material.getMaterial(i);
+        } catch (NumberFormatException e) {
+            m = null;
+        }
+        if (m == null)
+            m = Material.getMaterial(v);
+        if (m == null)
+            throw new InvalidValueException("Material '" + v + "' not found");
+        else
+            config.set("tool", m);
+    }
+
+
+    @Override
+    public Object getValue(final IConfigurationNode node) {
+        Object val = super.getValue(node);
+        if (node.getName().equals("tool") && val != null) {
+            return val.toString();
+        } else {
+            return val;
+        }
+    }
 }

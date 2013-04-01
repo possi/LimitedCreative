@@ -146,6 +146,7 @@
                 <param>de.jaschastarke.minecraft.limitedcreative.limits.NoLimitPermissions:PARENT</param>
                 <param>de.jaschastarke.minecraft.limitedcreative.cmdblocker.CmdBlockPermissions:CONTAINER</param>
                 <param>de.jaschastarke.minecraft.limitedcreative.regions.RegionPermissions:REGION</param>
+                <param>de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStatePermissions:PARENT</param>
               </registeredPermissions>
               <registeredCommands>
                 <param>de.jaschastarke.minecraft.limitedcreative.MainCommand</param>

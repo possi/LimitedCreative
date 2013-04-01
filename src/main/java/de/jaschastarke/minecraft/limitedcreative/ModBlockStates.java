@@ -20,7 +20,7 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
     }
     @Override
     public String getName() {
-        return "GameModePerm";
+        return "BlockState";
     }
 
     @Override
