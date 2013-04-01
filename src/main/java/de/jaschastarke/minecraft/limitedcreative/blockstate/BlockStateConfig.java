@@ -17,7 +17,7 @@ import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 /**
  * BlockState-Feature
  * 
- * http://dev.bukkit.org/server-mods/limited-creative/pages/features/blockstate/
+ * http://dev.bukkit.org/server-mods/limited-creative/pages/features/block-gm/
  */
 @ArchiveDocComments
 public class BlockStateConfig extends Configuration implements IConfigurationSubGroup {
@@ -63,7 +63,9 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
     /**
      * BlockStateEnabled
      * 
-     * ...
+     * Keeps saving the gamemode of all created blocks in a database (configured in bukkit.yml:
+     * http://wiki.bukkit.org/Bukkit.yml#database). Prevents the drops of all blocks that are created by players in
+     * creative mode.
      * 
      * default: true
      */
