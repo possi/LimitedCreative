@@ -74,7 +74,8 @@ public class BlackList extends ArrayList<BlackList.Blacklisted> implements Confi
                     add((Blacklisted) el);
                 } else {
                     try {
-                        add(el.toString());
+                        if (el != null)
+                            add(el.toString());
                     } catch (InvalidValueException e) {
                         System.err.println(e.getCause().getMessage());
                     }

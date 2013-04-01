@@ -66,7 +66,8 @@ public class BlackListEntity extends ArrayList<BlackListEntity.Blacklisted> impl
                     add((Blacklisted) el);
                 } else {
                     try {
-                        add(el.toString());
+                        if (el != null)
+                            add(el.toString());
                     } catch (InvalidValueException e) {
                         System.err.println((e.getCause() != null ? e.getCause() : e).getMessage());
                     }
