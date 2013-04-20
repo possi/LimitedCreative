@@ -67,11 +67,11 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
      * http://wiki.bukkit.org/Bukkit.yml#database). Prevents the drops of all blocks that are created by players in
      * creative mode.
      * 
-     * default: true
+     * default: false
      */
     @IsConfigurationNode(order = 100)
     public boolean getEnabled() {
-        return config.getBoolean("enabled", true);
+        return config.getBoolean("enabled", false);
     }
     
     /**
