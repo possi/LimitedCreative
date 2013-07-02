@@ -90,6 +90,24 @@ public class NoLimitPermissions extends SimplePermissionContainerNode {
     @IsChildPermission
     public static final IPermission BASE_BREAK = new BasicPermission(PARENT, "break", PermissionDefault.FALSE);
     
+    /**
+     * Allows bypassing the "don't change heal/food-state"-limitation
+     */
+    @IsChildPermission
+    public static final IPermission STATS_HEALTH = new BasicPermission(PARENT, "health", PermissionDefault.FALSE);
+    
+    /**
+     * Allows bypassing the "don't get xp/level"-limitation
+     */
+    @IsChildPermission
+    public static final IPermission STATS_XP = new BasicPermission(PARENT, "xp", PermissionDefault.FALSE);
+    
+    /**
+     * Allows bypassing the "remove all effects on leaving creative"-limitation
+     */
+    @IsChildPermission
+    public static final IPermission STATS_POTION = new BasicPermission(PARENT, "potion", PermissionDefault.FALSE);
+    
     public static IDynamicPermission INTERACT(Block block) {
         return new MaterialPermission(BASE_INTERACT, new MaterialData(block.getType(), block.getData()));
     }

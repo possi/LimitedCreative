@@ -1,5 +1,9 @@
 package de.jaschastarke.minecraft.limitedcreative;
 
+import java.util.WeakHashMap;
+
+import org.bukkit.entity.Entity;
+
 import de.jaschastarke.bukkit.lib.CoreModule;
 import de.jaschastarke.minecraft.limitedcreative.limits.BlockListener;
 import de.jaschastarke.minecraft.limitedcreative.limits.EntityListener;
@@ -11,6 +15,7 @@ import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 
 public class ModCreativeLimits extends CoreModule<LimitedCreative> {
     protected LimitConfig config;
+    private WeakHashMap<Entity, Void> no_xp_mobs = new WeakHashMap<Entity, Void>();
     
     public ModCreativeLimits(LimitedCreative plugin) {
         super(plugin);
@@ -50,6 +55,10 @@ public class ModCreativeLimits extends CoreModule<LimitedCreative> {
 
     public LimitConfig getConfig() {
         return config;
+    }
+    
+    public WeakHashMap<Entity, Void> getNoXPMobs() {
+        return no_xp_mobs;
     }
 
 }

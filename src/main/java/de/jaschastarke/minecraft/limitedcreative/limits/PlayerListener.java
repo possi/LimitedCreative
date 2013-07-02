@@ -26,18 +26,24 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.material.DirectionalContainer;
+import org.bukkit.potion.PotionEffect;
 
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
 import de.jaschastarke.minecraft.lib.permissions.IDynamicPermission;
@@ -95,6 +101,48 @@ public class PlayerListener implements Listener {
                     event.getItem().remove();
                 }
                 event.setCancelled(true);
+            }
+        }
+    }
+    
+    @EventHandler
+    public void onPlayerChangeExp(PlayerExpChangeEvent event) {
+        if (event.getAmount() > 0 && event.getPlayer().getGameMode() == GameMode.CREATIVE) {
+            if (checkPermission(event, NoLimitPermissions.STATS_XP))
+                return;
+            event.setAmount(0);
+        }
+    }
+    @EventHandler
+    public void onEntityFoodLevelChange(FoodLevelChangeEvent event) {
+        if (event.getEntity() instanceof Player) {
+            if (!event.isCancelled() && ((Player) event.getEntity()).getGameMode() == GameMode.CREATIVE) {
+                if (checkPermission((Player) event.getEntity(), NoLimitPermissions.STATS_HEALTH))
+                    return;
+                event.setCancelled(true);
+            }
+        }
+    }
+    @EventHandler
+    public void onEntityRegainHealth(EntityRegainHealthEvent event) {
+        if (event.getEntity() instanceof Player) {
+            if (!event.isCancelled() && ((Player) event.getEntity()).getGameMode() == GameMode.CREATIVE) {
+                if (checkPermission((Player) event.getEntity(), NoLimitPermissions.STATS_HEALTH))
+                    return;
+                event.setCancelled(true);
+            }
+        }
+    }
+    
+    @EventHandler(priority=EventPriority.LOW)
+    public void onGameMode(PlayerGameModeChangeEvent event) {
+        if (!event.isCancelled()) {
+            if ((event.getPlayer().getGameMode() == GameMode.CREATIVE) && (event.getNewGameMode() != GameMode.CREATIVE)) {
+                if (checkPermission(event, NoLimitPermissions.STATS_POTION))
+                    return;
+                for (PotionEffect effect : event.getPlayer().getActivePotionEffects()) {
+                    event.getPlayer().removePotionEffect(effect.getType());
+                }
             }
         }
     }
@@ -174,6 +222,10 @@ public class PlayerListener implements Listener {
                     } else if (event.getEntity() instanceof LivingEntity && mod.getConfig().getBlockDamageMob()) {
                         if (!checkPermission(player, NoLimitPermissions.MOB_DAMAGE)) {
                             event.setCancelled(true);
+                        }
+                    } else if (event.getEntity() instanceof LivingEntity) {
+                        if (!checkPermission(player, NoLimitPermissions.STATS_XP)) {
+                            mod.getNoXPMobs().put(event.getEntity(), null);
                         }
                     }
                 }

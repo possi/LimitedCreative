@@ -58,7 +58,7 @@ public class PlayerListener extends Listener {
     }
     
     private boolean isRegionOptional(Player player) {
-        return mod.getRegionManager().getRegionSet(player.getLocation()).allows(Flags.GAMEMODE_OPTIONAL, player);
+        return mod.getRegionManager().getRegionSet(player.getLocation()).allows(Flags.GAMEMODE_OPTIONAL);
     }
     
     @EventHandler(priority = EventPriority.LOW)

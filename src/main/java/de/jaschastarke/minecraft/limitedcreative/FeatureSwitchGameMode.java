@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import de.jaschastarke.IHasName;
@@ -24,6 +25,8 @@ import de.jaschastarke.bukkit.lib.commands.annotations.NeedsPermission;
 import de.jaschastarke.bukkit.lib.commands.annotations.Usages;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
 import de.jaschastarke.minecraft.lib.permissions.IPermission;
+import de.jaschastarke.minecraft.limitedcreative.regions.Flags;
+import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.ApplicableRegions;
 
 public class FeatureSwitchGameMode extends CoreModule<LimitedCreative> {
     public FeatureSwitchGameMode(LimitedCreative plugin) {
@@ -82,10 +85,12 @@ public class FeatureSwitchGameMode extends CoreModule<LimitedCreative> {
             if (!target.equals(context.getSender()) && !context.checkPermission(SwitchGameModePermissions.OTHER))
                 throw new MissingPermissionCommandException(SwitchGameModePermissions.OTHER);
             
-            GameMode wgm = Hooks.DefaultWorldGameMode.get(target.getWorld());
+            GameMode wgm = this.getDefaultGameMode(target.getWorld());
             
-            if (!context.checkPermission(permission) && (wgm != tgm || !context.checkPermission(SwitchGameModePermissions.BACKONLY)))
-                throw new MissingPermissionCommandException(permission);
+            if (!this.regionOptional(target, tgm)) {
+                if (!context.checkPermission(permission) && (wgm != tgm || !context.checkPermission(SwitchGameModePermissions.BACKONLY)))
+                    throw new MissingPermissionCommandException(permission);
+            }
             
             if (target.getGameMode() != tgm) {
                 target.setGameMode(tgm);
@@ -96,6 +101,22 @@ public class FeatureSwitchGameMode extends CoreModule<LimitedCreative> {
                 context.response(context.getFormatter().getString("command.gamemode.no_change"));
             }
             return true;
+        }
+        
+        protected GameMode getDefaultGameMode(World world) {
+            return Hooks.DefaultWorldGameMode.get(world);
+        }
+
+        private boolean regionOptional(Player player, GameMode tgm) {
+            ModRegions mod = plugin.getModule(ModRegions.class);
+            if (mod != null) {
+                ApplicableRegions rs = mod.getRegionManager().getRegionSet(player.getLocation());
+                if (rs.allows(Flags.GAMEMODE_OPTIONAL)) {
+                    if ((tgm == rs.getFlag(Flags.GAMEMODE, player)) || (tgm == this.getDefaultGameMode(player.getWorld())))
+                        return true;
+                }
+            }
+            return false;
         }
 
         @IsCommand("survival")
