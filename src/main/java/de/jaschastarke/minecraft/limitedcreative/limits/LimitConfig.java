@@ -226,6 +226,7 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
                 interactEntityList.add(new BlackListEntity.Blacklisted(EntityType.MINECART_HOPPER));
                 interactEntityList.add(new BlackListEntity.Blacklisted(EntityType.ITEM_FRAME));
                 interactEntityList.add(new BlackListEntity.Blacklisted(EntityType.VILLAGER));
+                interactEntityList.add(new BlackListEntity.Blacklisted(EntityType.HORSE));
             }
         }
         return interactEntityList;
