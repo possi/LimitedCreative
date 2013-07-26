@@ -33,7 +33,7 @@ public class ArmoryConfig extends Configuration implements IConfigurationSubGrou
     public void setValues(ConfigurationSection sect) {
         if (sect == null || sect.getValues(false).size() == 0) {
             ConfigurationSection parent_sect = mod.getConfig().getValues();
-            if (parent_sect.contains("armor")) {
+            if (parent_sect.contains("armore") && parent_sect.isConfigurationSection("armor")) {
                 sect = parent_sect.createSection(this.getName(), parent_sect.getConfigurationSection("armor").getValues(true));
             }
         }
