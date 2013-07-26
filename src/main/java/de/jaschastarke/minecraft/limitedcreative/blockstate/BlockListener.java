@@ -1,5 +1,6 @@
 package de.jaschastarke.minecraft.limitedcreative.blockstate;
 
+import java.sql.SQLException;
 import java.util.Date;
 
 import org.bukkit.GameMode;
@@ -21,18 +22,24 @@ public class BlockListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.isCancelled())
             return;
-        
-        BlockLocation bl = new BlockLocation(event.getBlock().getLocation());
-        BlockState s = mod.getDB().find(BlockState.class, bl);
-        if (s != null) {
-            if (mod.isDebug())
-                mod.getLog().debug("Breaking bad, err.. block: " + s.toString());
-            
-            if (s.getGameMode() == GameMode.CREATIVE && event.getPlayer().getGameMode() != GameMode.CREATIVE) {
-                mod.getBlockSpawn().block(event.getBlock(), event.getPlayer());
+
+        try {
+            //BlockLocation bl = new BlockLocation(event.getBlock().getLocation());
+            //BlockState s = mod.getDB().find(BlockState.class, bl);
+            BlockState s = mod.getQueries().find(event.getBlock().getLocation());
+            if (s != null) {
+                if (mod.isDebug())
+                    mod.getLog().debug("Breaking bad, err.. block: " + s.toString());
+                
+                if (s.getGameMode() == GameMode.CREATIVE && event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+                    mod.getBlockSpawn().block(event.getBlock(), event.getPlayer());
+                }
+                
+                mod.getQueries().delete(s);
             }
-            
-            mod.getDB().delete(s);
+        } catch (SQLException e) {
+            mod.getLog().warn("DB-Error while in onBlockBreak: "+e.getMessage());
+            event.setCancelled(true);
         }
     }
     @EventHandler(priority = EventPriority.MONITOR)
@@ -40,7 +47,7 @@ public class BlockListener implements Listener {
         if (event.isCancelled())
             return;
         
-        BlockLocation bl = new BlockLocation(event.getBlock().getLocation());
+        /*BlockLocation bl = new BlockLocation(event.getBlock().getLocation());
         BlockState s = mod.getDB().find(BlockState.class, bl);
         if (s != null) {
             // This shouldn't happen
@@ -54,6 +61,6 @@ public class BlockListener implements Listener {
         s.setDate(new Date());
         if (mod.isDebug())
             mod.getLog().debug("Saving BlockState: " + s.toString());
-        mod.getDB().save(s);
+        mod.getDB().save(s);*/
     }
 }

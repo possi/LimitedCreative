@@ -23,7 +23,7 @@ public class PlayerListener implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         if (event.isCancelled())
             return;
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && mod.getPlugin().getPermManager().hasPermission(event.getPlayer(), BlockStatePermissions.TOOL)) {
+        /*if (event.getAction() == Action.RIGHT_CLICK_BLOCK && mod.getPlugin().getPermManager().hasPermission(event.getPlayer(), BlockStatePermissions.TOOL)) {
             Block b = event.getClickedBlock();
             if (b != null && event.getPlayer().getItemInHand().getType().equals(mod.getConfig().getTool())) {
                 BlockState s = mod.getDB().find(BlockState.class, new BlockLocation(b.getLocation()));
@@ -53,6 +53,6 @@ public class PlayerListener implements Listener {
                 if (ret != null)
                     event.getPlayer().sendMessage(ret);
             }
-        }
+        }*/
     }
 }

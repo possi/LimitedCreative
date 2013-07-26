@@ -12,6 +12,7 @@ import org.bukkit.World;
 
 @Embeddable
 @Entity
+@Deprecated
 public class BlockLocation implements Serializable {
     private static final long serialVersionUID = -8644798679923736348L;
 

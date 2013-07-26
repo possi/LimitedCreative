@@ -3,9 +3,9 @@ package de.jaschastarke.minecraft.limitedcreative.blockstate;
 import java.util.Date;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
+//import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.IdClass;
+//import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import org.bukkit.Bukkit;
@@ -18,7 +18,7 @@ import com.avaje.ebean.validation.NotNull;
 
 @Entity
 @Table(name = "block_state")
-@IdClass(BlockLocation.class)
+//@IdClass(BlockLocation.class)
 public class BlockState {
     public static enum Source {
         SEED, // There is no way to determine this source, but lets be prepared for miracles ;)
@@ -36,8 +36,9 @@ public class BlockState {
     @Id
     private int z;*/
     
-    @EmbeddedId
-    private BlockLocation blockLocation;
+    /*@EmbeddedId
+    private BlockLocation blockLocation;*/
+    private Location location;
     
     @Column(name = "gm")
     private GameMode gameMode;
@@ -52,18 +53,19 @@ public class BlockState {
     @NotNull
     private Source source = Source.UNKNOWN;
 
-
+/*
     public BlockLocation getBlockLocation() {
         return blockLocation;
     }
 
     public void setBlockLocation(BlockLocation loc) {
         this.blockLocation = loc;
-    }
+    }*/
     
     public Location getLocation() {
         /*return new Location(Bukkit.getWorld(world), x, y, z);*/
-        return getBlockLocation().getLocation();
+        //return getBlockLocation().getLocation();
+        return location;
     }
 
     public void setLocation(Location loc) {
@@ -71,7 +73,8 @@ public class BlockState {
         x = loc.getBlockX();
         y = loc.getBlockY();
         z = loc.getBlockZ();*/
-        setBlockLocation(new BlockLocation(loc));
+        //setBlockLocation(new BlockLocation(loc));
+        location = loc;
     }
 
     public GameMode getGameMode() {
@@ -125,7 +128,8 @@ public class BlockState {
 
     @Override
     public String toString() {
-        return blockLocation.toString() + " by " +
+        //return blockLocation.toString() + " by " +
+        return location.toString() + " by " +
             (source == Source.PLAYER ? playerName : (source.toString() + (playerName != null ? "(" + playerName + ")" : ""))) +
             (gameMode != null ? "" : (" in GM: " + gameMode)) + 
             " at " + date.toString();

@@ -1,19 +1,18 @@
 package de.jaschastarke.minecraft.limitedcreative;
 
-import com.avaje.ebean.EbeanServer;
-import com.avaje.ebean.Query;
-
 import de.jaschastarke.bukkit.lib.CoreModule;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockListener;
-import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockState;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStateConfig;
+import de.jaschastarke.minecraft.limitedcreative.blockstate.DBQueries;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.PlayerListener;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
+import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 
 public class ModBlockStates extends CoreModule<LimitedCreative> {
     private BlockStateConfig config;
     private FeatureBlockItemSpawn blockDrops;
+    private DBQueries queries;
 
     public ModBlockStates(LimitedCreative plugin) {
         super(plugin);
@@ -31,15 +30,23 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
         if (blockDrops == null)
             blockDrops = plugin.addModule(new FeatureBlockItemSpawn(plugin)).getModule();
         
-        listeners.addListener(new BlockListener(this));
-        listeners.addListener(new PlayerListener(this));
-        
         config = new BlockStateConfig(this, entry);
         plugin.getPluginConfig().registerSection(config);
-        plugin.getDatabaseManager().registerDatabaseClass(BlockState.class);
+        
+        listeners.addListener(new BlockListener(this));
+        listeners.addListener(new PlayerListener(this));
     }
     @Override
     public void onEnable() {
+        try {
+            queries = new DBQueries(getPlugin().getDatabaseConnection());
+            queries.initTable();
+        } catch (Exception e) {
+            e.printStackTrace();
+            getLog().warn(plugin.getLocale().trans("block_state.error.sql_connection_failed", getName()));
+            entry.initialState = ModuleState.NOT_INITIALIZED;
+            return;
+        }
         super.onEnable();
         
         getLog().info(plugin.getLocale().trans("basic.loaded.module"));
@@ -49,17 +56,13 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
         super.onDisable();;
     }
     
-    public EbeanServer getDB() {
-        return plugin.getDatabaseManager().getDatabase();
-    }
-    public Query<BlockState> getBSQuery() {
-        return plugin.getDatabaseManager().getDatabase().find(BlockState.class);
-    }
-    
     public BlockStateConfig getConfig() {
         return config;
     }
     public FeatureBlockItemSpawn getBlockSpawn() {
         return blockDrops;
+    }
+    public DBQueries getQueries() {
+        return queries;
     }
 }
