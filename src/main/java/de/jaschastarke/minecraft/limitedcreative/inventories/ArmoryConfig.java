@@ -64,8 +64,8 @@ public class ArmoryConfig extends Configuration implements IConfigurationSubGrou
             Map<String, ItemStack> armor = new HashMap<String, ItemStack>();
             for (Map.Entry<String, Object> entry : config.getValues(false).entrySet()) {
                 if (!entry.getKey().equals("enabled")) {
-                    if (entry instanceof ItemStack) {
-                        armor.put(entry.getKey(), (ItemStack) entry);
+                    if (entry.getValue() instanceof ItemStack) {
+                        armor.put(entry.getKey(), (ItemStack) entry.getValue());
                     } else {
                         MaterialData md = null;
                         try {
