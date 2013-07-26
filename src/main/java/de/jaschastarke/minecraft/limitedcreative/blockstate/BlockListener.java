@@ -24,21 +24,21 @@ public class BlockListener implements Listener {
             return;
 
         try {
-            //BlockLocation bl = new BlockLocation(event.getBlock().getLocation());
-            //BlockState s = mod.getDB().find(BlockState.class, bl);
             BlockState s = mod.getQueries().find(event.getBlock().getLocation());
             if (s != null) {
                 if (mod.isDebug())
                     mod.getLog().debug("Breaking bad, err.. block: " + s.toString());
                 
                 if (s.getGameMode() == GameMode.CREATIVE && event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+                    if (mod.isDebug())
+                        mod.getLog().debug("... was placed by creative. Drop prevented");
                     mod.getBlockSpawn().block(event.getBlock(), event.getPlayer());
                 }
                 
                 mod.getQueries().delete(s);
             }
         } catch (SQLException e) {
-            mod.getLog().warn("DB-Error while in onBlockBreak: "+e.getMessage());
+            mod.getLog().warn("DB-Error while onBlockBreak: "+e.getMessage());
             event.setCancelled(true);
         }
     }
@@ -47,20 +47,24 @@ public class BlockListener implements Listener {
         if (event.isCancelled())
             return;
         
-        /*BlockLocation bl = new BlockLocation(event.getBlock().getLocation());
-        BlockState s = mod.getDB().find(BlockState.class, bl);
-        if (s != null) {
-            // This shouldn't happen
+        try {
+            BlockState s = mod.getQueries().find(event.getBlock().getLocation());
+            if (s != null) {
+                // This shouldn't happen
+                if (mod.isDebug())
+                    mod.getLog().debug("Replacing current BlockState: " + s.toString());
+            } else {
+                s = new BlockState();
+                s.setLocation(event.getBlock().getLocation());
+            }
+            s.setPlayer(event.getPlayer());
+            s.setDate(new Date());
             if (mod.isDebug())
-                mod.getLog().debug("Replacing current BlockState: " + s.toString());
-        } else {
-            s = new BlockState();
-            s.setBlockLocation(bl);
+                mod.getLog().debug("Saving BlockState: " + s.toString());
+            mod.getQueries().insert(s);
+        } catch (SQLException e) {
+            mod.getLog().warn("DB-Error while onBlockPlace: "+e.getMessage());
+            event.setCancelled(true);
         }
-        s.setPlayer(event.getPlayer());
-        s.setDate(new Date());
-        if (mod.isDebug())
-            mod.getLog().debug("Saving BlockState: " + s.toString());
-        mod.getDB().save(s);*/
     }
 }

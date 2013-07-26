@@ -53,7 +53,7 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
     }
     @Override
     public void onDisable() {
-        super.onDisable();;
+        super.onDisable();
     }
     
     public BlockStateConfig getConfig() {

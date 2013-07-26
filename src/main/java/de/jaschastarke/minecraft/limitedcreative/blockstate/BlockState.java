@@ -16,6 +16,9 @@ import org.bukkit.entity.Player;
 
 import com.avaje.ebean.validation.NotNull;
 
+/**
+ * @TODO: A Database Table-Generation based on Annotations (much work). all those Annotations here have not effect yet
+ */
 @Entity
 @Table(name = "block_state")
 //@IdClass(BlockLocation.class)
@@ -27,17 +30,6 @@ public class BlockState {
         UNKNOWN
     }
 
-    /*@Id
-    private UUID world;
-    @Id
-    private int x;
-    @Id
-    private int y;
-    @Id
-    private int z;*/
-    
-    /*@EmbeddedId
-    private BlockLocation blockLocation;*/
     private Location location;
     
     @Column(name = "gm")
@@ -53,27 +45,12 @@ public class BlockState {
     @NotNull
     private Source source = Source.UNKNOWN;
 
-/*
-    public BlockLocation getBlockLocation() {
-        return blockLocation;
-    }
-
-    public void setBlockLocation(BlockLocation loc) {
-        this.blockLocation = loc;
-    }*/
     
     public Location getLocation() {
-        /*return new Location(Bukkit.getWorld(world), x, y, z);*/
-        //return getBlockLocation().getLocation();
         return location;
     }
 
     public void setLocation(Location loc) {
-        /*world = loc.getWorld().getUID();
-        x = loc.getBlockX();
-        y = loc.getBlockY();
-        z = loc.getBlockZ();*/
-        //setBlockLocation(new BlockLocation(loc));
         location = loc;
     }
 

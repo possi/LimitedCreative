@@ -63,9 +63,13 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
     /**
      * BlockStateEnabled
      * 
-     * ...
+     * This experimental Feature stores the GameMode a Block was created in, and prevents drops if a Block was created
+     * in creative mode. 
      * 
-     * default: true
+     * Due to the Experimental state this Feature isn't enabled by default. It uses the Database-credentials from 
+     * bukkit.yml (http://wiki.bukkit.org/Bukkit.yml#database) in the server-directory.
+     * 
+     * default: false
      */
     @IsConfigurationNode(order = 100)
     public boolean getEnabled() {
