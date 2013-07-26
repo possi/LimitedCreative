@@ -73,7 +73,7 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
      */
     @IsConfigurationNode(order = 100)
     public boolean getEnabled() {
-        return config.getBoolean("enabled", true);
+        return config.getBoolean("enabled", false);
     }
     
     /**
