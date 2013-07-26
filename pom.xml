@@ -92,6 +92,12 @@
         <artifactId>xauth</artifactId>
         <version>2.0.26</version>
     </dependency>
+    <dependency>
+        <!-- http://dl.bukkit.org/ -->
+        <groupId>org.bukkit</groupId>
+        <artifactId>bukkit</artifactId>
+        <version>1.6.1-R0.1-SNAPSHOT</version>
+    </dependency>
   </dependencies>
   
   <build>
