@@ -69,6 +69,12 @@
         <version>${plib.version}</version>
     </dependency>
     <dependency>
+        <!-- http://dl.bukkit.org/ -->
+        <groupId>org.bukkit</groupId>
+        <artifactId>bukkit</artifactId>
+        <version>1.6.2-R0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
         <!-- http://dev.bukkit.org/server-mods/worldguard/ -->
         <groupId>com.sk89q</groupId>
         <artifactId>worldguard</artifactId>
@@ -93,10 +99,10 @@
         <version>2.0.26</version>
     </dependency>
     <dependency>
-        <!-- http://dl.bukkit.org/ -->
-        <groupId>org.bukkit</groupId>
-        <artifactId>bukkit</artifactId>
-        <version>1.6.2-R0.1-SNAPSHOT</version>
+        <!-- http://dev.bukkit.org/bukkit-plugins/logblock/ -->
+        <groupId>de.diddiz</groupId>
+        <artifactId>logblock</artifactId>
+        <version>1.70</version>
     </dependency>
   </dependencies>
   

@@ -11,6 +11,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import de.jaschastarke.minecraft.limitedcreative.ModBlockStates;
+import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockState.Source;
 
 public class BlockListener implements Listener {
     private ModBlockStates mod;
@@ -29,7 +30,7 @@ public class BlockListener implements Listener {
                 if (mod.isDebug())
                     mod.getLog().debug("Breaking bad, err.. block: " + s.toString());
                 
-                if (s.getGameMode() == GameMode.CREATIVE && event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+                if ((s.getGameMode() == GameMode.CREATIVE || s.getSource() == Source.EDIT) && event.getPlayer().getGameMode() != GameMode.CREATIVE) {
                     if (mod.isDebug())
                         mod.getLog().debug("... was placed by creative. Drop prevented");
                     mod.getBlockSpawn().block(event.getBlock(), event.getPlayer());
@@ -49,10 +50,12 @@ public class BlockListener implements Listener {
         
         try {
             BlockState s = mod.getQueries().find(event.getBlock().getLocation());
+            boolean update = false;
             if (s != null) {
                 // This shouldn't happen
                 if (mod.isDebug())
                     mod.getLog().debug("Replacing current BlockState: " + s.toString());
+                update = true;
             } else {
                 s = new BlockState();
                 s.setLocation(event.getBlock().getLocation());
@@ -61,7 +64,11 @@ public class BlockListener implements Listener {
             s.setDate(new Date());
             if (mod.isDebug())
                 mod.getLog().debug("Saving BlockState: " + s.toString());
-            mod.getQueries().insert(s);
+            
+            if (update)
+                mod.getQueries().update(s);
+            else
+                mod.getQueries().insert(s);
         } catch (SQLException e) {
             mod.getLog().warn("DB-Error while onBlockPlace: "+e.getMessage());
             event.setCancelled(true);

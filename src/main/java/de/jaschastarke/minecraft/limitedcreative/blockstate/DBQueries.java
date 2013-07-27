@@ -3,6 +3,7 @@ package de.jaschastarke.minecraft.limitedcreative.blockstate;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -50,6 +51,31 @@ public class DBQueries {
         delete.setString(4, s.getLocation().getWorld().getUID().toString());
         return delete.executeUpdate() > 0;
     }
+
+    private PreparedStatement update = null;
+    public boolean update(BlockState s) throws SQLException {
+        if (update == null) {
+            update = db.prepare("UPDATE lc_block_state SET gm = ?, player = ?, cdate = ?, source = ?"+
+                        "WHERE x = ? AND y = ? AND z = ? AND world = ? ");
+        }
+        if (s.getGameMode() == null)
+            update.setNull(5, Types.INTEGER);
+        else if (db.getType() == Type.MySQL)
+            update.setString(1, s.getGameMode().name());
+        else
+            update.setInt(1, s.getGameMode().getValue());
+        update.setString(2, s.getPlayerName());
+        update.setTimestamp(3, new java.sql.Timestamp(s.getDate().getTime()));
+        if (db.getType() == Type.MySQL)
+            update.setString(4, s.getSource().name());
+        else
+            update.setInt(4, s.getSource().ordinal());
+        update.setInt(5, s.getLocation().getBlockX());
+        update.setInt(6, s.getLocation().getBlockY());
+        update.setInt(7, s.getLocation().getBlockZ());
+        update.setString(8, s.getLocation().getWorld().getUID().toString());
+        return update.executeUpdate() > 0;
+    }
     
     private PreparedStatement insert = null;
     public boolean insert(BlockState s) throws SQLException {
@@ -61,7 +87,9 @@ public class DBQueries {
         insert.setInt(2, s.getLocation().getBlockY());
         insert.setInt(3, s.getLocation().getBlockZ());
         insert.setString(4, s.getLocation().getWorld().getUID().toString());
-        if (db.getType() == Type.MySQL)
+        if (s.getGameMode() == null)
+            insert.setNull(5, Types.INTEGER);
+        else if (db.getType() == Type.MySQL)
             insert.setString(5, s.getGameMode().name());
         else
             insert.setInt(5, s.getGameMode().getValue());
@@ -139,7 +167,7 @@ public class DBQueries {
                             "gm                        ENUM('CREATIVE', 'SURVIVAL', 'ADVENTURE'),"+
                             "player                    VARCHAR(255),"+
                             "cdate                     TIMESTAMP NOT NULL,"+
-                            "source                    ENUM('SEED','PLAYER','EDIT','UNKNOWN'),"+
+                            "source                    ENUM('SEED','PLAYER','EDIT','UNKNOWN') NOT NULL,"+
                             "PRIMARY KEY (x, y, z, world)"+
                         ")"
                     );

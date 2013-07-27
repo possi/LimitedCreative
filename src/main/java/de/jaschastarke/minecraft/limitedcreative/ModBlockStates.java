@@ -4,7 +4,9 @@ import de.jaschastarke.bukkit.lib.CoreModule;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockListener;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStateConfig;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.DBQueries;
+import de.jaschastarke.minecraft.limitedcreative.blockstate.DependencyListener;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.PlayerListener;
+import de.jaschastarke.minecraft.limitedcreative.blockstate.worldedit.LCEditSessionFactory;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
 import de.jaschastarke.modularize.ModuleEntry.ModuleState;
@@ -35,6 +37,7 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
         
         listeners.addListener(new BlockListener(this));
         listeners.addListener(new PlayerListener(this));
+        listeners.addListener(new DependencyListener(this));
     }
     @Override
     public void onEnable() {
@@ -48,6 +51,12 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
             return;
         }
         super.onEnable();
+        try {
+            if (plugin.getServer().getPluginManager().isPluginEnabled("WorldEdit"))
+                LCEditSessionFactory.initFactory(this);
+        } catch (Exception e) {
+            getLog().warn(plugin.getLocale().trans("block_state.warning.worldedit_sessionfactory_failed", e.getMessage()));
+        }
         
         getLog().info(plugin.getLocale().trans("basic.loaded.module"));
     }

@@ -98,8 +98,8 @@ public class BlockState {
     }
 
     public void setSource(Source source) {
-        if (source != Source.PLAYER)
-            setPlayer(null);
+        if (source != Source.PLAYER && source != Source.EDIT)
+            setPlayerName(null);
         this.source = source;
     }
 
