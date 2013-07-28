@@ -74,8 +74,8 @@ public class CmdBlockerConfig extends Configuration implements IConfigurationSub
     /**
      * CmdBlockerList
      * 
-     * Defines the list of commands that are blocked while in creative mode. The leading / isn't included. By default
-     * the list-item is treated as simple string as typed in by the user after the /. All commands starting with
+     * Defines the list of commands that are blocked while in creative mode. The leading / isn't included. By default 
+     * the list-item is treated as simple string as typed in by the user after the /. All commands starting with 
      * this string are blocked, even if more parameteres are entered by the user.
      * If the first character is ^ the entry is interpreted as a regular expression (including the ^ for begin of the string).
      * Only use regular expressions if you know them!

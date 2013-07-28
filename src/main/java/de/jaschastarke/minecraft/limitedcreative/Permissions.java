@@ -37,7 +37,7 @@ public class Permissions extends SimplePermissionContainerNode {
      */
     public static final IPermission CONFIG = new BasicPermission(CONTAINER, "config", PermissionDefault.OP);
     /**
-     * Gives player access to the general /limitedcreative command. This permission doesn't affect the usability, but
+     * Gives player access to the general /limitedcreative command. This permission doesn't affect the usability, but 
      * allows to hide the command from /help for users.
      */
     public static final IPermission COMMAND = new BasicPermission(CONTAINER, "command", PermissionDefault.OP);

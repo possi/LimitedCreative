@@ -66,7 +66,7 @@ public class RegionConfig extends Configuration implements IConfigurationSubGrou
     /**
      * RegionEnabled
      * 
-     * Enables the feature for "creative-regions". This Feature is automatically disabled, if the required plugin
+     * Enables the feature for "creative-regions". This Feature is automatically disabled, if the required plugin 
      * "WorldGuard" (http://dev.bukkit.org/server-mods/worldguard/) isn't found.
      * 
      * default: true 
@@ -79,9 +79,9 @@ public class RegionConfig extends Configuration implements IConfigurationSubGrou
     /**
      * RegionRememberOptional
      * 
-     * Remembers if players disables the Region-GameMode (by switching in an optional region to World-Default-GameMode
+     * Remembers if players disables the Region-GameMode (by switching in an optional region to World-Default-GameMode 
      * with /lc creative|survival). So when the player re-enters the region, he keep his GameMode which he left it in.
-     * Hint: This is very confusing, if MultiVerse "enforce gamemode" swaps your state (default). So better don't use
+     * Hint: This is very confusing, if MultiVerse "enforce gamemode" swaps your state (default). So better don't use 
      * with Multiverse.
      * 
      * default: false
@@ -94,9 +94,9 @@ public class RegionConfig extends Configuration implements IConfigurationSubGrou
     /**
      * RegionSafeMode
      * 
-     * When a player leaves a region he always will get back to the World-GameMode, even if he entered the region already
+     * When a player leaves a region he always will get back to the World-GameMode, even if he entered the region already 
      * in the Region-GameMode. So its the opposite analog to RegionRememberOptional.
-     * That means: If a GM in creative-mode walks/flies through a creative-region in a survival world, he will get back
+     * That means: If a GM in creative-mode walks/flies through a creative-region in a survival world, he will get back 
      * to survival on leaving the region.
      * 
      * default: false
@@ -110,7 +110,7 @@ public class RegionConfig extends Configuration implements IConfigurationSubGrou
     /**
      * RegionMaximumFallingHeight
      * 
-     * When the player is more than this count of blocks above the ground, he is prevented from changing the region that
+     * When the player is more than this count of blocks above the ground, he is prevented from changing the region that 
      * sets him survival which would cause him falling and hurting.
      * 
      * default: 3

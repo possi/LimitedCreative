@@ -31,7 +31,7 @@ public class CmdBlockPermissions extends SimplePermissionContainerNode {
      * Allows to bypass specific blockings of commands as it tests against all partial permissions:
      * 
      * Example:
-     * A Command "/execute a fuzzy command -n 256" is entered by the player which is blocked by the configuration the
+     * A Command "/execute a fuzzy command -n 256" is entered by the player which is blocked by the configuration the 
      * following permissions are tested, and if one is present for the user, he is allowed to execute the command:
      *  - limitedcreative.cmdblock.*
      *  - limitedcreative.cmdblock.execute

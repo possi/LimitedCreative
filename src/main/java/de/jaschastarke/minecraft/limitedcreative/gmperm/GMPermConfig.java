@@ -73,8 +73,8 @@ public class GMPermConfig extends Configuration implements IConfigurationSubGrou
     /**
      * GMPermCreativeGroup
      * 
-     * Defines the Permission-Group which the player gets added to on entering creative-mode. If this value is changed
-     * the old group won't be automatically removed from players already in it. So be sure to delete the old group or
+     * Defines the Permission-Group which the player gets added to on entering creative-mode. If this value is changed 
+     * the old group won't be automatically removed from players already in it. So be sure to delete the old group or 
      * remove all player of it, that they don't get stuck with that permissions.
      */
     @IsConfigurationNode(order = 200)

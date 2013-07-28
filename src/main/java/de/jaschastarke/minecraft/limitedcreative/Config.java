@@ -17,7 +17,7 @@ import de.jaschastarke.modularize.ModuleEntry.ModuleState;
  * 
  * (YAML-Syntax: http://en.wikipedia.org/wiki/YAML)
  * 
- * This configuration-file is automatically written when changed via ingame-commands. So any manual added comments are
+ * This configuration-file is automatically written when changed via ingame-commands. So any manual added comments are 
  * removed.
  */
 @ArchiveDocComments
@@ -59,8 +59,8 @@ public class Config extends PluginConfiguration {
     /**
      * Metrics
      * 
-     * This settings allows the Addon-Author to track the Servers using this plugin. It will not track any player
-     * related data like names, ips, online time or such. Please do not disable the option! As more servers are using
+     * This settings allows the Addon-Author to track the Servers using this plugin. It will not track any player 
+     * related data like names, ips, online time or such. Please do not disable the option! As more servers are using 
      * the plugin and the author knows, as more he is willing to support the plugin! Its a win-win for both.
      * 
      * default: true

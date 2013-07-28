@@ -63,7 +63,7 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
     /**
      * BlockStateEnabled
      * 
-     * This experimental Feature stores the GameMode a Block was created in, and prevents drops if a Block was created
+     * This experimental Feature stores the GameMode a Block was created in, and prevents drops if a Block was created 
      * in creative mode. 
      * 
      * Due to the Experimental state this Feature isn't enabled by default. It uses the Database-credentials from 
@@ -79,7 +79,7 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
     /**
      * BlockStateTool
      * 
-     * The id or technical name (http://tinyurl.com/bukkit-material) of an item that displays information about the
+     * The id or technical name (http://tinyurl.com/bukkit-material) of an item that displays information about the 
      * right-clicked block.
      * 
      * default: WOOD_PICKAXE

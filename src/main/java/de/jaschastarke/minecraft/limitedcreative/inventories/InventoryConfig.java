@@ -72,7 +72,7 @@ public class InventoryConfig extends Configuration implements IConfigurationSubG
     /**
      * InventoryEnabled
      * 
-     * Use this option to disable the separated inventories feature, for example if you use another Plugin handling
+     * Use this option to disable the separated inventories feature, for example if you use another Plugin handling 
      * the inventories, like Multiverse-Inventories.
      * 
      * default: true
@@ -98,7 +98,7 @@ public class InventoryConfig extends Configuration implements IConfigurationSubG
     /**
      * InventorySeparateAdventure
      * 
-     * When true, your players get a separate inventory when switching to adventure gamemode (2). Otherwise
+     * When true, your players get a separate inventory when switching to adventure gamemode (2). Otherwise 
      * they have the default survival inventory while in adventure gamemode.
      * 
      * default: false

@@ -92,7 +92,7 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
      *  - dropping items from "inventory" to the ground
      *  - doing PvP (wouldn't be fair, would it?)
      * 
-     * Also if this option is disabled all other Limit-Options below are disabled too. To just disable some of these
+     * Also if this option is disabled all other Limit-Options below are disabled too. To just disable some of these 
      * limitations, use the "nolimit"-permissions.
      * 
      * default: true
@@ -105,7 +105,7 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
     /**
      * LimitDropsInsteadPrevent
      * 
-     * When enabled items that are dropped by creative players are removed (burning in the hellfire or so, they just
+     * When enabled items that are dropped by creative players are removed (burning in the hellfire or so, they just 
      * disappear). When disabled the items stay in the inventory of the player.
      * 
      * default: false
@@ -129,7 +129,7 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
     /**
      * LimitDamageToMobs
      * 
-     * Prevents dealing damage to all creatures when the player is in creative (friendly sheeps as well as hostile
+     * Prevents dealing damage to all creatures when the player is in creative (friendly sheeps as well as hostile 
      * creepers).
      * 
      * default: false
@@ -143,8 +143,8 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
     /**
      * LimitPickup
      * 
-     * Prevents the pickup of items while in creative mode. Either the items are just stay on ground and ignore that a
-     * creative player walks over it ("prevent"), or the are "remove"d when a creative player walks over it. This is
+     * Prevents the pickup of items while in creative mode. Either the items are just stay on ground and ignore that a 
+     * creative player walks over it ("prevent"), or the are "remove"d when a creative player walks over it. This is 
      * helpful e.g. when the creative player destroys a long line of rails.
      * 
      * valid options: remove / prevent / false
@@ -165,12 +165,12 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
     /**
      * LimitInteraction
      * 
-     * Prevents players of interacting with specific blocks as addition to chests in creative mode (and only in
+     * Prevents players of interacting with specific blocks as addition to chests in creative mode (and only in 
      * creative).
      * 
-     * You can use the technical name (http://tinyurl.com/bukkit-material) or
-     * the id of the block/item (better use the id, if you're not sure). You may add the data separated with a colon
-     * e.g.: "WOOL:11" blocks blue wool. But be sure to put it in quotes, to not break yml-configuration! Named data
+     * You can use the technical name (http://tinyurl.com/bukkit-material) or 
+     * the id of the block/item (better use the id, if you're not sure). You may add the data separated with a colon 
+     * e.g.: "WOOL:11" blocks blue wool. But be sure to put it in quotes, to not break yml-configuration! Named data 
      * values aren't supported yet. If you don't add a data-value, all blocks of this material are blocked.
      * 
      * default:
@@ -206,7 +206,7 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
      * 
      * Prevents players of interacting with specific entities in creative mode (and only in creative).
      * 
-     * You can use the technical name (see http://tinyurl.com/bukkit-entity) or the id of the entity (better use the id,
+     * You can use the technical name (see http://tinyurl.com/bukkit-entity) or the id of the entity (better use the id, 
      * if you're not sure). 
      * 
      * default:
@@ -238,9 +238,9 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
      * 
      * Prevents players of using or placing specific items/blocks in creative mode (and only in creative).
      * 
-     * You can use the technical name (see http://tinyurl.com/bukkit-material) or
-     * the id of the block/item (better use the id, if you're not sure). You may add the data separated with a colon
-     * e.g.: "WOOL:11" blocks blue wool. But be sure to put it in quotes, to not break yml-configuration! Named data
+     * You can use the technical name (see http://tinyurl.com/bukkit-material) or 
+     * the id of the block/item (better use the id, if you're not sure). You may add the data separated with a colon 
+     * e.g.: "WOOL:11" blocks blue wool. But be sure to put it in quotes, to not break yml-configuration! Named data 
      * values aren't supported yet. If you don't add a data-value, all blocks of this material are blocked.
      * 
      * default:
@@ -265,9 +265,9 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
      * 
      * Prevents players of destroying specific blocks in creative mode (and only in creative).
      * 
-     * You can use the technical name (see http://tinyurl.com/bukkit-material) or
-     * the id of the block/item (better use the id, if you're not sure). You may add the data separated with a colon
-     * e.g.: "WOOL:11" blocks blue wool. But be sure to put it in quotes, to not break yml-configuration! Named data
+     * You can use the technical name (see http://tinyurl.com/bukkit-material) or 
+     * the id of the block/item (better use the id, if you're not sure). You may add the data separated with a colon 
+     * e.g.: "WOOL:11" blocks blue wool. But be sure to put it in quotes, to not break yml-configuration! Named data 
      * values aren't supported yet. If you don't add a data-value, all blocks of this material are blocked.
      * 
      * default:
