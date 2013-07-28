@@ -148,15 +148,19 @@ public class CustomRegionManager {
         }
         
         public WorldGuardPlugin getWorldGuard() {
-            return mod.getWorldGuard();
+            return CustomRegionManager.this.getWorldGuard();
         }
+    }
+
+    private WorldGuardPlugin getWorldGuard() {
+        return ((WorldGuardPlugin) mod.getPlugin().getServer().getPluginManager().getPlugin("WorldGuard"));
     }
     
     public GlobalRegionManager getWGGlobalManager() {
-        return mod.getWorldGuard().getGlobalRegionManager();
+        return getWorldGuard().getGlobalRegionManager();
     }
     public RegionManager getWGManager(World world) {
-        return mod.getWorldGuard().getRegionManager(world);
+        return getWorldGuard().getRegionManager(world);
     }
     
     public String getRegionsHash(Location loc) {

@@ -120,7 +120,7 @@ public class BlockListener extends Listener {
         Block dest = source.getRelative(event.getDirection().getOppositeFace());
         if (mod.isDebug())
             mod.getLog().debug("PistonRetract "+source.getType()+" "+event.getDirection() + " " + event.isSticky());
-        if (event.isSticky() && source.getType() != Material.AIR) { 
+        if (event.isSticky() && source.getType() != Material.AIR) {
             if (mod.isDebug())
                 mod.getLog().debug("dest "+dest.getType());
             if (regionSet(source).getFlag(Flags.GAMEMODE) == GameMode.CREATIVE) {

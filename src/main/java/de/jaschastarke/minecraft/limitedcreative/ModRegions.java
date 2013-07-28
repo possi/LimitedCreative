@@ -4,19 +4,17 @@ import java.io.File;
 
 import org.bukkit.entity.Player;
 
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-
 import de.jaschastarke.bukkit.lib.CoreModule;
 import de.jaschastarke.bukkit.lib.commands.AliasHelpedCommand;
 import de.jaschastarke.minecraft.limitedcreative.regions.BlockListener;
-import de.jaschastarke.minecraft.limitedcreative.regions.Flags;
+import de.jaschastarke.minecraft.limitedcreative.regions.IWorldGuardIntegration;
 import de.jaschastarke.minecraft.limitedcreative.regions.PlayerData;
 import de.jaschastarke.minecraft.limitedcreative.regions.PlayerListener;
 import de.jaschastarke.minecraft.limitedcreative.regions.RegionConfig;
 import de.jaschastarke.minecraft.limitedcreative.regions.RegionListener;
 import de.jaschastarke.minecraft.limitedcreative.regions.RegionsCommand;
+import de.jaschastarke.minecraft.limitedcreative.regions.WorldGuardIntegration;
 import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.CustomRegionManager;
-import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.FlagList;
 import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.PlayerRegionListener;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
@@ -24,7 +22,7 @@ import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 
 public class ModRegions extends CoreModule<LimitedCreative> {
     private CustomRegionManager mgr;
-    private WorldGuardPlugin wg;
+    private IWorldGuardIntegration wg;
     private PlayerData pdata;
     private FeatureBlockItemSpawn blockDrops = null;
     private RegionConfig config;
@@ -62,7 +60,14 @@ public class ModRegions extends CoreModule<LimitedCreative> {
         listeners.addListener(new RegionListener(this));
         listeners.addListener(new PlayerRegionListener(this)); // Fires Custom-Events listen by RegionListener
         
-        FlagList.addFlags(Flags.getList());
+        getWorldGuardIntegration().initFlagList();
+    }
+    
+    public IWorldGuardIntegration getWorldGuardIntegration() {
+        if (wg == null) {
+            wg = new WorldGuardIntegration(this);
+        }
+        return wg;
     }
     
     @Override
@@ -70,9 +75,9 @@ public class ModRegions extends CoreModule<LimitedCreative> {
         super.onEnable();
         
         mgr = new CustomRegionManager(new File(plugin.getDataFolder(), "regions.yml"), this);
-        wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
+        /*wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
         if (wg == null)
-            throw new IllegalAccessError("Missing Plugin WorldGuard");
+            throw new IllegalAccessError("Missing Plugin WorldGuard");*/
 
         plugin.getCommandHandler().registerCommand(command);
         plugin.getMainCommand().registerCommand(new AliasHelpedCommand<RegionsCommand>(command, "region", new String[]{"r"}));
@@ -93,9 +98,9 @@ public class ModRegions extends CoreModule<LimitedCreative> {
         return config;
     }
 
-    public WorldGuardPlugin getWorldGuard() {
+    /*public WorldGuardPlugin getWorldGuard() {
         return wg;
-    }
+    }*/
     public CustomRegionManager getRegionManager() {
         return mgr;
     }

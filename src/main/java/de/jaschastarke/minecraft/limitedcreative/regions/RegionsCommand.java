@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.InvalidFlagFormat;
@@ -38,13 +39,15 @@ import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.Region;
 public class RegionsCommand extends BukkitCommand implements IHelpDescribed {
     private ModRegions mod;
     private HelpCommand help;
+    private WorldGuardPlugin wg;
     
     public RegionsCommand() {
         this.help = this.getDefaultHelpCommand();
     }
     public RegionsCommand(ModRegions mod) {
+        this();
         this.mod = mod;
-        this.help = this.getDefaultHelpCommand();
+        this.wg = (WorldGuardPlugin) mod.getPlugin().getServer().getPluginManager().getPlugin("WorldGaurd");
     }
     
     @Override
@@ -108,7 +111,7 @@ public class RegionsCommand extends BukkitCommand implements IHelpDescribed {
         if (w == null)
             throw new CommandException(L("command.worldguard.world_not_found"));
         
-        RegionManager mgr = mod.getWorldGuard().getGlobalRegionManager().get(w);
+        RegionManager mgr = getWorldGuard().getGlobalRegionManager().get(w);
         ProtectedRegion region = mgr.getRegion(params.getArgument(0));
         if (region == null && params.getArgument(0).equalsIgnoreCase("__global__")) {
             region = new GlobalProtectedRegion(params.getArgument(0));
@@ -129,7 +132,7 @@ public class RegionsCommand extends BukkitCommand implements IHelpDescribed {
         String value = params.getValue();
         try {
             if (value != null) {
-                reg.setFlag(flag, flag.parseInput(mod.getWorldGuard(), context.getSender(), value));
+                reg.setFlag(flag, flag.parseInput(getWorldGuard(), context.getSender(), value));
             } else {
                 reg.setFlag(flag, null);
             }
@@ -165,14 +168,14 @@ public class RegionsCommand extends BukkitCommand implements IHelpDescribed {
         
         ProtectedRegion region = null;
         if (params.getArgumentCount() == 0 && context.isPlayer()) {
-            RegionManager mgr = mod.getWorldGuard().getGlobalRegionManager().get(context.getPlayer().getWorld());
+            RegionManager mgr = getWorldGuard().getGlobalRegionManager().get(context.getPlayer().getWorld());
             ApplicableRegionSet set = mgr.getApplicableRegions(context.getPlayer().getLocation());
             if (set.size() > 0) {
                 region = set.iterator().next();
             }
         } else {
             int rpc = params.getArgumentCount() > 1 ? 1 : 0;
-            RegionManager mgr = mod.getWorldGuard().getGlobalRegionManager().get(w);
+            RegionManager mgr = getWorldGuard().getGlobalRegionManager().get(w);
             region = mgr.getRegion(params.getArgument(rpc));
             if (region == null && params.getArgument(rpc).equalsIgnoreCase("__global__")) {
                 region = new GlobalProtectedRegion(params.getArgument(rpc));
@@ -199,5 +202,9 @@ public class RegionsCommand extends BukkitCommand implements IHelpDescribed {
     
     private String L(String msg, Object... args) {
         return mod.getPlugin().getLocale().trans(msg, args);
+    }
+    
+    private WorldGuardPlugin getWorldGuard() {
+        return wg;
     }
 }

@@ -39,6 +39,15 @@ public class FeatureMetrics extends CoreModule<LimitedCreative> implements Liste
                         });
                     }
                 }
+                Graph depGraph = mcstats.createGraph("Dependencies");
+                for (final String dep : plugin.getDescription().getSoftDepend()) {
+                    depGraph.addPlotter(new MCStatsMetrics.Plotter(dep) {
+                        @Override
+                        public int getValue() {
+                            return plugin.getServer().getPluginManager().isPluginEnabled(dep) ? 1 : 0;
+                        }
+                    });
+                }
                 
                 mcstats.start();
             } catch (IOException e) {

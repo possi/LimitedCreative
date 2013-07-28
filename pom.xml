@@ -146,6 +146,7 @@
                 <param>MultiInv</param>
                 <param>Multiverse-Inventories</param>
                 <param>Vault</param>
+                <param>LogBlock</param>
               </softdepend>
               <custom>
                 <dev-url>http://dev.bukkit.org/server-mods/limited-creative/</dev-url>
@@ -162,6 +163,7 @@
               <registeredCommands>
                 <param>de.jaschastarke.minecraft.limitedcreative.MainCommand</param>
                 <param>de.jaschastarke.minecraft.limitedcreative.regions.RegionsCommand</param>
+                <param>de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStateCommand</param>
               </registeredCommands>
             </configuration>
           </execution>

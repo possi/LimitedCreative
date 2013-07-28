@@ -1,7 +1,9 @@
 package de.jaschastarke.minecraft.limitedcreative;
 
 import de.jaschastarke.bukkit.lib.CoreModule;
+import de.jaschastarke.bukkit.lib.commands.AliasHelpedCommand;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockListener;
+import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStateCommand;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStateConfig;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.DBQueries;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.DependencyListener;
@@ -15,6 +17,7 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
     private BlockStateConfig config;
     private FeatureBlockItemSpawn blockDrops;
     private DBQueries queries;
+    private BlockStateCommand command;
 
     public ModBlockStates(LimitedCreative plugin) {
         super(plugin);
@@ -38,6 +41,8 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
         listeners.addListener(new BlockListener(this));
         listeners.addListener(new PlayerListener(this));
         listeners.addListener(new DependencyListener(this));
+        
+        command = new BlockStateCommand(this);
     }
     @Override
     public void onEnable() {
@@ -57,6 +62,10 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
         } catch (Exception e) {
             getLog().warn(plugin.getLocale().trans("block_state.warning.worldedit_sessionfactory_failed", e.getMessage()));
         }
+        
+        
+        plugin.getCommandHandler().registerCommand(command);
+        plugin.getMainCommand().registerCommand(new AliasHelpedCommand<BlockStateCommand>(command, "blockstate", new String[]{"bs"}));
         
         getLog().info(plugin.getLocale().trans("basic.loaded.module"));
     }

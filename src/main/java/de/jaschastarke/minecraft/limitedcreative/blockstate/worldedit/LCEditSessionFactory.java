@@ -143,7 +143,7 @@ public class LCEditSessionFactory extends EditSessionFactory {
                 mod.getLog().debug("Replacing LogBlocks WorldEdit-SessionFactory");
             WorldEdit.getInstance().setEditSessionFactory(new LCEditSessionFactory(mod, EditSessionParent.LOGBLOCK));
         } else {
-            throw new Exception("WorldEdit-SessionFactory is hooked by an unknown another Plugin.");
+            throw new Exception("WorldEdit-SessionFactory is hooked by an unknown another Plugin (" + currentEditSessionFactory.getClass().getName() + ").");
         }
     }
     

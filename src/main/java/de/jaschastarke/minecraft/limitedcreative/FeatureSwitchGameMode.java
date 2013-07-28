@@ -25,8 +25,7 @@ import de.jaschastarke.bukkit.lib.commands.annotations.NeedsPermission;
 import de.jaschastarke.bukkit.lib.commands.annotations.Usages;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
 import de.jaschastarke.minecraft.lib.permissions.IPermission;
-import de.jaschastarke.minecraft.limitedcreative.regions.Flags;
-import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.ApplicableRegions;
+import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 
 public class FeatureSwitchGameMode extends CoreModule<LimitedCreative> {
     public FeatureSwitchGameMode(LimitedCreative plugin) {
@@ -103,20 +102,14 @@ public class FeatureSwitchGameMode extends CoreModule<LimitedCreative> {
             return true;
         }
         
-        protected GameMode getDefaultGameMode(World world) {
+        private GameMode getDefaultGameMode(World world) {
             return Hooks.DefaultWorldGameMode.get(world);
         }
 
         private boolean regionOptional(Player player, GameMode tgm) {
             ModRegions mod = plugin.getModule(ModRegions.class);
-            if (mod != null) {
-                ApplicableRegions rs = mod.getRegionManager().getRegionSet(player.getLocation());
-                if (rs.allows(Flags.GAMEMODE_OPTIONAL)) {
-                    if ((tgm == rs.getFlag(Flags.GAMEMODE, player)) || (tgm == this.getDefaultGameMode(player.getWorld())))
-                        return true;
-                }
-            }
-            return false;
+            return mod != null && mod.getModuleEntry().getState() == ModuleState.ENABLED
+                    && mod.getWorldGuardIntegration().isRegionOptional(player, tgm);
         }
 
         @IsCommand("survival")

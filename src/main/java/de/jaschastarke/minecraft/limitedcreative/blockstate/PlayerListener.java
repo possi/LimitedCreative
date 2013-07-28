@@ -23,11 +23,9 @@ public class PlayerListener implements Listener {
     
     @EventHandler(priority = EventPriority.HIGH)
     public void onInteract(PlayerInteractEvent event) {
-        if (event.isCancelled())
-            return;
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && mod.getPlugin().getPermManager().hasPermission(event.getPlayer(), BlockStatePermissions.TOOL)) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block b = event.getClickedBlock();
-            if (b != null && event.getPlayer().getItemInHand().getType().equals(mod.getConfig().getTool())) {
+            if (b != null && event.getPlayer().getItemInHand().getType().equals(mod.getConfig().getTool()) && mod.getPlugin().getPermManager().hasPermission(event.getPlayer(), BlockStatePermissions.TOOL)) {
                 try {
                     BlockState s = mod.getQueries().find(b.getLocation());
                     InGameFormatter f = new InGameFormatter(mod.getPlugin().getLang());

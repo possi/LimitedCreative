@@ -27,6 +27,7 @@ public class BlockState {
         SEED, // There is no way to determine this source, but lets be prepared for miracles ;)
         PLAYER,
         EDIT, // WorldEdit or MCEdit or such, we also can't determine that. But I keep believing in miracles
+        COMMAND, // Manual Databse-Change via. BlockState-Command
         UNKNOWN
     }
 
@@ -98,7 +99,7 @@ public class BlockState {
     }
 
     public void setSource(Source source) {
-        if (source != Source.PLAYER && source != Source.EDIT)
+        if (source != Source.PLAYER && source != Source.EDIT && source != Source.COMMAND)
             setPlayerName(null);
         this.source = source;
     }

@@ -40,4 +40,14 @@ public class BlockStatePermissions extends SimplePermissionContainerNode {
      * Grants ability to use the configured tool to get info about placed blocks.
      */
     public static final IPermission TOOL = new BasicPermission(PARENT, "tool", PermissionDefault.OP);
+    
+    /**
+     * Grants access to the blockstate admin command to modify the database.
+     */
+    public static final IPermission COMMAND = new BasicPermission(PARENT, "command", PermissionDefault.OP);
+    
+    /**
+     * Allows to get drops even if a block was created from a creative player or WorldEdit.
+     */
+    public static final IPermission BYPASS = new BasicPermission(PARENT, "bypass", PermissionDefault.FALSE);
 }

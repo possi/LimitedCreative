@@ -31,7 +31,7 @@ public class DBQueries {
         if (rs.next()) {
             BlockState bs = new BlockState();
             bs.setLocation(loc);
-            bs.setDate(rs.getDate("cdate"));
+            bs.setDate(rs.getTimestamp("cdate"));
             bs.setGameMode(getGameMode(rs));
             bs.setPlayerName(rs.getString("player"));
             bs.setSource(getSource(rs));
@@ -42,13 +42,16 @@ public class DBQueries {
 
     private PreparedStatement delete = null;
     public boolean delete(BlockState s) throws SQLException {
+        return delete(s.getLocation());
+    }
+    public boolean delete(Location loc) throws SQLException {
         if (delete == null) {
             delete = db.prepare("DELETE FROM lc_block_state WHERE x = ? AND y = ? AND z = ? AND world = ?");
         }
-        delete.setInt(1, s.getLocation().getBlockX());
-        delete.setInt(2, s.getLocation().getBlockY());
-        delete.setInt(3, s.getLocation().getBlockZ());
-        delete.setString(4, s.getLocation().getWorld().getUID().toString());
+        delete.setInt(1, loc.getBlockX());
+        delete.setInt(2, loc.getBlockY());
+        delete.setInt(3, loc.getBlockZ());
+        delete.setString(4, loc.getWorld().getUID().toString());
         return delete.executeUpdate() > 0;
     }
 
@@ -76,13 +79,49 @@ public class DBQueries {
         update.setString(8, s.getLocation().getWorld().getUID().toString());
         return update.executeUpdate() > 0;
     }
-    
+
+    private PreparedStatement move = null;
+    public boolean move(BlockState s, Location newLoc) throws SQLException {
+        boolean r = move(s.getLocation(), newLoc);
+        if (r)
+            s.setLocation(newLoc);
+        return r;
+    }
+
+    public boolean move(Location oldLoc, Location newLoc) throws SQLException {
+        if (move == null) {
+            move = db.prepare("UPDATE lc_block_state SET x = ?, y = ?, z = ? "+
+                        "WHERE x = ? AND y = ? AND z = ? AND world = ?");
+        }
+        
+        move.setInt(1, newLoc.getBlockX());
+        move.setInt(2, newLoc.getBlockY());
+        move.setInt(3, newLoc.getBlockZ());
+        move.setInt(4, oldLoc.getBlockX());
+        move.setInt(5, oldLoc.getBlockY());
+        move.setInt(6, oldLoc.getBlockZ());
+        move.setString(7, oldLoc.getWorld().getUID().toString());
+        
+        return move.executeUpdate() > 0;
+    }
+
+    /*private PreparedStatement replace = null;
+    public boolean replace(BlockState s) throws SQLException {
+        if (replace == null) {
+            replace = db.prepare("INSERT OR REPLACE INTO lc_block_state (x, y, z, world, gm, player, cdate, source)"+
+                            " VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        }
+        return this._executeInsert(replace, s);
+    }*/
     private PreparedStatement insert = null;
     public boolean insert(BlockState s) throws SQLException {
         if (insert == null) {
             insert = db.prepare("INSERT INTO lc_block_state (x, y, z, world, gm, player, cdate, source)"+
                             " VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         }
+        return this._executeInsert(insert, s);
+    }
+    private boolean _executeInsert(PreparedStatement insert, BlockState s) throws SQLException {
         insert.setInt(1, s.getLocation().getBlockX());
         insert.setInt(2, s.getLocation().getBlockY());
         insert.setInt(3, s.getLocation().getBlockZ());
@@ -150,7 +189,7 @@ public class DBQueries {
                             "source                    integer not null,"+
                             "primary key (x, y, z, world),"+
                             "constraint ck_lc_block_state_gm check (gm in (0,1,2)),"+
-                            "constraint ck_lc_block_state_source check (source in (0,1,2,3))"+
+                            "constraint ck_lc_block_state_source check (source in (0,1,2,3,4))"+
                         ")"
                     );
                     db.getLogger().info("Created SQLite-Table: lc_block_state");
@@ -167,7 +206,7 @@ public class DBQueries {
                             "gm                        ENUM('CREATIVE', 'SURVIVAL', 'ADVENTURE'),"+
                             "player                    VARCHAR(255),"+
                             "cdate                     TIMESTAMP NOT NULL,"+
-                            "source                    ENUM('SEED','PLAYER','EDIT','UNKNOWN') NOT NULL,"+
+                            "source                    ENUM('SEED','PLAYER','EDIT','COMMAND','UNKNOWN') NOT NULL,"+
                             "PRIMARY KEY (x, y, z, world)"+
                         ")"
                     );
@@ -177,5 +216,8 @@ public class DBQueries {
             default:
                 throw new RuntimeException("Currently only SQLite is supported.");
         }
+    }
+    public Database getDB() {
+        return db;
     }
 }
