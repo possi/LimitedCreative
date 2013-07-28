@@ -59,6 +59,8 @@ public class BlockListener extends Listener {
             // prevent any drops for survival players in creative regions
             if (player.getGameMode() != GameMode.CREATIVE && getRM().getRegionSet(block).getFlag(Flags.GAMEMODE) == GameMode.CREATIVE) {
                 mod.getBlockSpawn().block(block, player);
+                if (event instanceof BlockBreakEvent)
+                    ((BlockBreakEvent) event).setExpToDrop(0);
             }
         }
     }
