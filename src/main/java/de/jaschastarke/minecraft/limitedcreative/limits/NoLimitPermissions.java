@@ -20,6 +20,8 @@ package de.jaschastarke.minecraft.limitedcreative.limits;
 import java.util.Collection;
 
 import org.bukkit.block.Block;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.material.MaterialData;
 import org.bukkit.permissions.PermissionDefault;
 
@@ -50,7 +52,7 @@ public class NoLimitPermissions extends SimplePermissionContainerNode {
     public static final IPermission ALL = new ParentPermissionContainerNode(PARENT, "*", PermissionDefault.OP, PARENT);
 
     /**
-     * Allows bypassing the "do not open a chest"-limitation
+     * Allows bypassing the "do not open a chest" and "do not open inventory"-limitation
      */
     @IsChildPermission
     public static final IPermission CHEST = new BasicPermission(PARENT, "chest", PermissionDefault.FALSE);
@@ -107,7 +109,13 @@ public class NoLimitPermissions extends SimplePermissionContainerNode {
      */
     @IsChildPermission
     public static final IPermission STATS_POTION = new BasicPermission(PARENT, "potion", PermissionDefault.FALSE);
-    
+
+    public static IDynamicPermission INVENTORY(Inventory inv) {
+        return new InventoryPermission(CHEST, inv.getType());
+    }
+    public static IDynamicPermission INVENTORY(InventoryType invtype) {
+        return new InventoryPermission(CHEST, invtype);
+    }
     public static IDynamicPermission INTERACT(Block block) {
         return new MaterialPermission(BASE_INTERACT, new MaterialData(block.getType(), block.getData()));
     }
@@ -120,7 +128,20 @@ public class NoLimitPermissions extends SimplePermissionContainerNode {
     public static IDynamicPermission BREAK(Block block) {
         return new MaterialPermission(BASE_BREAK, new MaterialData(block.getType(), block.getData()));
     }
+
     
+    public static class InventoryPermission extends DynamicPermission {
+        private InventoryType it;
+        public InventoryPermission(IAbstractPermission parent, InventoryType t) {
+            super(parent);
+            it = t;
+        }
+
+        @Override
+        protected void buildPermissionsToCheck(Collection<IAbstractPermission> perms) {
+            perms.add(new BasicPermission(parent, it.toString()));
+        }
+    }
     public static class MaterialPermission extends DynamicPermission {
         private MaterialData md;
         public MaterialPermission(IAbstractPermission parent, MaterialData m) {

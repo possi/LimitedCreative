@@ -179,9 +179,6 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
      *  - LEVER
      *  - STONE_BUTTON
      *  - WOOD_BUTTON
-     *  - WORKBENCH
-     *  - ANVIL
-     *  - ENCHANTMENT_TABLE
      */
     @IsConfigurationNode(name = "interact", order = 600)
     public BlackList getBlockInteraction() {
@@ -193,9 +190,6 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
                 interactList.add(new BlackList.Blacklisted(Material.LEVER));
                 interactList.add(new BlackList.Blacklisted(Material.STONE_BUTTON));
                 interactList.add(new BlackList.Blacklisted(Material.WOOD_BUTTON));
-                interactList.add(new BlackList.Blacklisted(Material.WORKBENCH));
-                interactList.add(new BlackList.Blacklisted(Material.ANVIL));
-                interactList.add(new BlackList.Blacklisted(Material.ENCHANTMENT_TABLE));
             }
         }
         return interactList;
@@ -210,23 +204,14 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
      * if you're not sure). 
      * 
      * default:
-     *  - MINECART_CHEST
-     *  - MINECART_FURNACE
-     *  - MINECART_HOPPER
      *  - ITEM_FRAME
-     *  - VILLAGER
      */
     @IsConfigurationNode(name = "entityInteract", order = 650)
     public BlackListEntity getBlockEntityInteraction() {
         if (interactEntityList == null) {
             interactEntityList = new BlackListEntity(config.getList("entityInteract"));
             if (!config.contains("entityInteract")) {
-                interactEntityList.add(new BlackListEntity.Blacklisted(EntityType.MINECART_CHEST));
-                interactEntityList.add(new BlackListEntity.Blacklisted(EntityType.MINECART_FURNACE));
-                interactEntityList.add(new BlackListEntity.Blacklisted(EntityType.MINECART_HOPPER));
-                interactEntityList.add(new BlackListEntity.Blacklisted(EntityType.ITEM_FRAME));
                 interactEntityList.add(new BlackListEntity.Blacklisted(EntityType.VILLAGER));
-                interactEntityList.add(new BlackListEntity.Blacklisted(EntityType.HORSE));
             }
         }
         return interactEntityList;

@@ -34,6 +34,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
@@ -74,6 +75,18 @@ public class PlayerListener implements Listener {
             
             event.getItemDrop().remove();
             //event.setCancelled(true); // doesn't make much sense
+        }
+    }
+    
+    @EventHandler
+    public void onInventoryOpen(InventoryOpenEvent event) {
+        if (event.getPlayer() instanceof Player) {
+            if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
+                if (checkPermission((Player) event.getPlayer(), NoLimitPermissions.INVENTORY(event.getInventory())))
+                    return;
+                event.setCancelled(true);
+                ((Player) event.getPlayer()).sendMessage(mod.getPlugin().getLocale().trans("blocked.inventory"));
+            }
         }
     }
     
@@ -251,5 +264,8 @@ public class PlayerListener implements Listener {
     }
     private boolean checkPermission(PlayerEvent event, IDynamicPermission perm) {
         return mod.getPlugin().getPermManager().hasPermission(event.getPlayer(), perm);
+    }
+    private boolean checkPermission(Player player, IDynamicPermission perm) {
+        return mod.getPlugin().getPermManager().hasPermission(player, perm);
     }
 }

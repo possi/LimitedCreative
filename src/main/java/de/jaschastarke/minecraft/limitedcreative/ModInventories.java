@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.bukkit.GameMode;
-import org.bukkit.entity.Animals;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -86,9 +85,6 @@ public class ModInventories extends CoreModule<LimitedCreative> {
         if (plugin.getPermManager().hasPermission(player, InventoryPermissions.KEEP_INVENTORY))
             return;
         player.closeInventory();
-        if (player.getVehicle() != null && player.getVehicle() instanceof Animals) {
-            player.leaveVehicle();
-        }
         
         GameMode cgm = player.getGameMode();
         if (gm == GameMode.ADVENTURE && !config.getSeparateAdventure())
