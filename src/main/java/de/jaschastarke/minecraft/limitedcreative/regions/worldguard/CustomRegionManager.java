@@ -40,6 +40,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import de.jaschastarke.minecraft.limitedcreative.ModRegions;
+import de.jaschastarke.minecraft.limitedcreative.regions.WorldGuardIntegration;
 import de.jaschastarke.utils.StringUtil;
 
 public class CustomRegionManager {
@@ -153,7 +154,7 @@ public class CustomRegionManager {
     }
 
     private WorldGuardPlugin getWorldGuard() {
-        return ((WorldGuardPlugin) mod.getPlugin().getServer().getPluginManager().getPlugin("WorldGuard"));
+        return ((WorldGuardPlugin) mod.getPlugin().getServer().getPluginManager().getPlugin(WorldGuardIntegration.PLUGIN_NAME));
     }
     
     public GlobalRegionManager getWGGlobalManager() {

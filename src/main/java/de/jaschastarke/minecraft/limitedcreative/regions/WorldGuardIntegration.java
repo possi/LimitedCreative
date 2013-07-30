@@ -9,6 +9,7 @@ import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.ApplicableRe
 import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.FlagList;
 
 public class WorldGuardIntegration implements IWorldGuardIntegration {
+    public static final String PLUGIN_NAME = "WorldGuard";
     private ModRegions mod;
     
     public WorldGuardIntegration(ModRegions mod) {

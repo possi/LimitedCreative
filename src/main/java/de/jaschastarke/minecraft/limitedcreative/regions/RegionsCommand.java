@@ -47,7 +47,7 @@ public class RegionsCommand extends BukkitCommand implements IHelpDescribed {
     public RegionsCommand(ModRegions mod) {
         this();
         this.mod = mod;
-        this.wg = (WorldGuardPlugin) mod.getPlugin().getServer().getPluginManager().getPlugin("WorldGaurd");
+        this.wg = (WorldGuardPlugin) mod.getPlugin().getServer().getPluginManager().getPlugin(WorldGuardIntegration.PLUGIN_NAME);
     }
     
     @Override
