@@ -25,11 +25,16 @@ public class RegionListener extends Listener {
         super(mod);
     }
     
+    private boolean checkFloatingToHigh(int max, Location loc) {
+        if (max < 0)
+            return false;
+        return getFloatingHeight(loc) > max;
+    }
     public int getFloatingHeight(Player player) {
         return getFloatingHeight(player.getLocation());
     }
     public int getFloatingHeight(Location loc) {
-        Block b = loc.getBlock();
+        Block b = loc.getBlock().getRelative(BlockFace.DOWN);
         int steps = 0;
         while (b.getType() == Material.AIR) {
             steps++;
@@ -39,7 +44,7 @@ public class RegionListener extends Listener {
     }
     
     private boolean checkSwitchFlight(PlayerMoveEvent event) {
-        if (event != null && event.getPlayer().getGameMode() == GameMode.CREATIVE && getFloatingHeight(event.getTo()) > mod.getConfig().getMaximumFloatingHeight()) {
+        if (event != null && event.getPlayer().getGameMode() == GameMode.CREATIVE && checkFloatingToHigh(mod.getConfig().getMaxFallingHeight(), event.getTo())) {
             // but not if he is too high
             Utils.sendTimeoutMessage(event.getPlayer(), L("blocked.survival_flying"));
             

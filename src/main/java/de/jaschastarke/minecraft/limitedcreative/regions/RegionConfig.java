@@ -113,10 +113,12 @@ public class RegionConfig extends Configuration implements IConfigurationSubGrou
      * When the player is more than this count of blocks above the ground, he is prevented from changing the region that 
      * sets him survival which would cause him falling and hurting.
      * 
+     * Set to -1 to disable
+     * 
      * default: 3
      */
     @IsConfigurationNode(order = 500)
-    public int getMaximumFloatingHeight() {
+    public int getMaxFallingHeight() {
         return config.getInt("maxFallingHeight", 3);
     }
     
