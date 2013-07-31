@@ -2,6 +2,7 @@ package de.jaschastarke.minecraft.limitedcreative.regions;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -10,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.material.Button;
@@ -23,11 +25,8 @@ public class PlayerListener extends Listener {
         super(mod);
     }
     
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (isCancelled(event))
-            return;
-        
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
             return;
         
@@ -53,6 +52,26 @@ public class PlayerListener extends Listener {
                     event.getPlayer().sendMessage(L("blocked.inside_interact"));
                     event.setCancelled(true);
                 }
+            }
+        }
+    }
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+        PlayerMeta pmeta = new PlayerMeta(event.getPlayer());
+        Location loc = event.getRightClicked().getLocation();
+        boolean diffrent_region = getRM().isDiffrentRegion(event.getPlayer(), loc);
+        
+        if (pmeta.isActiveRegionGameMode() && diffrent_region) {
+            // do not break outside of "gamemod-change-region" when in the region
+            if (getRM().getRegionSet(loc).getFlag(Flags.GAMEMODE, event.getPlayer()) != pmeta.getActiveRegionGameMode()) {
+                event.getPlayer().sendMessage(L("blocked.outside_interact_entity"));
+                event.setCancelled(true);
+            }
+        } else if (diffrent_region) {
+            // do not break inside of "survial-region in creative world" when outside
+            if (getRM().getRegionSet(loc).getFlag(Flags.GAMEMODE) != null) {
+                event.getPlayer().sendMessage(L("blocked.inside_interact_entity"));
+                event.setCancelled(true);
             }
         }
     }
