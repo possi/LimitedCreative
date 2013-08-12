@@ -25,6 +25,7 @@ public class RegionConfig extends Configuration implements IConfigurationSubGrou
     protected ModuleEntry<IModule> entry;
     
     public RegionConfig(ModRegions modRegions, ModuleEntry<IModule> modEntry) {
+        super(modRegions.getPlugin());
         mod = modRegions;
         entry = modEntry;
     }

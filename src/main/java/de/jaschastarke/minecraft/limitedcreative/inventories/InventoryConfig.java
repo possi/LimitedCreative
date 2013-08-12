@@ -20,11 +20,11 @@ import de.jaschastarke.modularize.ModuleEntry.ModuleState;
  */
 @ArchiveDocComments
 public class InventoryConfig extends Configuration implements IConfigurationSubGroup {
-
     protected ModInventories mod;
     protected ModuleEntry<IModule> entry;
     
     public InventoryConfig(ModInventories modInventories, ModuleEntry<IModule> modEntry) {
+        super(modInventories.getPlugin());
         mod = modInventories;
         entry = modEntry;
     }

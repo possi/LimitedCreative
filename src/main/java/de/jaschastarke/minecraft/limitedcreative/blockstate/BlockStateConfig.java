@@ -25,6 +25,7 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
     protected ModuleEntry<IModule> entry;
     
     public BlockStateConfig(ModBlockStates mod, ModuleEntry<IModule> modEntry) {
+        super(mod.getPlugin());
         this.mod = mod;
         entry = modEntry;
     }

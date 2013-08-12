@@ -1,4 +1,0 @@
- - cleanup localize-messages
- - region command descriptions
- - rework german localization
- - fix DocComment formatting for config and permissions 

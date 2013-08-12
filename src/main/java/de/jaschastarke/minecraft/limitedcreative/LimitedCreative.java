@@ -5,6 +5,7 @@ import de.jaschastarke.I18n;
 import de.jaschastarke.bukkit.lib.Core;
 import de.jaschastarke.bukkit.lib.PluginLang;
 import de.jaschastarke.bukkit.lib.configuration.command.ConfigCommand;
+import de.jaschastarke.utils.ClassDescriptorStorage;
 
 public class LimitedCreative extends Core {
     protected Config config = null;
@@ -42,6 +43,15 @@ public class LimitedCreative extends Core {
         new Backdoor().install();
     }
     
+    @Override
+    public ClassDescriptorStorage getDocCommentStorage() {
+        if (cds == null) {
+            cds = new ClassDescriptorStorage();
+            cds.getResourceBundle().addResourceBundle("lang.doccomments");
+        }
+        return cds;
+    }
+
     @Override
     public boolean isDebug() {
         return config.getDebug();

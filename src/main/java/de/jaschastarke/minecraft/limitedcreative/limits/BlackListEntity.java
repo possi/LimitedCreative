@@ -100,10 +100,11 @@ public class BlackListEntity extends ArrayList<BlackListEntity.Blacklisted> impl
     }
 
     @Override // ConfigurableList, not List<E>
-    public void add(String e) throws InvalidValueException {
+    public boolean add(String e) throws InvalidValueException {
         if (!contains(e)) {
-            add(new Blacklisted(e));
+            return add(new Blacklisted(e));
         }
+        return false;
     }
 
     @Override // ConfigurableList, not List<E>

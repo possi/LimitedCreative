@@ -12,11 +12,11 @@ public class CmdBlockList extends ArrayList<ICmdBlockEntry> implements Configura
     private static final long serialVersionUID = -125544131527849084L;
 
     @Override
-    public void add(String cmd) throws InvalidValueException {
+    public boolean add(String cmd) throws InvalidValueException {
         if (cmd.startsWith("^")) {
-            add(new RegexpBlockEntry(cmd));
+            return add(new RegexpBlockEntry(cmd));
         } else {
-            add(new StringBlockEntry(cmd));
+            return add(new StringBlockEntry(cmd));
         }
     }
 

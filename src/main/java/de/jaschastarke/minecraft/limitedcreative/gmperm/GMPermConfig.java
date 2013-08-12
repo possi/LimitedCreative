@@ -26,6 +26,7 @@ public class GMPermConfig extends Configuration implements IConfigurationSubGrou
     protected ModuleEntry<IModule> entry;
     
     public GMPermConfig(ModGameModePerm modGameModePerm, ModuleEntry<IModule> modEntry) {
+        super(modGameModePerm.getPlugin());
         mod = modGameModePerm;
         entry = modEntry;
     }

@@ -8,7 +8,7 @@
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <plib.version>1.0-SNAPSHOT</plib.version>
+    <plib.version>1.1-SNAPSHOT</plib.version>
   </properties>
   
   <scm>
@@ -72,7 +72,7 @@
         <!-- http://dl.bukkit.org/ -->
         <groupId>org.bukkit</groupId>
         <artifactId>bukkit</artifactId>
-        <version>1.6.2-R0.1-SNAPSHOT</version>
+        <version>1.6.2-R0.1</version>
     </dependency>
     <dependency>
         <!-- http://dev.bukkit.org/server-mods/worldguard/ -->

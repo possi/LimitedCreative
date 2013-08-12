@@ -23,12 +23,12 @@ import de.jaschastarke.modularize.ModuleEntry.ModuleState;
  */
 @ArchiveDocComments
 public class LimitConfig extends Configuration implements IConfigurationSubGroup {
-
     protected ModCreativeLimits mod;
     protected ModuleEntry<IModule> entry;
     
-    public LimitConfig(ModCreativeLimits modInventories, ModuleEntry<IModule> modEntry) {
-        mod = modInventories;
+    public LimitConfig(ModCreativeLimits modCreativeLimits, ModuleEntry<IModule> modEntry) {
+        super(modCreativeLimits.getPlugin());
+        mod = modCreativeLimits;
         entry = modEntry;
     }
     

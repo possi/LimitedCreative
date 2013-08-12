@@ -24,6 +24,7 @@ public class CmdBlockerConfig extends Configuration implements IConfigurationSub
     protected ModuleEntry<IModule> entry;
     
     public CmdBlockerConfig(ModCmdBlocker modCmdBlocker, ModuleEntry<IModule> modEntry) {
+        super(modCmdBlocker.getPlugin());
         mod = modCmdBlocker;
         entry = modEntry;
     }

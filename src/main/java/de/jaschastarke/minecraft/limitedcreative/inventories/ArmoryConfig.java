@@ -26,6 +26,7 @@ import de.jaschastarke.minecraft.limitedcreative.ModInventories;
 public class ArmoryConfig extends Configuration implements IConfigurationSubGroup {
     protected ModInventories mod;
     public ArmoryConfig(ModInventories modInventories) {
+        super(modInventories.getPlugin());
         mod = modInventories;
     }
 

@@ -7,6 +7,7 @@ import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStateCommand;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStateConfig;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.DBQueries;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.DependencyListener;
+import de.jaschastarke.minecraft.limitedcreative.blockstate.HangingListener;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.PlayerListener;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.worldedit.LCEditSessionFactory;
 import de.jaschastarke.modularize.IModule;
@@ -39,6 +40,7 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
         plugin.getPluginConfig().registerSection(config);
         
         listeners.addListener(new BlockListener(this));
+        listeners.addListener(new HangingListener(this));
         listeners.addListener(new PlayerListener(this));
         listeners.addListener(new DependencyListener(this));
         
@@ -62,7 +64,6 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
         } catch (Exception e) {
             getLog().warn(plugin.getLocale().trans("block_state.warning.worldedit_sessionfactory_failed", e.getMessage()));
         }
-        
         
         plugin.getCommandHandler().registerCommand(command);
         plugin.getMainCommand().registerCommand(new AliasHelpedCommand<BlockStateCommand>(command, "blockstate", new String[]{"bs"}));

@@ -27,18 +27,30 @@ public class FeatureBlockItemSpawn extends CoreModule<LimitedCreative> implement
     
     public boolean isBlocked(Location l, Material type) {
         cleanup();
+        if (isDebug())
+            getLog().debug("Checking ItemBlocked: " + l.toString() + " - " + type.toString());
         for (BlockItemDrop block : list) {
-            if (block.getLocation().equals(l) && (block.getType() == null || block.getType().equals(type)))
+            if (isDebug())
+                getLog().debug("  - " + block.toString());
+            if (block.getLocation().equals(l) && (block.getType() == null || block.getType().equals(type))) {
+                if (isDebug())
+                    getLog().debug("  blocked!");
                 return true;
+            }
         }
+        if (isDebug());
+            getLog().debug("  allowed");
         return false;
     }
     private void cleanup() {
         Iterator<BlockItemDrop> i = list.iterator();
         while (i.hasNext()) {
             BlockItemDrop block = i.next();
-            if (block.getTimestamp() < System.currentTimeMillis() - TIME_OFFSET)
+            if (block.getTimestamp() < System.currentTimeMillis() - TIME_OFFSET) {
+                if (isDebug())
+                    getLog().debug("Removing outdated BlokItemDrop: " + block.toString());
                 i.remove();
+            }
         }
     }
     
@@ -60,6 +72,9 @@ public class FeatureBlockItemSpawn extends CoreModule<LimitedCreative> implement
         public long getTimestamp() {
             return timestamp;
         }
+        public String toString() {
+            return Long.toString(timestamp) + ": " + l.toString() + (type != null ? " - " + type.toString() : "");
+        }
     }
     
     public void block(Block block, Player player) {
@@ -75,6 +90,9 @@ public class FeatureBlockItemSpawn extends CoreModule<LimitedCreative> implement
 
     public void block(Block block) {
         block(block, null);
+    }
+    public void block(Location l) {
+        list.add(new BlockItemDrop(l, null));
     }
     public void block(Location l, Material type) {
         list.add(new BlockItemDrop(l, type));
