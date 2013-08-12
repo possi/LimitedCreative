@@ -21,6 +21,7 @@ import de.jaschastarke.bukkit.lib.commands.IHelpDescribed;
 import de.jaschastarke.bukkit.lib.commands.MissingPermissionCommandException;
 import de.jaschastarke.bukkit.lib.commands.annotations.IsCommand;
 import de.jaschastarke.bukkit.lib.commands.annotations.Usages;
+import de.jaschastarke.maven.ArchiveDocComments;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
 import de.jaschastarke.minecraft.limitedcreative.ModBlockStates;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockState.Source;
@@ -30,6 +31,7 @@ import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockState.Source;
  * @usage /<command> - displays Regions-Command-Help
  * @permission limitedcreative.blockstate.command
  */
+@ArchiveDocComments
 public class BlockStateCommand extends BukkitCommand implements IHelpDescribed {
     private ModBlockStates mod;
     private HelpCommand help;
