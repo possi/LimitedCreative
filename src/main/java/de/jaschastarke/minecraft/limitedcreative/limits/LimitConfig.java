@@ -179,6 +179,7 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
      *  - LEVER
      *  - STONE_BUTTON
      *  - WOOD_BUTTON
+     *  - JUKEBOX
      */
     @IsConfigurationNode(name = "interact", order = 600)
     public BlackList getBlockInteraction() {
@@ -190,6 +191,7 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
                 interactList.add(new BlackList.Blacklisted(Material.LEVER));
                 interactList.add(new BlackList.Blacklisted(Material.STONE_BUTTON));
                 interactList.add(new BlackList.Blacklisted(Material.WOOD_BUTTON));
+                interactList.add(new BlackList.Blacklisted(Material.JUKEBOX));
             }
         }
         return interactList;
