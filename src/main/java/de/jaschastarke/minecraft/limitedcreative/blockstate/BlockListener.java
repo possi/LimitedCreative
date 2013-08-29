@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -15,49 +16,74 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import de.jaschastarke.minecraft.limitedcreative.ModBlockStates;
-import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockState.Source;
 
 public class BlockListener implements Listener {
     private ModBlockStates mod;
     public BlockListener(ModBlockStates mod) {
         this.mod = mod;
     }
-
+    
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         try {
-            BlockState s = mod.getQueries().find(event.getBlock().getLocation());
+            BlockState s = mod.getModel().getState(event.getBlock());
             if (s != null) {
                 if (mod.isDebug())
                     mod.getLog().debug("Breaking bad, err.. block: " + s.toString());
                 
-                if ((s.getGameMode() == GameMode.CREATIVE || s.getSource() == Source.EDIT) && event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+                if (s.isRestricted() && event.getPlayer().getGameMode() != GameMode.CREATIVE) {
                     if (mod.isDebug())
                         mod.getLog().debug("... was placed by creative. Drop prevented");
                     mod.getBlockSpawn().block(event.getBlock(), event.getPlayer());
                     event.setExpToDrop(0);
                 }
                 
-                mod.getQueries().delete(s);
+                mod.getModel().removeState(s);
             }
         } catch (SQLException e) {
             mod.getLog().warn("DB-Error while onBlockBreak: "+e.getMessage());
             event.setCancelled(true);
         }
     }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onBlocksBreakByExplosion(EntityExplodeEvent event) {
+        try {
+            Map<Block, BlockState> states = mod.getModel().getStates(event.blockList());
+            for (Block block : event.blockList()) {
+                BlockState s = states.get(block);
+                if (s != null) {
+                    if (mod.isDebug())
+                        mod.getLog().debug("Breaking bad, err.. block: " + s.toString());
+                    
+                    if (s.isRestricted()) {
+                        if (mod.isDebug())
+                            mod.getLog().debug("... was placed by creative. Drop prevented");
+                        mod.getBlockSpawn().block(block);
+                    }
+                    
+                    mod.getModel().removeState(s);
+                }
+            }
+        } catch (SQLException e) {
+            mod.getLog().warn("DB-Error while onBlockBreakByExplosion: "+e.getMessage());
+            event.setCancelled(true);
+        }
+    }
+    
+    
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
         try {
-            BlockState s = mod.getQueries().find(event.getBlock().getLocation());
-            boolean update = false;
+            BlockState s = mod.getModel().getState(event.getBlock());
             if (s != null) {
                 // This shouldn't happen
                 if (mod.isDebug())
                     mod.getLog().debug("Replacing current BlockState: " + s.toString());
-                update = true;
             } else {
                 s = new BlockState();
                 s.setLocation(event.getBlock().getLocation());
@@ -67,10 +93,7 @@ public class BlockListener implements Listener {
             if (mod.isDebug())
                 mod.getLog().debug("Saving BlockState: " + s.toString());
             
-            if (update)
-                mod.getQueries().update(s);
-            else
-                mod.getQueries().insert(s);
+            mod.getModel().setState(s);
         } catch (SQLException e) {
             mod.getLog().warn("DB-Error while onBlockPlace: "+e.getMessage());
             event.setCancelled(true);

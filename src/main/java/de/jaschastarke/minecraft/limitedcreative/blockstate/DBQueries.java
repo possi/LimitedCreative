@@ -4,22 +4,30 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.World;
 
 import de.jaschastarke.database.Type;
 import de.jaschastarke.database.db.Database;
+import de.jaschastarke.minecraft.limitedcreative.ModBlockStates;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockState.Source;
 
 public class DBQueries {
     private Database db;
-    public DBQueries(Database db) {
+    private ModBlockStates mod;
+    public DBQueries(ModBlockStates mod, Database db) {
+        this.mod = mod;
         this.db = db;
     }
     
     private PreparedStatement find = null;
     public BlockState find(Location loc) throws SQLException {
+        if (mod.isDebug())
+            mod.getLog().debug("DBQuery: find: " + loc.toString());
         if (find == null) {
             find = db.prepare("SELECT * FROM lc_block_state WHERE x = ? AND y = ? AND z = ? AND world = ?");
         }
@@ -39,12 +47,42 @@ public class DBQueries {
         }
         return null;
     }
+    
+    private PreparedStatement findall = null;
+    public List<BlockState> findAllIn(Cuboid c) throws SQLException {
+        if (mod.isDebug())
+            mod.getLog().debug("DBQuery: findAllIn: " + c.toString());
+        List<BlockState> blocks = new ArrayList<BlockState>();
+        if (findall == null) {
+            findall = db.prepare("SELECT * FROM lc_block_state WHERE x >= ? AND x <= ? AND y >= ? AND y <= ? AND z >= ? AND z <= ? AND world = ?");
+        }
+        findall.setInt(1, c.getMinX());
+        findall.setInt(2, c.getMaxX());
+        findall.setInt(3, c.getMinY());
+        findall.setInt(4, c.getMaxY());
+        findall.setInt(5, c.getMinZ());
+        findall.setInt(6, c.getMaxZ());
+        findall.setString(7, c.getWorld().getUID().toString());
+        ResultSet rs = findall.executeQuery();
+        while (rs.next()) {
+            BlockState bs = new BlockState();
+            bs.setLocation(new Location(c.getWorld(), rs.getInt("x"), rs.getInt("y"), rs.getInt("z")));
+            bs.setDate(rs.getTimestamp("cdate"));
+            bs.setGameMode(getGameMode(rs));
+            bs.setPlayerName(rs.getString("player"));
+            bs.setSource(getSource(rs));
+            blocks.add(bs);
+        }
+        return blocks;
+    }
 
     private PreparedStatement delete = null;
     public boolean delete(BlockState s) throws SQLException {
         return delete(s.getLocation());
     }
     public boolean delete(Location loc) throws SQLException {
+        if (mod.isDebug())
+            mod.getLog().debug("DBQuery: delete: " + loc.toString());
         if (delete == null) {
             delete = db.prepare("DELETE FROM lc_block_state WHERE x = ? AND y = ? AND z = ? AND world = ?");
         }
@@ -57,6 +95,8 @@ public class DBQueries {
 
     private PreparedStatement update = null;
     public boolean update(BlockState s) throws SQLException {
+        if (mod.isDebug())
+            mod.getLog().debug("DBQuery: update: " + s.toString());
         if (update == null) {
             update = db.prepare("UPDATE lc_block_state SET gm = ?, player = ?, cdate = ?, source = ?"+
                         "WHERE x = ? AND y = ? AND z = ? AND world = ? ");
@@ -89,6 +129,8 @@ public class DBQueries {
     }
 
     public boolean move(Location oldLoc, Location newLoc) throws SQLException {
+        if (mod.isDebug())
+            mod.getLog().debug("DBQuery: move: " + oldLoc.toString() + ", " + newLoc.toString());
         if (move == null) {
             move = db.prepare("UPDATE lc_block_state SET x = ?, y = ?, z = ? "+
                         "WHERE x = ? AND y = ? AND z = ? AND world = ?");
@@ -115,6 +157,8 @@ public class DBQueries {
     }*/
     private PreparedStatement insert = null;
     public boolean insert(BlockState s) throws SQLException {
+        if (mod.isDebug())
+            mod.getLog().debug("DBQuery: insert: " + s.toString());
         if (insert == null) {
             insert = db.prepare("INSERT INTO lc_block_state (x, y, z, world, gm, player, cdate, source)"+
                             " VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
@@ -177,6 +221,8 @@ public class DBQueries {
         switch (db.getType()) {
             case SQLite:
                 if (!db.getDDL().tableExists("lc_block_state")) {
+                    if (mod.isDebug())
+                        mod.getLog().debug("DBQuery: initTable SQLite: lc_block_state");
                     db.execute(
                         "CREATE TABLE lc_block_state ("+
                             "x                         integer,"+
@@ -197,6 +243,8 @@ public class DBQueries {
                 break;
             case MySQL:
                 if (!db.getDDL().tableExists("lc_block_state")) {
+                    if (mod.isDebug())
+                        mod.getLog().debug("DBQuery: initTable MySQL: lc_block_state");
                     db.execute(
                         "CREATE TABLE IF NOT EXISTS lc_block_state ("+
                             "x                         INT NOT NULL,"+
@@ -219,5 +267,61 @@ public class DBQueries {
     }
     public Database getDB() {
         return db;
+    }
+    
+    public static class Cuboid {
+        private World w = null;
+        private int minx, miny, minz;
+        private int maxx, maxy, maxz;
+        public void add(Location loc) {
+            if (w == null) {
+                w = loc.getWorld();
+                minx = maxx = loc.getBlockX();
+                miny = maxy = loc.getBlockY();
+                minz = maxz = loc.getBlockZ();
+            } else {
+                if (w != loc.getWorld())
+                    throw new IllegalArgumentException("Point is from a different world");
+                if (minx > loc.getBlockX())
+                    minx = loc.getBlockX();
+                if (maxx < loc.getBlockX())
+                    maxx = loc.getBlockX();
+                if (miny > loc.getBlockY())
+                    miny = loc.getBlockY();
+                if (maxy < loc.getBlockY())
+                    maxy = loc.getBlockY();
+                if (minz > loc.getBlockZ())
+                    minz = loc.getBlockZ();
+                if (maxz < loc.getBlockZ())
+                    maxz = loc.getBlockZ();
+            }
+        }
+        public int getMinX() {
+            return minx;
+        }
+        public int getMinY() {
+            return miny;
+        }
+        public int getMinZ() {
+            return minz;
+        }
+        public int getMaxX() {
+            return maxx;
+        }
+        public int getMaxY() {
+            return maxy;
+        }
+        public int getMaxZ() {
+            return maxz;
+        }
+        public World getWorld() {
+            return w;
+        }
+        public boolean isEmpty() {
+            return w == null;
+        }
+        public String toString() {
+            return "Cuboid{world="+w.getName()+", min_x="+minx+", max_x="+maxx+", min_y="+miny+", max_y="+maxy+", min_z="+minz+", max_z="+maxz+"}";
+        }
     }
 }

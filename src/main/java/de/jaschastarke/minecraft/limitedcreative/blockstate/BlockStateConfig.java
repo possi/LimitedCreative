@@ -104,6 +104,19 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
         return Material.WOOD_PICKAXE;
     }
     
+    /**
+     * BlockStateLogSurvival
+     * 
+     * Log all Block-Places to the database. Disable to make the database more slim by not adding blocks placed in
+     * survival-mode.
+     * 
+     * default: true
+     */
+    @IsConfigurationNode(order = 100)
+    public boolean getLogSurvival() {
+        return config.getBoolean("logSurvival", true);
+    }
+    
     protected void setTool(Object val) throws InvalidValueException {
         String v = (String) val;
         Material m = null;

@@ -25,6 +25,7 @@ import de.jaschastarke.maven.ArchiveDocComments;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
 import de.jaschastarke.minecraft.limitedcreative.ModBlockStates;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockState.Source;
+import de.jaschastarke.minecraft.limitedcreative.blockstate.DBQueries.Cuboid;
 
 /**
  * LimitedCreative-BlockState-Command: modify blockstate database to prevent drops of selected blocks (requires WorldEdit)
@@ -132,6 +133,12 @@ public class BlockStateCommand extends BukkitCommand implements IHelpDescribed {
                     q.getDB().startTransaction();
                     int count = 0;
                     World w = selection.getWorld();
+                    
+                    Cuboid c = new Cuboid();
+                    c.add(min);
+                    c.add(max);
+                    mod.getModel().cacheStates(c);
+                    
                     BlockState seed = new BlockState();
                     seed.setPlayer(context.getPlayer());
                     seed.setGameMode(tgm);
@@ -143,9 +150,7 @@ public class BlockStateCommand extends BukkitCommand implements IHelpDescribed {
                                 Location loc = new Location(w, x, y, z);
                                 if (w.getBlockAt(loc).getType() != Material.AIR && selection.contains(loc)) {
                                     seed.setLocation(loc);
-                                    q.delete(loc);
-                                    q.insert(seed);
-                                    //q.replace(seed);
+                                    mod.getModel().setState(new BlockState(seed));
                                     count++;
                                 }
                             }

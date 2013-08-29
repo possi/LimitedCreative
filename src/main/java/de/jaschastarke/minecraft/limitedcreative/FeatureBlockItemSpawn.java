@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import de.jaschastarke.bukkit.lib.CoreModule;
 
@@ -21,12 +22,12 @@ public class FeatureBlockItemSpawn extends CoreModule<LimitedCreative> implement
     public FeatureBlockItemSpawn(LimitedCreative plugin) {
         super(plugin);
     }
-    public final static long TIME_OFFSET = 250;
+    private CleanUp cleanup = new CleanUp();
+    public final static long TICK_OFFSET = 1;
     
     private List<BlockItemDrop> list = new ArrayList<BlockItemDrop>();
     
     public boolean isBlocked(Location l, Material type) {
-        cleanup();
         if (isDebug())
             getLog().debug("Checking ItemBlocked: " + l.toString() + " - " + type.toString());
         for (BlockItemDrop block : list) {
@@ -38,19 +39,15 @@ public class FeatureBlockItemSpawn extends CoreModule<LimitedCreative> implement
                 return true;
             }
         }
-        if (isDebug());
+        if (isDebug())
             getLog().debug("  allowed");
         return false;
     }
-    private void cleanup() {
-        Iterator<BlockItemDrop> i = list.iterator();
-        while (i.hasNext()) {
-            BlockItemDrop block = i.next();
-            if (block.getTimestamp() < System.currentTimeMillis() - TIME_OFFSET) {
-                if (isDebug())
-                    getLog().debug("Removing outdated BlokItemDrop: " + block.toString());
-                i.remove();
-            }
+    
+    private void scheduleCleanUp() {
+        if (cleanup.maxTime == 0) { // if not scheduled yet
+            cleanup.maxTime = System.currentTimeMillis();
+            plugin.getServer().getScheduler().runTaskLater(plugin, cleanup, TICK_OFFSET);
         }
     }
     
@@ -89,13 +86,15 @@ public class FeatureBlockItemSpawn extends CoreModule<LimitedCreative> implement
     }
 
     public void block(Block block) {
-        block(block, null);
+        block(block.getLocation());
     }
     public void block(Location l) {
         list.add(new BlockItemDrop(l, null));
+        scheduleCleanUp();
     }
     public void block(Location l, Material type) {
         list.add(new BlockItemDrop(l, type));
+        scheduleCleanUp();
     }
     
     @EventHandler
@@ -106,6 +105,33 @@ public class FeatureBlockItemSpawn extends CoreModule<LimitedCreative> implement
             if (this.isBlocked(event.getLocation().getBlock().getLocation(), ((Item) event.getEntity()).getItemStack().getType())) {
                 event.setCancelled(true);
             }
+        }
+    }
+    
+    /**
+     * Don't default Plugin-debug to this mod. Because it is too spammy.
+     * /
+    public boolean isDebug() {
+        return debug;
+    }*/
+    
+    private class CleanUp extends BukkitRunnable {
+        public long maxTime = 0;
+        @Override
+        public void run() {
+            Iterator<BlockItemDrop> i = list.iterator();
+            while (i.hasNext()) {
+                BlockItemDrop block = i.next();
+                if (block.getTimestamp() <= maxTime) {
+                    if (isDebug())
+                        getLog().debug("Removing outdated BlokItemDrop: " + block.toString());
+                    i.remove();
+                }
+            }
+            
+            maxTime = 0;
+            if (list.size() > 0)
+                scheduleCleanUp();
         }
     }
 }

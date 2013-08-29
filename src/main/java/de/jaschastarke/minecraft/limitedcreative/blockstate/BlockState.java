@@ -46,7 +46,16 @@ public class BlockState {
     @NotNull
     private Source source = Source.UNKNOWN;
 
-    
+    public BlockState() {
+    }
+    public BlockState(BlockState copy) {
+        this.location = copy.location;
+        this.gameMode = copy.gameMode;
+        this.playerName = copy.playerName;
+        this.date = copy.date;
+        this.source = copy.source;
+    }
+
     public Location getLocation() {
         return location;
     }
@@ -102,6 +111,10 @@ public class BlockState {
         if (source != Source.PLAYER && source != Source.EDIT && source != Source.COMMAND)
             setPlayerName(null);
         this.source = source;
+    }
+    
+    public boolean isRestricted() {
+        return this.getGameMode() == GameMode.CREATIVE || this.getSource() == Source.EDIT;
     }
 
     @Override

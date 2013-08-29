@@ -26,7 +26,7 @@ public class HangingListener implements Listener {
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
         if (event.getRightClicked() instanceof ItemFrame) {
             try {
-                BlockState s = mod.getQueries().find(event.getRightClicked().getLocation());
+                BlockState s = mod.getModel().getState(event.getRightClicked().getLocation().getBlock());
                 if (s != null) {
                     if (mod.isDebug())
                         mod.getLog().debug("Modifying hanging: " + s.toString());
@@ -39,7 +39,7 @@ public class HangingListener implements Listener {
                     } else {
                         s.setPlayer(event.getPlayer());
                         s.setDate(new Date());
-                        mod.getQueries().update(s);
+                        mod.getModel().setState(s);
                     }
                 } else {
                     s = new BlockState();
@@ -50,7 +50,7 @@ public class HangingListener implements Listener {
                     if (mod.isDebug())
                         mod.getLog().debug("Saving BlockState: " + s.toString());
                     
-                    mod.getQueries().insert(s);
+                    mod.getModel().setState(s);
                 }
             } catch (SQLException e) {
                 mod.getLog().warn("DB-Error while onHangingInteract: "+e.getMessage());
@@ -63,7 +63,7 @@ public class HangingListener implements Listener {
     public void onHangingBreak(HangingBreakEvent event) {
         if (event.getEntity() instanceof ItemFrame) {
             try {
-                BlockState s = mod.getQueries().find(event.getEntity().getLocation());
+                BlockState s = mod.getModel().getState(event.getEntity().getLocation().getBlock());
                 if (s != null) {
                     if (mod.isDebug())
                         mod.getLog().debug("Breaking hanging: " + s.toString());
@@ -76,7 +76,7 @@ public class HangingListener implements Listener {
                         mod.getBlockSpawn().block(event.getEntity().getLocation().getBlock().getLocation(), ((ItemFrame) event.getEntity()).getItem().getType());
                     }
                     
-                    mod.getQueries().delete(s);
+                    mod.getModel().removeState(s);
                 }
             } catch (SQLException e) {
                 mod.getLog().warn("DB-Error while onHangingBreak: "+e.getMessage());
@@ -89,13 +89,11 @@ public class HangingListener implements Listener {
     public void onHangingPlace(HangingPlaceEvent event) {
         if (event.getEntity() instanceof ItemFrame) {
             try {
-                BlockState s = mod.getQueries().find(event.getEntity().getLocation());
-                boolean update = false;
+                BlockState s = mod.getModel().getState(event.getEntity().getLocation().getBlock());
                 if (s != null) {
                     // This shouldn't happen
                     if (mod.isDebug())
                         mod.getLog().debug("Replacing current BlockState: " + s.toString());
-                    update = true;
                 } else {
                     s = new BlockState();
                     s.setLocation(event.getEntity().getLocation().getBlock().getLocation());
@@ -105,10 +103,7 @@ public class HangingListener implements Listener {
                 if (mod.isDebug())
                     mod.getLog().debug("Saving BlockState: " + s.toString());
                 
-                if (update)
-                    mod.getQueries().update(s);
-                else
-                    mod.getQueries().insert(s);
+                mod.getModel().setState(s);
             } catch (SQLException e) {
                 mod.getLog().warn("DB-Error while onHangingPlace: "+e.getMessage());
                 event.setCancelled(true);

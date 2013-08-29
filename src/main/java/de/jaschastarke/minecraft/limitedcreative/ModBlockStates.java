@@ -5,6 +5,7 @@ import de.jaschastarke.bukkit.lib.commands.AliasHelpedCommand;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockListener;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStateCommand;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStateConfig;
+import de.jaschastarke.minecraft.limitedcreative.blockstate.DBModel;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.DBQueries;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.DependencyListener;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.HangingListener;
@@ -19,6 +20,7 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
     private FeatureBlockItemSpawn blockDrops;
     private DBQueries queries;
     private BlockStateCommand command;
+    private DBModel model;
 
     public ModBlockStates(LimitedCreative plugin) {
         super(plugin);
@@ -49,7 +51,7 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
     @Override
     public void onEnable() {
         try {
-            queries = new DBQueries(getPlugin().getDatabaseConnection());
+            queries = new DBQueries(this, getPlugin().getDatabaseConnection());
             queries.initTable();
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,5 +85,10 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
     }
     public DBQueries getQueries() {
         return queries;
+    }
+    public DBModel getModel() {
+        if (model == null)
+            model = new DBModel(this);
+        return model;
     }
 }

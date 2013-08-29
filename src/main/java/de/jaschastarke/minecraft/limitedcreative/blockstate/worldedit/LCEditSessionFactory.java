@@ -154,14 +154,8 @@ public class LCEditSessionFactory extends EditSessionFactory {
         if (player != null) {
             Location loc = new Location(((BukkitWorld) player.getWorld()).getWorld(), pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
             try {
-                BlockState s = mod.getQueries().find(loc);
-                boolean update = false;
-                if (s != null) {
-                    // This shouldn't happen
-                    if (mod.isDebug())
-                        mod.getLog().debug("Replacing current BlockState: " + s.toString());
-                    update = true;
-                } else {
+                BlockState s = mod.getModel().getState(loc.getBlock());
+                if (s == null) {
                     s = new BlockState();
                     s.setLocation(loc);
                 }
@@ -172,10 +166,7 @@ public class LCEditSessionFactory extends EditSessionFactory {
                 if (mod.isDebug())
                     mod.getLog().debug("Saving BlockState: " + s.toString());
                 
-                if (update)
-                    mod.getQueries().update(s);
-                else
-                    mod.getQueries().insert(s);
+                mod.getModel().setState(s);
             } catch (SQLException e) {
                 mod.getLog().warn("DB-Error while onBlockEdit: "+e.getMessage());
                 return false;

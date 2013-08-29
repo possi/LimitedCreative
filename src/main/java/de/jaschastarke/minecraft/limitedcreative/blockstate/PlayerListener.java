@@ -47,23 +47,28 @@ public class PlayerListener implements Listener {
     
     private void showInfo(Player pl, Location loc, Material type) {
         try {
-            BlockState s = mod.getQueries().find(loc);
+            BlockState s = mod.getModel().getState(loc.getBlock());
             InGameFormatter f = new InGameFormatter(mod.getPlugin().getLang());
             String ret = null;
             if (s == null || s.getSource() == Source.UNKNOWN) {
                 ret = f.formatString(ChatFormattings.ERROR, f.getString("block_state.tool_info.unknown", type.toString()));
             } else {
                 String k = "block_state.tool_info." + s.getSource().name().toLowerCase();
-                String gm = s.getGameMode().toString().toLowerCase();
-                switch (s.getGameMode()) {
-                    case CREATIVE:
-                        gm = ChatColor.GOLD + gm + ChatColor.RESET;
-                    case SURVIVAL:
-                        gm = ChatColor.GREEN + gm + ChatColor.RESET;
-                    case ADVENTURE:
-                        gm = ChatColor.DARK_GREEN + gm + ChatColor.RESET;
-                    default:
-                        break;
+                String gm = "";
+                if (s.getGameMode() != null) {
+                    switch (s.getGameMode()) {
+                        case CREATIVE:
+                            gm = ChatColor.GOLD + s.getGameMode().toString().toLowerCase() + ChatColor.RESET;
+                            break;
+                        case SURVIVAL:
+                            gm = ChatColor.GREEN + s.getGameMode().toString().toLowerCase() + ChatColor.RESET;
+                            break;
+                        case ADVENTURE:
+                            gm = ChatColor.DARK_GREEN + s.getGameMode().toString().toLowerCase() + ChatColor.RESET;
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 
                 ret = f.formatString(ChatFormattings.INFO, f.getString(k, type.toString(),
