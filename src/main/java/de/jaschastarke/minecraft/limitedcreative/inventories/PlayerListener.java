@@ -33,7 +33,7 @@ public class PlayerListener implements Listener {
         this.mod = mod;
     }
     
-    @EventHandler(priority=EventPriority.LOW, ignoreCancelled = true)
+    @EventHandler(priority=EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
         boolean isLoggedIn = Hooks.IsLoggedIn.test(event.getPlayer());
         if (mod.isDebug()) {
