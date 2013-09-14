@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 import de.jaschastarke.bukkit.lib.CoreModule;
 import de.jaschastarke.minecraft.limitedcreative.inventories.ArmoryConfig;
+import de.jaschastarke.minecraft.limitedcreative.inventories.AuthMeInventories;
 import de.jaschastarke.minecraft.limitedcreative.inventories.Inventory;
 import de.jaschastarke.minecraft.limitedcreative.inventories.InventoryConfig;
 import de.jaschastarke.minecraft.limitedcreative.inventories.InventoryPermissions;
@@ -45,7 +46,9 @@ public class ModInventories extends CoreModule<LimitedCreative> {
             entry.initialState = ModuleState.DISABLED;
             return;
         }
-        
+        if (plugin.getServer().getPluginManager().isPluginEnabled("AuthMe")) {
+            addModule(new AuthMeInventories(plugin, this));
+        }
         String incomp = Hooks.InventoryIncompatible.test();
         if (config.getEnabled() && incomp != null) {
             getLog().warn(plugin.getLocale().trans("inventory.warning.conflict", incomp, this.getName()));
