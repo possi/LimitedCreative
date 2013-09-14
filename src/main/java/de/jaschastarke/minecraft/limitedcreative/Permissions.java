@@ -37,8 +37,8 @@ public class Permissions extends SimplePermissionContainerNode {
      */
     public static final IPermission CONFIG = new BasicPermission(CONTAINER, "config", PermissionDefault.OP);
     /**
-     * Needed for any player that want's to use the /lc or /limitedcreative-command. If not granted, the user shouldn't
-     * see the command in /help, but he also isn't able to use the /lc c-gamemode commands, even if switch_gamemode
+     * Needed for any player that want's to use the /lc or /limitedcreative-command. If not granted, the user shouldn't 
+     * see the command in /help, but he also isn't able to use the /lc c-gamemode commands, even if switch_gamemode 
      * is granted.
      */
     public static final IPermission COMMAND = new BasicPermission(CONTAINER, "command", PermissionDefault.OP);
