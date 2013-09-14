@@ -8,7 +8,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -80,14 +79,14 @@ public class PlayerListener extends Listener {
         return mod.getRegionManager().getRegionSet(player.getLocation()).allows(Flags.GAMEMODE_OPTIONAL);
     }
     
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(ignoreCancelled = true)
     public void onGameModeChange(PlayerGameModeChangeEvent event) {
         Player player = event.getPlayer();
         PlayerMeta pmeta = new PlayerMeta(player);
         GameMode gm = event.getNewGameMode();
         
         if (mod.isDebug())
-            mod.getLog().debug(player.getName() + " is changing to GameMode " + gm);;
+            mod.getLog().debug(player.getName() + " is changing to GameMode " + gm);
         if (Hooks.IsLoggedIn.test(player)) { // if authme is changing GameMode before going to teleport, this should be remembered
             if (pmeta.isActiveRegionGameMode()) { // change to the other gamemode as the area defines
                 if (!pmeta.isActiveRegionGameMode(gm)) { // only when we are not switching to the mode the region allows

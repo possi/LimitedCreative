@@ -19,6 +19,7 @@ package de.jaschastarke.minecraft.limitedcreative.inventories;
 
 import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -32,7 +33,7 @@ public class PlayerListener implements Listener {
         this.mod = mod;
     }
     
-    @EventHandler
+    @EventHandler(priority=EventPriority.LOW, ignoreCancelled = true)
     public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
         boolean isLoggedIn = Hooks.IsLoggedIn.test(event.getPlayer());
         if (mod.isDebug()) {

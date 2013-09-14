@@ -93,6 +93,12 @@
         <version>2.4</version>
     </dependency>
     <dependency>
+        <!-- http://dev.bukkit.org/bukkit-plugins/multiworld-v-2-0/ -->
+        <groupId>multiworld</groupId>
+        <artifactId>multiworld</artifactId>
+        <version>4.6.6</version>
+    </dependency>
+    <dependency>
         <!-- http://dev.bukkit.org/server-mods/xauth/ -->
         <groupId>com.cypherx</groupId>
         <artifactId>xauth</artifactId>

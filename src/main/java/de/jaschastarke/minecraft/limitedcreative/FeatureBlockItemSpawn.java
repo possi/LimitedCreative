@@ -110,10 +110,10 @@ public class FeatureBlockItemSpawn extends CoreModule<LimitedCreative> implement
     
     /**
      * Don't default Plugin-debug to this mod. Because it is too spammy.
-     * /
+     */
     public boolean isDebug() {
         return debug;
-    }*/
+    }
     
     private class CleanUp extends BukkitRunnable {
         public long maxTime = 0;
