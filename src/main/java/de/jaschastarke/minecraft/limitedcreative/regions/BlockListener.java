@@ -50,7 +50,7 @@ public class BlockListener extends Listener {
             }
         } else if (diffrent_region) {
             // do not break inside of "survial-region in creative world" when outside
-            if (getRM().getRegionSet(block).getFlag(Flags.GAMEMODE) != null) {
+            if (getRM().getRegionSet(block).getFlag(Flags.GAMEMODE) != null && getRM().getRegionSet(block).getFlag(Flags.GAMEMODE, player) != player.getGameMode()) {
                 player.sendMessage(L("blocked.inside_break"));
                 event.setCancelled(true);
             }
@@ -81,7 +81,7 @@ public class BlockListener extends Listener {
             }
         } else if (diffrent_region) {
             // do not build inside of "survial-region in creative world" when outside
-            if (getRM().getRegionSet(event.getBlock()).getFlag(Flags.GAMEMODE) != null) {
+            if (getRM().getRegionSet(event.getBlock()).getFlag(Flags.GAMEMODE) != null && getRM().getRegionSet(event.getBlock()).getFlag(Flags.GAMEMODE, event.getPlayer()) != event.getPlayer().getGameMode()) {
                 event.getPlayer().sendMessage(L("blocked.inside_place"));
                 event.setCancelled(true);
             }

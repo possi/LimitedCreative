@@ -84,22 +84,25 @@ public class PlayerData {
             return getGameMode("region_gamemode");
         }
         public void storeActiveRegionGameMode(GameMode regionGameMode) {
-            getSect(n()).set("region_gamemode", regionGameMode);
+            getSect(n()).set("region_gamemode", regionGameMode != null ? regionGameMode.toString() : null);
             cleanUp();
+            save();
         }
         public GameMode getPermanentRegionGameMode() {
             return getGameMode("permanent_gamemode");
         }
         public void storePermanentGameMode(GameMode currentGameMode) {
-            getSect(n()).set("permanent_gamemode", currentGameMode);
+            getSect(n()).set("permanent_gamemode", currentGameMode != null ? currentGameMode.toString() : null);
             cleanUp();
+            save();
         }
         public GameMode getOptionalRegionGameMode(String regionHash) {
             return getGameMode("optional_gamemode." + regionHash);
         }
         public void setOptionalRegionGameMode(String regionHash, GameMode currentGameMode) {
-            getSect(n()+".optional_gamemode").set(regionHash, currentGameMode);
+            getSect(n()+".optional_gamemode").set(regionHash, currentGameMode != null ? currentGameMode.toString() : null);
             cleanUp();
+            save();
         }
         
         private GameMode getGameMode(String path) {

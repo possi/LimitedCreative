@@ -48,7 +48,7 @@ public class PlayerListener extends Listener {
                 }
             } else if (diffrent_region) {
                 // do not break inside of "survial-region in creative world" when outside
-                if (getRM().getRegionSet(block).getFlag(Flags.GAMEMODE) != null) {
+                if (getRM().getRegionSet(block).getFlag(Flags.GAMEMODE) != null && getRM().getRegionSet(block).getFlag(Flags.GAMEMODE, event.getPlayer()) != event.getPlayer().getGameMode()) { // TODO: Rework
                     event.getPlayer().sendMessage(L("blocked.inside_interact"));
                     event.setCancelled(true);
                 }
@@ -69,7 +69,7 @@ public class PlayerListener extends Listener {
             }
         } else if (diffrent_region) {
             // do not break inside of "survial-region in creative world" when outside
-            if (getRM().getRegionSet(loc).getFlag(Flags.GAMEMODE) != null) {
+            if (getRM().getRegionSet(loc).getFlag(Flags.GAMEMODE) != null && getRM().getRegionSet(loc).getFlag(Flags.GAMEMODE, event.getPlayer()) != event.getPlayer().getGameMode()) {
                 event.getPlayer().sendMessage(L("blocked.inside_interact_entity"));
                 event.setCancelled(true);
             }
