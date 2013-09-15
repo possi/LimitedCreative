@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 public class RegexpBlockEntry implements ICmdBlockEntry {
     private Pattern rx;
     public RegexpBlockEntry(String regex) {
-        rx = Pattern.compile(regex);
+        rx = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
     }
 
     @Override

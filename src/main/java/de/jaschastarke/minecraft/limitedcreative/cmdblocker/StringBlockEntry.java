@@ -8,7 +8,7 @@ public class StringBlockEntry implements ICmdBlockEntry {
 
     @Override
     public boolean test(String cmd) {
-        return cmd.startsWith(this.str);
+        return cmd.toLowerCase().startsWith(this.str.toLowerCase());
     }
     
     public String toString() {
