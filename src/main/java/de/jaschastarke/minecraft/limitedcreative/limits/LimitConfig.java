@@ -270,6 +270,19 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
         }
         return breakList;
     }
+
+    /**
+     * LimitChestOpen
+     * 
+     * Enable this to prevents the ChestOpening-Animination when blocking interaction with a chest. But therefore
+     * you're no longer able to place blocks on chest and such while crouching. 
+     * 
+     * default: false
+     */
+    @IsConfigurationNode(name = "chestOpen", order = 900)
+    public boolean getBlockChestInteraction() {
+        return config.getBoolean("chestOpen", false);
+    }
     
 
     @Override

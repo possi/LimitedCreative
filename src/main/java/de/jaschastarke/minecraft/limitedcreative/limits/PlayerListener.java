@@ -178,7 +178,7 @@ public class PlayerListener implements Listener {
             // when crouching.
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 Block block = event.getClickedBlock();
-                if (isChest(block)) {
+                if (mod.getConfig().getBlockChestInteraction() && isChest(block)) {
                     if (!checkPermission(event, NoLimitPermissions.CHEST)) {
                         event.setCancelled(true);
                         event.getPlayer().sendMessage(mod.getPlugin().getLocale().trans("blocked.chest"));
