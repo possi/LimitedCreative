@@ -23,6 +23,19 @@ public class DBModel {
         this.q = mod.getQueries();
     }
     
+    public void moveState(Block from, Block to) throws SQLException {
+        q.delete(to.getLocation());
+        q.move(from.getLocation(), to.getLocation());
+        HasBlockState metaBlock = getMetaBlock(from);
+        if (metaBlock.set) {
+            BlockState state = metaBlock.state;
+            state.setLocation(to.getLocation());
+            setMetaBlock(to, getMetaBlock(from).state);
+        } else {
+            removeMetaBlock(to);
+        }
+        setMetaBlock(from, null);
+    }
     public void removeState(BlockState state) throws SQLException {
         //removeMetaBlock(state.getLocation().getBlock());
         setMetaBlock(state.getLocation().getBlock(), null);

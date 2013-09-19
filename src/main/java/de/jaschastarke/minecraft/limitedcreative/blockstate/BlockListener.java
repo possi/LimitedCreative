@@ -124,7 +124,7 @@ public class BlockListener implements Listener {
                     if (mod.isDebug())
                         mod.getLog().debug("PistionExtend moves "+sblock.getType()+"-Block from "+sblock.getLocation()+" to "+dest.getLocation());
                     
-                    mod.getQueries().move(sblock.getLocation(), dest.getLocation());
+                    mod.getModel().moveState(sblock, dest);
                 }
                 mod.getQueries().getDB().endTransaction();
             }
@@ -148,8 +148,12 @@ public class BlockListener implements Listener {
             try {
                 if (mod.isDebug())
                     mod.getLog().debug("PistionRetract moves "+source.getType()+"-Block from "+source.getLocation()+" to "+dest.getLocation());
-                mod.getQueries().move(source.getLocation(), source.getRelative(event.getDirection().getOppositeFace()).getLocation());
+                mod.getModel().moveState(source, source.getRelative(event.getDirection().getOppositeFace()));
             } catch (SQLException e) {
+                try {
+                    mod.getQueries().getDB().revertTransaction();
+                } catch (SQLException e1) {
+                }
                 mod.getLog().warn("DB-Error while onBlockMove (retract): "+e.getMessage());
                 //event.setCancelled(true);
             }
