@@ -27,7 +27,7 @@ public class DBModel {
         q.delete(to.getLocation());
         q.move(from.getLocation(), to.getLocation());
         HasBlockState metaBlock = getMetaBlock(from);
-        if (metaBlock.set) {
+        if (metaBlock.set && metaBlock.state != null) {
             BlockState state = metaBlock.state;
             state.setLocation(to.getLocation());
             setMetaBlock(to, getMetaBlock(from).state);
