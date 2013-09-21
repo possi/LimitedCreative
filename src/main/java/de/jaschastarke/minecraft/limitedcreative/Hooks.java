@@ -6,7 +6,6 @@ import de.jaschastarke.hooking.BooleanHooker;
 import de.jaschastarke.hooking.GetHooker;
 import de.jaschastarke.minecraft.limitedcreative.hooks.AuthMeHooks;
 import de.jaschastarke.minecraft.limitedcreative.hooks.MultiVerseHooks;
-import de.jaschastarke.minecraft.limitedcreative.hooks.MultiWorldHooks;
 import de.jaschastarke.minecraft.limitedcreative.hooks.PlayerCheckHooker;
 import de.jaschastarke.minecraft.limitedcreative.hooks.WorldTypeHooker;
 import de.jaschastarke.minecraft.limitedcreative.hooks.xAuthHooks;
@@ -35,9 +34,9 @@ public final class Hooks {
         }
         if (isPluginEnabled("Multiverse-Core")) {
             new MultiVerseHooks(plugin);
-        } else if (isPluginEnabled("MultiWorld")) {
+        }/* else if (isPluginEnabled("MultiWorld")) { // MultiWord suckz, the Creative-World-Setting doesn't affect anything
             new MultiWorldHooks(plugin);
-        }
+        }*/
         
         InventoryIncompatible.register(new GetHooker.Check<String>() {
             @Override

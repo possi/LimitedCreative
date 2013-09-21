@@ -108,7 +108,11 @@ public class CustomRegionManager {
 
             ConfigurationSection fs = rs.contains("flags") ? rs.getConfigurationSection("flags") : rs.createSection("flags");
             
-            fs.set(flag.getName(), flag.marshal((V) value));
+            if (value == null) {
+                fs.set(flag.getName(), null);
+            } else {
+                fs.set(flag.getName(), flag.marshal((V) value));
+            }
             
             try {
                 c.save(file);

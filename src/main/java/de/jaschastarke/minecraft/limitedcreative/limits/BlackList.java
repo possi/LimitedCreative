@@ -75,7 +75,7 @@ public class BlackList extends ArrayList<BlackList.Blacklisted> implements Confi
                 } else {
                     try {
                         if (el != null)
-                            add(el.toString());
+                            addSetting(el.toString());
                     } catch (InvalidValueException e) {
                         System.err.println(e.getCause().getMessage());
                     }
@@ -108,7 +108,7 @@ public class BlackList extends ArrayList<BlackList.Blacklisted> implements Confi
     }
 
     @Override // ConfigurableList, not List<E>
-    public boolean add(String e) throws InvalidValueException {
+    public boolean addSetting(String e) throws InvalidValueException {
         if (!contains(e)) {
             return add(new Blacklisted(e));
         }
@@ -116,7 +116,7 @@ public class BlackList extends ArrayList<BlackList.Blacklisted> implements Confi
     }
 
     @Override // ConfigurableList, not List<E>
-    public boolean remove(String e) {
+    public boolean removeSetting(String e) {
         Iterator<Blacklisted> it = iterator();
         while (it.hasNext()) {
             if (it.next().toString().equalsIgnoreCase(e)) {
@@ -138,5 +138,10 @@ public class BlackList extends ArrayList<BlackList.Blacklisted> implements Confi
     @Override
     public List<String> toGeneric() {
         return toStringList();
+    }
+
+    @Override
+    public void clearSettings() {
+        clear();
     }
 }

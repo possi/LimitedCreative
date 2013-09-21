@@ -19,6 +19,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import de.jaschastarke.bukkit.lib.events.AttachedBlockDestroyedEvent;
 import de.jaschastarke.minecraft.limitedcreative.ModBlockStates;
 
 public class BlockListener implements Listener {
@@ -47,6 +48,27 @@ public class BlockListener implements Listener {
         } catch (SQLException e) {
             mod.getLog().warn("DB-Error while onBlockBreak: "+e.getMessage());
             event.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    public void onAttachedBlockBreak(AttachedBlockDestroyedEvent event) {
+        try {
+            BlockState s = mod.getModel().getState(event.getBlock());
+            if (s != null) {
+                if (mod.isDebug())
+                    mod.getLog().debug("Breaking attached block: " + s.toString());
+                
+                if (s.isRestricted()) {
+                    if (mod.isDebug())
+                        mod.getLog().debug("... was placed by creative. Drop prevented");
+                    mod.getBlockSpawn().block(event.getBlock());
+                }
+                
+                mod.getModel().removeState(s);
+            }
+        } catch (SQLException e) {
+            mod.getLog().warn("DB-Error while onBlockBreak: "+e.getMessage());
         }
     }
 

@@ -73,11 +73,14 @@ public class RegionListener extends Listener {
         if (mod.isDebug())
             mod.getLog().debug(player.getName()+": changed region: "+regionGameMode+": " + areaEvent);
         
-        PlayerMoveEvent moveEvent = null;
+        GameMode defaultGameMode;
         if (areaEvent instanceof PlayerChangedAreaEvent)
-            moveEvent = ((PlayerChangedAreaEvent) areaEvent).getMoveEvent();
+            defaultGameMode = Hooks.DefaultWorldGameMode.get(((PlayerChangedAreaEvent) areaEvent).getMoveEvent().getTo().getWorld());
+        else if (areaEvent instanceof PlayerNewLocationAreaEvent)
+            defaultGameMode = Hooks.DefaultWorldGameMode.get(((PlayerNewLocationAreaEvent) areaEvent).getNewLocation().getWorld());
+        else
+            defaultGameMode = Hooks.DefaultWorldGameMode.get(player.getWorld());
         GameMode currentGameMode = player.getGameMode();
-        GameMode defaultGameMode = Hooks.DefaultWorldGameMode.get(moveEvent != null ? moveEvent.getTo().getWorld() : player.getWorld());
         
         if (regionGameMode != null && currentGameMode != regionGameMode && !pmeta.isActiveRegionGameMode(regionGameMode)) {
             if (mod.isDebug())
@@ -93,7 +96,9 @@ public class RegionListener extends Listener {
                 pmeta.storeActiveRegionGameMode(regionGameMode); // have to be set, before setGameMode
                 
                 if (!isOptional) {
-                    player.setGameMode(regionGameMode);
+                    if (Hooks.IsLoggedIn.test(player)) { // don't change gamemode on login
+                        player.setGameMode(regionGameMode);
+                    }
                 }
             }
         } else if (regionGameMode == null && player.getGameMode() != defaultGameMode && !pmeta.isInPermanentGameMode(currentGameMode) && pmeta.getActiveRegionGameMode() != null) {
@@ -106,7 +111,9 @@ public class RegionListener extends Listener {
             // result: change him back to default mode
             if (checkSwitchFlight(areaEvent)) {
                 pmeta.storeActiveRegionGameMode(null);
-                player.setGameMode(defaultGameMode);
+                if (Hooks.IsLoggedIn.test(player)) { // don't change gamemode on login
+                    player.setGameMode(defaultGameMode);
+                }
             }
         } else if (regionGameMode == null && pmeta.isActiveRegionGameMode()) {
             if (mod.isDebug())

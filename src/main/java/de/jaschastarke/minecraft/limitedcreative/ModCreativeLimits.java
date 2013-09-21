@@ -5,6 +5,7 @@ import java.util.WeakHashMap;
 import org.bukkit.entity.Entity;
 
 import de.jaschastarke.bukkit.lib.CoreModule;
+import de.jaschastarke.bukkit.lib.modules.AttachedBlocksDestroy;
 import de.jaschastarke.minecraft.limitedcreative.limits.BlockListener;
 import de.jaschastarke.minecraft.limitedcreative.limits.EntityListener;
 import de.jaschastarke.minecraft.limitedcreative.limits.LimitConfig;
@@ -36,15 +37,22 @@ public class ModCreativeLimits extends CoreModule<LimitedCreative> {
         listeners.addListener(new BlockListener(this));
         config = plugin.getPluginConfig().registerSection(new LimitConfig(this, entry));
         
-        /*blockDrops = plugin.getModule(FeatureBlockItemSpawn.class);
+        blockDrops = plugin.getModule(FeatureBlockItemSpawn.class);
         if (blockDrops == null)
             blockDrops = plugin.addModule(new FeatureBlockItemSpawn(plugin)).getModule();
-        */
-
+        
+        if (plugin.getModule(AttachedBlocksDestroy.class) == null) {
+            plugin.addModule(new AttachedBlocksDestroy(plugin));
+        }
+        
         if (!config.getEnabled()) {
             entry.initialState = ModuleState.DISABLED;
             return;
         }
+    }
+    
+    public FeatureBlockItemSpawn getBlockSpawn() {
+        return blockDrops;
     }
     
     @Override

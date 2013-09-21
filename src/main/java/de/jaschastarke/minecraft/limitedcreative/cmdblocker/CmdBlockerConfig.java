@@ -97,7 +97,7 @@ public class CmdBlockerConfig extends Configuration implements IConfigurationSub
             if (config.contains("commands") && config.isList("commands")) {
                 for (Object e : config.getList("commands")) {
                     try {
-                        blockList.add(e.toString());
+                        blockList.addSetting(e.toString());
                     } catch (InvalidValueException e1) {
                         mod.getLog().warn(e1.getMessage());
                     }

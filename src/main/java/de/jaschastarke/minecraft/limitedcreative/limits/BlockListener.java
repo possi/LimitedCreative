@@ -24,6 +24,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+import de.jaschastarke.bukkit.lib.events.AttachedBlockDestroyedByPlayerEvent;
+import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
 import de.jaschastarke.minecraft.lib.permissions.IDynamicPermission;
 import de.jaschastarke.minecraft.limitedcreative.ModCreativeLimits;
 
@@ -55,8 +57,19 @@ public class BlockListener implements Listener {
             }
         }
     }
+    @EventHandler
+    public void onAttachedBlockBreak(AttachedBlockDestroyedByPlayerEvent event) {
+        if (event.getPlayer() != null && event.getPlayer().getGameMode() == GameMode.CREATIVE) {
+            if (!checkPermission(event.getPlayer(), NoLimitPermissions.DROP)) {
+                mod.getBlockSpawn().block(event.getBlock());
+            }
+        }
+    }
     
     private boolean checkPermission(Player player, IDynamicPermission perm) {
+        return mod.getPlugin().getPermManager().hasPermission(player, perm);
+    }
+    private boolean checkPermission(Player player, IAbstractPermission perm) {
         return mod.getPlugin().getPermManager().hasPermission(player, perm);
     }
 }

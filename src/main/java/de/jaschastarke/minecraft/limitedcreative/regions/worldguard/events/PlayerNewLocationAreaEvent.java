@@ -69,4 +69,7 @@ public class PlayerNewLocationAreaEvent extends PlayerAreaEvent {
     public static HandlerList getHandlerList() {
         return handlers;
     }
+    public Location getNewLocation() {
+        return location;
+    }
 }

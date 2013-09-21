@@ -49,13 +49,10 @@ public class Region {
     }
     
     public void setFlag(Flag<?> flag, Object value) {
-        if (value == null) {
-            removeFlag(flag);
-        } else {
-            if (flags != null)
-                flags.add(new FlagValue(flag, value));
-            mgr.storeFlag(this, flag, value);
-        }
+        removeFlag(flag);
+        if (flags != null && value != null)
+            flags.add(new FlagValue(flag, value));
+        mgr.storeFlag(this, flag, value);
     }
     public ProtectedRegion getProtectedRegion() {
         return region;

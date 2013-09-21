@@ -12,7 +12,7 @@ public class CmdBlockList extends ArrayList<ICmdBlockEntry> implements Configura
     private static final long serialVersionUID = -125544131527849084L;
 
     @Override
-    public boolean add(String cmd) throws InvalidValueException {
+    public boolean addSetting(String cmd) throws InvalidValueException {
         if (cmd.startsWith("^")) {
             return add(new RegexpBlockEntry(cmd));
         } else {
@@ -21,7 +21,7 @@ public class CmdBlockList extends ArrayList<ICmdBlockEntry> implements Configura
     }
 
     @Override
-    public boolean remove(String e) {
+    public boolean removeSetting(String e) {
         for (Iterator<ICmdBlockEntry> iterator = this.iterator(); iterator.hasNext();) {
             ICmdBlockEntry entry = iterator.next();
             if (entry.toString().equalsIgnoreCase(e)) {
@@ -39,6 +39,11 @@ public class CmdBlockList extends ArrayList<ICmdBlockEntry> implements Configura
             list.add(bl.toString());
         }
         return list;
+    }
+
+    @Override
+    public void clearSettings() {
+        clear();
     }
 
 }

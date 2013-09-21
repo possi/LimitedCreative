@@ -37,6 +37,7 @@ import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.Region;
  */
 @ArchiveDocComments
 public class RegionsCommand extends BukkitCommand implements IHelpDescribed {
+    private final static String GLOBAL_REGION = "__global__";
     private ModRegions mod;
     private HelpCommand help;
     private WorldGuardPlugin wg;
@@ -127,11 +128,18 @@ public class RegionsCommand extends BukkitCommand implements IHelpDescribed {
             String msg = L("command.worldguard.unknown_flag") + params.getArgument(1) + "\n"
                        + L("command.worldguard.available_flags") + FlagList.getStringListAvailableFlags(context.getSender());
             throw new CommandException(msg);
+        } else if (params.getFlags().contains("g")) {
+            flag = flag.getRegionGroupFlag();
+            if (flag == null) {
+                String msg = L("command.worldguard.unknown_flag") + params.getArgument(1) + "-group\n"
+                        + L("command.worldguard.available_flags") + FlagList.getStringListAvailableFlags(context.getSender());
+                throw new CommandException(msg);
+            }
         }
         
         String value = params.getValue();
         try {
-            if (value != null) {
+            if (value != null && value.trim().length() > 0) {
                 reg.setFlag(flag, flag.parseInput(getWorldGuard(), context.getSender(), value));
             } else {
                 reg.setFlag(flag, null);
@@ -172,12 +180,14 @@ public class RegionsCommand extends BukkitCommand implements IHelpDescribed {
             ApplicableRegionSet set = mgr.getApplicableRegions(context.getPlayer().getLocation());
             if (set.size() > 0) {
                 region = set.iterator().next();
+            } else {
+                region = getWorldGuard().getGlobalRegionManager().get(w).getRegionExact(GLOBAL_REGION);
             }
         } else {
             int rpc = params.getArgumentCount() > 1 ? 1 : 0;
             RegionManager mgr = getWorldGuard().getGlobalRegionManager().get(w);
             region = mgr.getRegion(params.getArgument(rpc));
-            if (region == null && params.getArgument(rpc).equalsIgnoreCase("__global__")) {
+            if (region == null && params.getArgument(rpc).equalsIgnoreCase(GLOBAL_REGION)) {
                 region = new GlobalProtectedRegion(params.getArgument(rpc));
                 mgr.addRegion(region);
             }
