@@ -30,7 +30,7 @@ public class DBModel {
         if (metaBlock.set && metaBlock.state != null) {
             BlockState state = metaBlock.state;
             state.setLocation(to.getLocation());
-            setMetaBlock(to, getMetaBlock(from).state);
+            setMetaBlock(to, state);
         } else {
             removeMetaBlock(to);
         }
