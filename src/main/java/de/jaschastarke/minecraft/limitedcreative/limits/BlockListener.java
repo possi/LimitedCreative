@@ -59,6 +59,8 @@ public class BlockListener implements Listener {
     }
     @EventHandler
     public void onAttachedBlockBreak(AttachedBlockDestroyedByPlayerEvent event) {
+        if (mod.isDebug())
+            mod.getLog().debug("Attached Block " + event.getBlock().getType() + " initial destroyed by player: " + event.getPlayer().getName() + " in GM " + event.getPlayer().getGameMode().toString());
         if (event.getPlayer() != null && event.getPlayer().getGameMode() == GameMode.CREATIVE) {
             if (!checkPermission(event.getPlayer(), NoLimitPermissions.DROP)) {
                 mod.getBlockSpawn().block(event.getBlock());
