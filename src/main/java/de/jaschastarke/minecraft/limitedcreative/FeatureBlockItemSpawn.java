@@ -119,6 +119,8 @@ public class FeatureBlockItemSpawn extends CoreModule<LimitedCreative> implement
         public long maxTime = 0;
         @Override
         public void run() {
+            if (plugin.isDebug())
+                plugin.getLog().debug("Scheduler: Synchronous Task run: Cleanup");
             Iterator<BlockItemDrop> i = list.iterator();
             while (i.hasNext()) {
                 BlockItemDrop block = i.next();

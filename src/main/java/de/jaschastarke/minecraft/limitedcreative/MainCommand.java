@@ -69,11 +69,15 @@ public class MainCommand extends BukkitCommand implements IHelpDescribed, IMetho
         plugin.getServer().getScheduler().runTask(plugin, new Runnable() {
             @Override
             public void run() {
+                if (plugin.isDebug())
+                    plugin.getLog().debug("Scheduler: Synchronous Task run: Disable");
                 plugin.onDisable();
                 plugin.getPluginConfig().reload();
                 plugin.getServer().getScheduler().runTask(plugin, new Runnable() {
                     @Override
                     public void run() {
+                        if (plugin.isDebug())
+                            plugin.getLog().debug("Scheduler: Synchronous Task run: Enable");
                         plugin.onEnable();
                         context.response(context.getFormatter().getString("command.config.reload.success"));
                     }

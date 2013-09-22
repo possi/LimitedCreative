@@ -128,6 +128,8 @@ public class BlockStateCommand extends BukkitCommand implements IHelpDescribed {
         mod.getPlugin().getServer().getScheduler().runTaskAsynchronously(mod.getPlugin(), new BukkitRunnable() {
             @Override
             public void run() {
+                if (mod.isDebug())
+                    mod.getLog().debug("Scheduler: Asynchronous Task run");
                 DBQueries q = mod.getQueries();
                 try {
                     q.getDB().startTransaction();
