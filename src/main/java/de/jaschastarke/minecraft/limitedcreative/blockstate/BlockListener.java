@@ -19,7 +19,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
-import de.jaschastarke.bukkit.lib.events.AttachedBlockDestroyedEvent;
+import de.jaschastarke.bukkit.lib.events.BlockDestroyedEvent;
 import de.jaschastarke.minecraft.limitedcreative.ModBlockStates;
 
 public class BlockListener implements Listener {
@@ -52,7 +52,7 @@ public class BlockListener implements Listener {
     }
     
     @EventHandler
-    public void onAttachedBlockBreak(AttachedBlockDestroyedEvent event) {
+    public void onOtherBlockDestroy(BlockDestroyedEvent event) {
         try {
             BlockState s = mod.getModel().getState(event.getBlock());
             if (s != null) {

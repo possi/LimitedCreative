@@ -2,7 +2,7 @@ package de.jaschastarke.minecraft.limitedcreative;
 
 import de.jaschastarke.bukkit.lib.CoreModule;
 import de.jaschastarke.bukkit.lib.commands.AliasHelpedCommand;
-import de.jaschastarke.bukkit.lib.modules.AttachedBlocksDestroy;
+import de.jaschastarke.bukkit.lib.modules.AdditionalBlockBreaks;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockListener;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStateCommand;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStateConfig;
@@ -42,8 +42,8 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
         config = new BlockStateConfig(this, entry);
         plugin.getPluginConfig().registerSection(config);
         
-        if (plugin.getModule(AttachedBlocksDestroy.class) == null) {
-            plugin.addModule(new AttachedBlocksDestroy(plugin));
+        if (plugin.getModule(AdditionalBlockBreaks.class) == null) {
+            plugin.addModule(new AdditionalBlockBreaks(plugin));
         }
         
         listeners.addListener(new BlockListener(this));
