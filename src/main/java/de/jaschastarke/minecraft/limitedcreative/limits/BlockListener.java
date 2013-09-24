@@ -35,9 +35,9 @@ public class BlockListener implements Listener {
         this.mod = mod;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        if (!event.isCancelled() && event.getPlayer().getGameMode() == GameMode.CREATIVE) {
+        if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
             if (mod.getConfig().getBlockBreak().isListed(event.getBlock())) {
                 if (!checkPermission(event.getPlayer(), NoLimitPermissions.BREAK(event.getBlock()))) {
                     event.setCancelled(true);
@@ -46,9 +46,9 @@ public class BlockListener implements Listener {
             }
         }
     }
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (!event.isCancelled() && event.getPlayer().getGameMode() == GameMode.CREATIVE) {
+        if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
             if (mod.getConfig().getBlockUse().isListed(event.getBlock())) {
                 if (!checkPermission(event.getPlayer(), NoLimitPermissions.USE(event.getBlock()))) {
                     event.setCancelled(true);
