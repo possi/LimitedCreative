@@ -105,14 +105,14 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
     /**
      * LimitDropsInsteadPrevent
      * 
-     * When enabled items that are dropped by creative players are removed (burning in the hellfire or so, they just 
+     * When enabled items that are dropped by creative players are removed (burning in the hellfire or such, they just 
      * disappear). When disabled the items stay in the inventory of the player.
      * 
-     * default: false
+     * default: true
      */
     @IsConfigurationNode(order = 200)
     public boolean getRemoveDrops() {
-        return config.getBoolean("removeDrops", false);
+        return config.getBoolean("removeDrops", true);
     }
     
     

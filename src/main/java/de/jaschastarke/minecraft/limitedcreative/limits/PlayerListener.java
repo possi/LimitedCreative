@@ -73,8 +73,10 @@ public class PlayerListener implements Listener {
             if (checkPermission(event, NoLimitPermissions.DROP))
                 return;
             
-            event.getItemDrop().remove();
-            //event.setCancelled(true); // doesn't make much sense
+            if (mod.getConfig().getRemoveDrops())
+                event.getItemDrop().remove();
+            else
+                event.setCancelled(true); // doesn't make much sense
         }
     }
     
