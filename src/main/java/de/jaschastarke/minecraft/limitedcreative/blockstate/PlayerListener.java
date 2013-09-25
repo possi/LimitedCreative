@@ -30,7 +30,11 @@ public class PlayerListener implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block b = event.getClickedBlock();
             if (b != null && event.getPlayer().getItemInHand().getType().equals(mod.getConfig().getTool()) && mod.getPlugin().getPermManager().hasPermission(event.getPlayer(), BlockStatePermissions.TOOL)) {
-                showInfo(event.getPlayer(), b.getLocation(), b.getType());
+                if (mod.getConfig().getIgnoredWorlds().contains(event.getClickedBlock().getWorld().getName())) {
+                    event.getPlayer().sendMessage(mod.getPlugin().getLocale().trans("command.blockstate.world_ignored", event.getClickedBlock().getWorld().getName()));
+                } else {
+                    showInfo(event.getPlayer(), b.getLocation(), b.getType());
+                }
             }
         }
     }
@@ -38,7 +42,11 @@ public class PlayerListener implements Listener {
     public void onInteractEntity(PlayerInteractEntityEvent event) {
         Entity e = event.getRightClicked();
         if (e != null && e instanceof ItemFrame && event.getPlayer().getItemInHand().getType().equals(mod.getConfig().getTool()) && mod.getPlugin().getPermManager().hasPermission(event.getPlayer(), BlockStatePermissions.TOOL)) {
-            showInfo(event.getPlayer(), e.getLocation(), Material.ITEM_FRAME);
+            if (mod.getConfig().getIgnoredWorlds().contains(e.getWorld().getName())) {
+                event.getPlayer().sendMessage(mod.getPlugin().getLocale().trans("command.blockstate.world_ignored", e.getWorld().getName()));
+            } else {
+                showInfo(event.getPlayer(), e.getLocation(), Material.ITEM_FRAME);
+            }
             event.setCancelled(true);
         }
     }

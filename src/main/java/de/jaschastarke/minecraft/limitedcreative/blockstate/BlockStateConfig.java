@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
 import de.jaschastarke.bukkit.lib.configuration.Configuration;
+import de.jaschastarke.bukkit.lib.configuration.StringList;
 import de.jaschastarke.configuration.IConfigurationNode;
 import de.jaschastarke.configuration.IConfigurationSubGroup;
 import de.jaschastarke.configuration.InvalidValueException;
@@ -86,7 +87,7 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
      * BlockStateThreading
      * 
      * This experimental variant of the experimental Feature uses Threading to minimize lag. This fully relies on
-     * Bukkit metadata implementation. You only should need this, if there are often plays more then 10 players at once
+     * Bukkit metadata implementation. You only should need this, if there are often plays more then 10 players at once 
      * on your server. Be aware that this requires more memory.
      * 
      * default: false
@@ -126,14 +127,32 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
     /**
      * BlockStateLogSurvival
      * 
-     * Log all Block-Places to the database. Disable to make the database more slim by not adding blocks placed in
+     * Log all Block-Places to the database. Disable to make the database more slim by not adding blocks placed in 
      * survival-mode.
      * 
      * default: true
      */
-    @IsConfigurationNode(order = 100)
+    @IsConfigurationNode(order = 400)
     public boolean getLogSurvival() {
         return config.getBoolean("logSurvival", true);
+    }
+    
+    private StringList ignoredWorlds = null;
+    
+    /**
+     * BlockStateIgnoredWorlds
+     * 
+     * While you may use per world permissions to configure limitations fine graded, you may want to disable the 
+     * BlockState-Feature for certain worlds (like complete creative worlds) to save cpu and memory.
+     * 
+     * default: []
+     */
+    @IsConfigurationNode(order = 500)
+    public StringList getIgnoredWorlds() {
+        if (ignoredWorlds == null) {
+            ignoredWorlds = new StringList(config.getStringList("ignoredWorlds"));
+        }
+        return ignoredWorlds;
     }
     
     protected void setTool(Object val) throws InvalidValueException {

@@ -42,8 +42,10 @@ public class ThreadedModel extends AbstractModel implements DBModel, Listener {
         // We don't keep any reference to queries, because it contains the DB-Connection, which should be only used
         // from the thread from now on (as SQLite may not threadsafe)
         for (World w : mod.getPlugin().getServer().getWorlds()) {
-            for (Chunk chunk : w.getLoadedChunks()) {
-                threads.queueChunkLoad(chunk);
+            if (!mod.getConfig().getIgnoredWorlds().containsIgnoreCase(w.getName())) {
+                for (Chunk chunk : w.getLoadedChunks()) {
+                    threads.queueChunkLoad(chunk);
+                }
             }
         }
         threads.start();
@@ -61,7 +63,9 @@ public class ThreadedModel extends AbstractModel implements DBModel, Listener {
     
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onChunkLoad(ChunkLoadEvent event) {
-        threads.queueChunkLoad(event.getChunk());
+        if (!mod.getConfig().getIgnoredWorlds().containsIgnoreCase(event.getWorld().getName())) {
+            threads.queueChunkLoad(event.getChunk());
+        }
     }
 
     @Override

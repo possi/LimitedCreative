@@ -102,6 +102,10 @@ public class BlockStateCommand extends BukkitCommand implements IHelpDescribed {
         if (args.length < 1) {// doesn't count parameters
             return false;
         }
+        if (mod.getConfig().getIgnoredWorlds().contains(context.getPlayer().getWorld().getName())) {
+            context.response(L("command.blockstate.world_ignored", context.getPlayer().getWorld().getName()));
+            return true;
+        }
         String gm = args[0].toLowerCase();
         final GameMode tgm;
         if (gm.equals("0") || gm.equals("s") || gm.equals("survival"))

@@ -22,6 +22,8 @@ public class HangingListener implements Listener {
     
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+        if (mod.getConfig().getIgnoredWorlds().contains(event.getRightClicked().getWorld().getName()))
+            return;
         if (event.getRightClicked() instanceof ItemFrame) {
             if (mod.getModel().isRestricted(event.getRightClicked().getLocation().getBlock())) {
                 if (mod.isDebug())
@@ -49,6 +51,8 @@ public class HangingListener implements Listener {
     
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onHangingBreak(HangingBreakEvent event) {
+        if (mod.getConfig().getIgnoredWorlds().contains(event.getEntity().getWorld().getName()))
+            return;
         if (event.getEntity() instanceof ItemFrame) {
             if (mod.isDebug())
                 mod.getLog().debug("Breaking hanging: " + event.getEntity().getLocation().toString());
@@ -67,6 +71,8 @@ public class HangingListener implements Listener {
     
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onHangingPlace(HangingPlaceEvent event) {
+        if (mod.getConfig().getIgnoredWorlds().contains(event.getEntity().getWorld().getName()))
+            return;
         if (event.getEntity() instanceof ItemFrame) {
             BlockState s = new BlockState();
             s.setLocation(event.getEntity().getLocation().getBlock().getLocation());

@@ -30,6 +30,8 @@ public class BlockListener implements Listener {
     
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
+        if (mod.getConfig().getIgnoredWorlds().contains(event.getBlock().getWorld().getName()))
+            return;
         if (mod.getModel().isRestricted(event.getBlock())) {
             if (mod.isDebug())
                 mod.getLog().debug("Breaking bad, err.. block: " + event.getBlock().getLocation().toString());
@@ -46,6 +48,8 @@ public class BlockListener implements Listener {
     
     @EventHandler
     public void onOtherBlockDestroy(BlockDestroyedEvent event) {
+        if (mod.getConfig().getIgnoredWorlds().contains(event.getBlock().getWorld().getName()))
+            return;
         if (mod.getModel().isRestricted(event.getBlock())) {
             if (mod.isDebug())
                 mod.getLog().debug("Breaking attached block: " + event.getBlock().getLocation().toString());
@@ -59,6 +63,8 @@ public class BlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlocksBreakByExplosion(EntityExplodeEvent event) {
+        if (mod.getConfig().getIgnoredWorlds().contains(event.getLocation().getWorld().getName()))
+            return;
         Map<Block, Boolean> states = mod.getModel().getRestrictedStates(event.blockList());
         DBTransaction update = mod.getModel().groupUpdate();
         for (Block block : event.blockList()) {
@@ -78,6 +84,8 @@ public class BlockListener implements Listener {
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
+        if (mod.getConfig().getIgnoredWorlds().contains(event.getBlock().getWorld().getName()))
+            return;
         BlockState s = new BlockState();
         s.setLocation(event.getBlock().getLocation());
         s.setPlayer(event.getPlayer());
@@ -90,6 +98,8 @@ public class BlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPistionExtend(BlockPistonExtendEvent event) {
+        if (mod.getConfig().getIgnoredWorlds().contains(event.getBlock().getWorld().getName()))
+            return;
         if (event.getBlock().getMetadata("LCBS_pistonIsAlreadyExtended").size() > 0) // Fixes long known Bukkit issue
             return;
         event.getBlock().setMetadata("LCBS_pistonIsAlreadyExtended", new FixedMetadataValue(mod.getPlugin(), new Boolean(true)));
@@ -119,6 +129,8 @@ public class BlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPistionRetract(BlockPistonRetractEvent event) {
+        if (mod.getConfig().getIgnoredWorlds().contains(event.getBlock().getWorld().getName()))
+            return;
         event.getBlock().removeMetadata("LCBS_pistonIsAlreadyExtended", mod.getPlugin());
         
         Block dest = event.getBlock().getRelative(event.getDirection());
