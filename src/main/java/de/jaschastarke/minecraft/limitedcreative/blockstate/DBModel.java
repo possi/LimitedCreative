@@ -1,149 +1,86 @@
 package de.jaschastarke.minecraft.limitedcreative.blockstate;
 
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
-import org.bukkit.metadata.Metadatable;
 
-import de.jaschastarke.minecraft.limitedcreative.ModBlockStates;
-import de.jaschastarke.minecraft.limitedcreative.blockstate.DBQueries.Cuboid;
-
-public class DBModel {
-    private static final String BSMDKEY = "blockstate";
-    private ModBlockStates mod;
-    private DBQueries q;
-
-    public DBModel(ModBlockStates mod) {
-        this.mod = mod;
-        this.q = mod.getQueries();
-    }
-    
-    public void moveState(Block from, Block to) throws SQLException {
-        q.delete(to.getLocation());
-        q.move(from.getLocation(), to.getLocation());
-        HasBlockState metaBlock = getMetaBlock(from);
-        if (metaBlock.set && metaBlock.state != null) {
-            BlockState state = metaBlock.state;
-            state.setLocation(to.getLocation());
-            setMetaBlock(to, state);
-        } else {
-            removeMetaBlock(to);
-        }
-        setMetaBlock(from, null);
-    }
-    public void removeState(BlockState state) throws SQLException {
-        //removeMetaBlock(state.getLocation().getBlock());
-        setMetaBlock(state.getLocation().getBlock(), null);
-        q.delete(state);
-    }
-    public Map<Block, BlockState> getStates(List<Block> blocks) throws SQLException {
-        Map<Block, BlockState> ret = new HashMap<Block, BlockState>();
-        
-        Cuboid c = new Cuboid();
-        for (Block block : blocks) {
-            HasBlockState has = getMetaBlock(block);
-            if (has.set) {
-                ret.put(block, has.state);
+public interface DBModel {
+    public static class Cuboid {
+        private World w = null;
+        private int minx, miny, minz;
+        private int maxx, maxy, maxz;
+        public void add(Location loc) {
+            if (w == null) {
+                w = loc.getWorld();
+                minx = maxx = loc.getBlockX();
+                miny = maxy = loc.getBlockY();
+                minz = maxz = loc.getBlockZ();
             } else {
-                c.add(block.getLocation());
+                if (w != loc.getWorld())
+                    throw new IllegalArgumentException("Point is from a different world");
+                if (minx > loc.getBlockX())
+                    minx = loc.getBlockX();
+                if (maxx < loc.getBlockX())
+                    maxx = loc.getBlockX();
+                if (miny > loc.getBlockY())
+                    miny = loc.getBlockY();
+                if (maxy < loc.getBlockY())
+                    maxy = loc.getBlockY();
+                if (minz > loc.getBlockZ())
+                    minz = loc.getBlockZ();
+                if (maxz < loc.getBlockZ())
+                    maxz = loc.getBlockZ();
             }
         }
-        if (!c.isEmpty()) {
-            List<BlockState> dbb = q.findAllIn(c);
-            for (BlockState bs : dbb) {
-                setMetaBlock(bs.getLocation().getBlock(), bs);
-                if (blocks.contains(bs.getLocation().getBlock()))
-                    ret.put(bs.getLocation().getBlock(), bs);
-            }
-            for (Block block : blocks) {
-                if (!ret.containsKey(block)) {
-                    ret.put(block, null);
-                    setMetaBlock(block, null);
-                }
-            }
+        public int getMinX() {
+            return minx;
         }
-        /*for (Block block : blocks) {
-            if (ret.containsKey(block))
-                ret.put(block, getState(block));
-        }*/
-        return ret;
-    }
-    public void cacheStates(Cuboid c) throws SQLException {
-        if (!c.isEmpty()) {
-            List<BlockState> dbb = q.findAllIn(c);
-            for (BlockState bs : dbb) {
-                setMetaBlock(bs.getLocation().getBlock(), bs);
-            }
+        public int getMinY() {
+            return miny;
         }
-    }
-    public BlockState getState(Block block) throws SQLException {
-        HasBlockState has = getMetaBlock(block);
-        if (!has.set) {
-            BlockState state = q.find(block.getLocation());
-            setMetaBlock(block, state);
-            return state;
+        public int getMinZ() {
+            return minz;
         }
-        return has.state;
-    }
-    public void setState(BlockState state) throws SQLException {
-        Block block = state.getLocation().getBlock();
-        boolean update = hasMetaBlock(block);
-        boolean store = state.isRestricted() || mod.getConfig().getLogSurvival();
-        
-        setMetaBlock(block, store ? state : null);
-        
-        if (update) {
-            if (!store)
-                q.delete(state);
-            else if (!q.update(state))
-                q.insert(state);
-        } else {
-            if (store)
-                q.insert(state);
+        public int getMaxX() {
+            return maxx;
+        }
+        public int getMaxY() {
+            return maxy;
+        }
+        public int getMaxZ() {
+            return maxz;
+        }
+        public World getWorld() {
+            return w;
+        }
+        public boolean isEmpty() {
+            return w == null;
+        }
+        public String toString() {
+            return "Cuboid{world="+w.getName()+", min_x="+minx+", max_x="+maxx+", min_y="+miny+", max_y="+maxy+", min_z="+minz+", max_z="+maxz+"}";
         }
     }
     
-    protected boolean hasMetaBlock(Metadatable m) {
-        List<MetadataValue> metadata = m.getMetadata(BSMDKEY);
-        for (MetadataValue v : metadata) {
-            if (v.value() instanceof BlockState)
-                return true;
-        }
-        return false;
-    }
-    protected void setMetaBlock(Metadatable m, BlockState s) {
-        if (s == null)
-            m.setMetadata(BSMDKEY, new FixedMetadataValue(mod.getPlugin(), new Boolean(false)));
-        else
-            m.setMetadata(BSMDKEY, new FixedMetadataValue(mod.getPlugin(), s));
-    }
-    protected HasBlockState getMetaBlock(Metadatable m) {
-        HasBlockState has = new HasBlockState();
-        List<MetadataValue> metadata = m.getMetadata(BSMDKEY);
-        for (MetadataValue v : metadata) {
-            if (v.value() instanceof BlockState) {
-                has.set = true;
-                has.state = (BlockState) v.value();
-                break;
-            } else if (v.getOwningPlugin() == mod.getPlugin()) {
-                has.set = true;
-                has.state = null;
-                break;
-            }
-        }
-        return has;
-    }
-    protected void removeMetaBlock(Metadatable m) {
-        m.removeMetadata(BSMDKEY, mod.getPlugin());
-    }
+    public void onEnable() throws Exception;
+    public void onDisable();
+    public void moveState(Block from, Block to);
+    public void removeState(BlockState state);
+    public void removeState(Block block);
+    public Map<Block, BlockState> getStates(List<Block> blocks);
+    public Map<Block, Boolean> getRestrictedStates(List<Block> blocks);
+    public void cacheStates(DBModel.Cuboid c);
+    public BlockState getState(Block block);
+    public boolean isRestricted(Block block);
+    public void setState(BlockState state);
+    public DBTransaction groupUpdate();
     
-    protected static class HasBlockState {
-        public boolean set = false;
-        public BlockState state = null;
+    public static interface DBTransaction {
+        public void moveState(Block from, Block to);
+        public void setState(BlockState state);
+        public void removeState(Block block);
+        public void finish();
     }
 }

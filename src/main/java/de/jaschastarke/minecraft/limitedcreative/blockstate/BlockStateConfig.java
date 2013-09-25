@@ -43,6 +43,11 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
             } else {
                 entry.disable();
             }
+        } else if (node.getName().equals("useThreading")) {
+            if (entry.getState() == ModuleState.ENABLED) {
+                entry.disable();
+                entry.enable();
+            }
         }
     }
     
@@ -75,6 +80,20 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
     @IsConfigurationNode(order = 100)
     public boolean getEnabled() {
         return config.getBoolean("enabled", false);
+    }
+    
+    /**
+     * BlockStateThreading
+     * 
+     * This experimental variant of the experimental Feature uses Threading to minimize lag. This fully relies on
+     * Bukkit metadata implementation. You only should need this, if there are often plays more then 10 players at once
+     * on your server. Be aware that this requires more memory.
+     * 
+     * default: false
+     */
+    @IsConfigurationNode(order = 150)
+    public boolean getUseThreading() {
+        return config.getBoolean("useThreading", false);
     }
     
     /**

@@ -1,6 +1,5 @@
 package de.jaschastarke.minecraft.limitedcreative.blockstate;
 
-import java.sql.SQLException;
 import java.util.Date;
 
 import org.bukkit.GameMode;
@@ -25,7 +24,8 @@ import de.jaschastarke.maven.ArchiveDocComments;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
 import de.jaschastarke.minecraft.limitedcreative.ModBlockStates;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockState.Source;
-import de.jaschastarke.minecraft.limitedcreative.blockstate.DBQueries.Cuboid;
+import de.jaschastarke.minecraft.limitedcreative.blockstate.DBModel.Cuboid;
+import de.jaschastarke.minecraft.limitedcreative.blockstate.DBModel.DBTransaction;
 
 /**
  * LimitedCreative-BlockState-Command: modify blockstate database to prevent drops of selected blocks (requires WorldEdit)
@@ -130,45 +130,35 @@ public class BlockStateCommand extends BukkitCommand implements IHelpDescribed {
             public void run() {
                 if (mod.isDebug())
                     mod.getLog().debug("Scheduler: Asynchronous Task run");
-                DBQueries q = mod.getQueries();
-                try {
-                    q.getDB().startTransaction();
-                    int count = 0;
-                    World w = selection.getWorld();
-                    
-                    Cuboid c = new Cuboid();
-                    c.add(min);
-                    c.add(max);
-                    mod.getModel().cacheStates(c);
-                    
-                    BlockState seed = new BlockState();
-                    seed.setPlayer(context.getPlayer());
-                    seed.setGameMode(tgm);
-                    seed.setSource(Source.COMMAND);
-                    seed.setDate(new Date());
-                    for (int x = min.getBlockX(); x <= max.getBlockX(); x++) {
-                        for (int y = min.getBlockY(); y <= max.getBlockY(); y++) {
-                            for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
-                                Location loc = new Location(w, x, y, z);
-                                if (w.getBlockAt(loc).getType() != Material.AIR && selection.contains(loc)) {
-                                    seed.setLocation(loc);
-                                    mod.getModel().setState(new BlockState(seed));
-                                    count++;
-                                }
+                DBTransaction update = mod.getModel().groupUpdate();
+                int count = 0;
+                World w = selection.getWorld();
+                
+                Cuboid c = new Cuboid();
+                c.add(min);
+                c.add(max);
+                mod.getModel().cacheStates(c);
+                
+                BlockState seed = new BlockState();
+                seed.setPlayer(context.getPlayer());
+                seed.setGameMode(tgm);
+                seed.setSource(Source.COMMAND);
+                seed.setDate(new Date());
+                for (int x = min.getBlockX(); x <= max.getBlockX(); x++) {
+                    for (int y = min.getBlockY(); y <= max.getBlockY(); y++) {
+                        for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
+                            Location loc = new Location(w, x, y, z);
+                            if (w.getBlockAt(loc).getType() != Material.AIR && selection.contains(loc)) {
+                                seed.setLocation(loc);
+                                update.setState(new BlockState(seed));
+                                count++;
                             }
                         }
                     }
-                    q.getDB().endTransaction();
-                    
-                    context.response(L("command.blockstate.command_updated", count));
-                } catch (SQLException e) {
-                    try {
-                        q.getDB().revertTransaction();
-                    } catch (SQLException e1) {
-                    }
-                    mod.getLog().warn("Failed to update blocks in region: " + e.getMessage());
-                    context.response(L("command.blockstate.command_failed"));
                 }
+                update.finish();
+                
+                context.response(L("command.blockstate.command_updated", count));
             }
         });
         return true;

@@ -1,5 +1,7 @@
 package de.jaschastarke.minecraft.limitedcreative;
 
+import org.bukkit.event.Listener;
+
 import de.jaschastarke.bukkit.lib.CoreModule;
 import de.jaschastarke.bukkit.lib.commands.AliasHelpedCommand;
 import de.jaschastarke.bukkit.lib.modules.AdditionalBlockBreaks;
@@ -7,10 +9,11 @@ import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockListener;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStateCommand;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStateConfig;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.DBModel;
-import de.jaschastarke.minecraft.limitedcreative.blockstate.DBQueries;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.DependencyListener;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.HangingListener;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.PlayerListener;
+import de.jaschastarke.minecraft.limitedcreative.blockstate.SyncronizedModel;
+import de.jaschastarke.minecraft.limitedcreative.blockstate.ThreadedModel;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.worldedit.LCEditSessionFactory;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
@@ -19,7 +22,6 @@ import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 public class ModBlockStates extends CoreModule<LimitedCreative> {
     private BlockStateConfig config;
     private FeatureBlockItemSpawn blockDrops;
-    private DBQueries queries;
     private BlockStateCommand command;
     private DBModel model;
 
@@ -56,8 +58,15 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
     @Override
     public void onEnable() {
         try {
-            queries = new DBQueries(this, getPlugin().getDatabaseConnection());
-            queries.initTable();
+            if (model == null) {
+                if (config.getUseThreading())
+                    model = new ThreadedModel(this);
+                else
+                    model = new SyncronizedModel(this);
+            }
+            if (model instanceof Listener)
+                listeners.addListener((Listener) model);
+            model.onEnable();
         } catch (Exception e) {
             e.printStackTrace();
             getLog().warn(plugin.getLocale().trans("block_state.error.sql_connection_failed", getName()));
@@ -79,7 +88,11 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
     }
     @Override
     public void onDisable() {
+        model.onDisable();
         super.onDisable();
+        if (model instanceof Listener)
+            listeners.removeListener((Listener) model);
+        model = null;
     }
     
     public BlockStateConfig getConfig() {
@@ -88,12 +101,7 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
     public FeatureBlockItemSpawn getBlockSpawn() {
         return blockDrops;
     }
-    public DBQueries getQueries() {
-        return queries;
-    }
     public DBModel getModel() {
-        if (model == null)
-            model = new DBModel(this);
         return model;
     }
 }

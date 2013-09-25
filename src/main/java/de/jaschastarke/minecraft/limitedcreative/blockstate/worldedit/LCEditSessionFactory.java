@@ -1,7 +1,6 @@
 package de.jaschastarke.minecraft.limitedcreative.blockstate.worldedit;
 
 import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
 import java.util.Date;
 
 import org.bukkit.Location;
@@ -153,24 +152,19 @@ public class LCEditSessionFactory extends EditSessionFactory {
     public boolean onBlockEdit(LocalPlayer player, Vector pt, BaseBlock block) {
         if (player != null) {
             Location loc = new Location(((BukkitWorld) player.getWorld()).getWorld(), pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
-            try {
-                BlockState s = mod.getModel().getState(loc.getBlock());
-                if (s == null) {
-                    s = new BlockState();
-                    s.setLocation(loc);
-                }
-                s.setGameMode(null);
-                s.setPlayerName(player.getName());
-                s.setDate(new Date());
-                s.setSource(Source.EDIT);
-                if (mod.isDebug())
-                    mod.getLog().debug("Saving BlockState: " + s.toString());
-                
-                mod.getModel().setState(s);
-            } catch (SQLException e) {
-                mod.getLog().warn("DB-Error while onBlockEdit: "+e.getMessage());
-                return false;
+            BlockState s = mod.getModel().getState(loc.getBlock());
+            if (s == null) {
+                s = new BlockState();
+                s.setLocation(loc);
             }
+            s.setGameMode(null);
+            s.setPlayerName(player.getName());
+            s.setDate(new Date());
+            s.setSource(Source.EDIT);
+            if (mod.isDebug())
+                mod.getLog().debug("Saving BlockState: " + s.toString());
+            
+            mod.getModel().setState(s);
             return true;
         } else {
             return false;

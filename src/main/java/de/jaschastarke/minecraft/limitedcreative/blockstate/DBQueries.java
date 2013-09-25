@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.World;
 
 import de.jaschastarke.database.Type;
 import de.jaschastarke.database.db.Database;
@@ -49,7 +48,7 @@ public class DBQueries {
     }
     
     private PreparedStatement findall = null;
-    public List<BlockState> findAllIn(Cuboid c) throws SQLException {
+    public List<BlockState> findAllIn(DBModel.Cuboid c) throws SQLException {
         if (mod.isDebug())
             mod.getLog().debug("DBQuery: findAllIn: " + c.toString());
         List<BlockState> blocks = new ArrayList<BlockState>();
@@ -267,61 +266,5 @@ public class DBQueries {
     }
     public Database getDB() {
         return db;
-    }
-    
-    public static class Cuboid {
-        private World w = null;
-        private int minx, miny, minz;
-        private int maxx, maxy, maxz;
-        public void add(Location loc) {
-            if (w == null) {
-                w = loc.getWorld();
-                minx = maxx = loc.getBlockX();
-                miny = maxy = loc.getBlockY();
-                minz = maxz = loc.getBlockZ();
-            } else {
-                if (w != loc.getWorld())
-                    throw new IllegalArgumentException("Point is from a different world");
-                if (minx > loc.getBlockX())
-                    minx = loc.getBlockX();
-                if (maxx < loc.getBlockX())
-                    maxx = loc.getBlockX();
-                if (miny > loc.getBlockY())
-                    miny = loc.getBlockY();
-                if (maxy < loc.getBlockY())
-                    maxy = loc.getBlockY();
-                if (minz > loc.getBlockZ())
-                    minz = loc.getBlockZ();
-                if (maxz < loc.getBlockZ())
-                    maxz = loc.getBlockZ();
-            }
-        }
-        public int getMinX() {
-            return minx;
-        }
-        public int getMinY() {
-            return miny;
-        }
-        public int getMinZ() {
-            return minz;
-        }
-        public int getMaxX() {
-            return maxx;
-        }
-        public int getMaxY() {
-            return maxy;
-        }
-        public int getMaxZ() {
-            return maxz;
-        }
-        public World getWorld() {
-            return w;
-        }
-        public boolean isEmpty() {
-            return w == null;
-        }
-        public String toString() {
-            return "Cuboid{world="+w.getName()+", min_x="+minx+", max_x="+maxx+", min_y="+miny+", max_y="+maxy+", min_z="+minz+", max_z="+maxz+"}";
-        }
     }
 }
