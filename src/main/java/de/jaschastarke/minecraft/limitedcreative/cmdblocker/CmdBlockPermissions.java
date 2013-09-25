@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.bukkit.permissions.PermissionDefault;
 
 import de.jaschastarke.maven.ArchiveDocComments;
+import de.jaschastarke.maven.PluginPermissions;
 import de.jaschastarke.minecraft.lib.permissions.BasicPermission;
 import de.jaschastarke.minecraft.lib.permissions.DynamicPermission;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
@@ -19,6 +20,7 @@ public class CmdBlockPermissions extends SimplePermissionContainerNode {
         super(parent, name);
     }
     
+    @PluginPermissions
     public static final SimplePermissionContainerNode CONTAINER = new CmdBlockPermissions(Permissions.CONTAINER, "cmdblock");
     
     /**

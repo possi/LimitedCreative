@@ -158,20 +158,6 @@
               <custom>
                 <dev-url>http://dev.bukkit.org/server-mods/limited-creative/</dev-url>
               </custom>
-              <registeredPermissions>
-                <param>de.jaschastarke.minecraft.limitedcreative.Permissions:CONTAINER</param>
-                <param>de.jaschastarke.minecraft.limitedcreative.SwitchGameModePermissions:ALL</param>
-                <param>de.jaschastarke.minecraft.limitedcreative.inventories.InventoryPermissions</param>
-                <param>de.jaschastarke.minecraft.limitedcreative.limits.NoLimitPermissions:PARENT</param>
-                <param>de.jaschastarke.minecraft.limitedcreative.cmdblocker.CmdBlockPermissions:CONTAINER</param>
-                <param>de.jaschastarke.minecraft.limitedcreative.regions.RegionPermissions:REGION</param>
-                <param>de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStatePermissions:PARENT</param>
-              </registeredPermissions>
-              <registeredCommands>
-                <param>de.jaschastarke.minecraft.limitedcreative.MainCommand</param>
-                <param>de.jaschastarke.minecraft.limitedcreative.regions.RegionsCommand</param>
-                <param>de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStateCommand</param>
-              </registeredCommands>
             </configuration>
           </execution>
         </executions>

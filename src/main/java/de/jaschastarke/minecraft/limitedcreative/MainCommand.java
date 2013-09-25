@@ -9,6 +9,7 @@ import de.jaschastarke.bukkit.lib.commands.annotations.Description;
 import de.jaschastarke.bukkit.lib.commands.annotations.IsCommand;
 import de.jaschastarke.bukkit.lib.commands.annotations.NeedsPermission;
 import de.jaschastarke.maven.ArchiveDocComments;
+import de.jaschastarke.maven.PluginCommand;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
 import de.jaschastarke.minecraft.lib.permissions.IPermission;
 
@@ -18,6 +19,7 @@ import de.jaschastarke.minecraft.lib.permissions.IPermission;
  * @permission limitedcreative.command
  */
 @ArchiveDocComments
+@PluginCommand
 public class MainCommand extends BukkitCommand implements IHelpDescribed, IMethodCommandContainer {
     private LimitedCreative plugin;
     

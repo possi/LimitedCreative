@@ -3,11 +3,14 @@ package de.jaschastarke.minecraft.limitedcreative.regions;
 import org.bukkit.configuration.ConfigurationSection;
 
 import de.jaschastarke.bukkit.lib.configuration.Configuration;
+import de.jaschastarke.bukkit.lib.configuration.ConfigurationContainer;
 import de.jaschastarke.configuration.IConfigurationNode;
 import de.jaschastarke.configuration.IConfigurationSubGroup;
 import de.jaschastarke.configuration.InvalidValueException;
 import de.jaschastarke.configuration.annotations.IsConfigurationNode;
 import de.jaschastarke.maven.ArchiveDocComments;
+import de.jaschastarke.maven.PluginConfigurations;
+import de.jaschastarke.minecraft.limitedcreative.Config;
 import de.jaschastarke.minecraft.limitedcreative.ModRegions;
 import de.jaschastarke.minecraft.limitedcreative.limits.BlackList;
 import de.jaschastarke.modularize.IModule;
@@ -20,12 +23,16 @@ import de.jaschastarke.modularize.ModuleEntry.ModuleState;
  * http://dev.bukkit.org/server-mods/limited-creative/pages/features/region/
  */
 @ArchiveDocComments
+@PluginConfigurations(parent = Config.class)
 public class RegionConfig extends Configuration implements IConfigurationSubGroup {
     protected ModRegions mod;
     protected ModuleEntry<IModule> entry;
     
+    public RegionConfig(ConfigurationContainer container) {
+        super(container);
+    }
     public RegionConfig(ModRegions modRegions, ModuleEntry<IModule> modEntry) {
-        super(modRegions.getPlugin());
+        super(modRegions.getPlugin().getDocCommentStorage());
         mod = modRegions;
         entry = modEntry;
     }

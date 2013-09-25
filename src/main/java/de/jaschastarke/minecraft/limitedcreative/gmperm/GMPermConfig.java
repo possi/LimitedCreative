@@ -3,11 +3,14 @@ package de.jaschastarke.minecraft.limitedcreative.gmperm;
 import org.bukkit.configuration.ConfigurationSection;
 
 import de.jaschastarke.bukkit.lib.configuration.Configuration;
+import de.jaschastarke.bukkit.lib.configuration.ConfigurationContainer;
 import de.jaschastarke.configuration.IConfigurationNode;
 import de.jaschastarke.configuration.IConfigurationSubGroup;
 import de.jaschastarke.configuration.InvalidValueException;
 import de.jaschastarke.configuration.annotations.IsConfigurationNode;
 import de.jaschastarke.maven.ArchiveDocComments;
+import de.jaschastarke.maven.PluginConfigurations;
+import de.jaschastarke.minecraft.limitedcreative.Config;
 import de.jaschastarke.minecraft.limitedcreative.ModGameModePerm;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
@@ -21,12 +24,16 @@ import de.jaschastarke.modularize.ModuleEntry.ModuleState;
  * http://dev.bukkit.org/server-mods/limited-creative/pages/features/gmperm/
  */
 @ArchiveDocComments
+@PluginConfigurations(parent = Config.class)
 public class GMPermConfig extends Configuration implements IConfigurationSubGroup {
     protected ModGameModePerm mod;
     protected ModuleEntry<IModule> entry;
     
+    public GMPermConfig(ConfigurationContainer container) {
+        super(container);
+    }
     public GMPermConfig(ModGameModePerm modGameModePerm, ModuleEntry<IModule> modEntry) {
-        super(modGameModePerm.getPlugin());
+        super(modGameModePerm.getPlugin().getDocCommentStorage());
         mod = modGameModePerm;
         entry = modEntry;
     }

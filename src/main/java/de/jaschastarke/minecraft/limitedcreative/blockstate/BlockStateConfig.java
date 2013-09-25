@@ -4,12 +4,15 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
 import de.jaschastarke.bukkit.lib.configuration.Configuration;
+import de.jaschastarke.bukkit.lib.configuration.ConfigurationContainer;
 import de.jaschastarke.bukkit.lib.configuration.StringList;
 import de.jaschastarke.configuration.IConfigurationNode;
 import de.jaschastarke.configuration.IConfigurationSubGroup;
 import de.jaschastarke.configuration.InvalidValueException;
 import de.jaschastarke.configuration.annotations.IsConfigurationNode;
 import de.jaschastarke.maven.ArchiveDocComments;
+import de.jaschastarke.maven.PluginConfigurations;
+import de.jaschastarke.minecraft.limitedcreative.Config;
 import de.jaschastarke.minecraft.limitedcreative.ModBlockStates;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
@@ -21,12 +24,16 @@ import de.jaschastarke.modularize.ModuleEntry.ModuleState;
  * http://dev.bukkit.org/server-mods/limited-creative/pages/features/blockstate/
  */
 @ArchiveDocComments
+@PluginConfigurations(parent = Config.class)
 public class BlockStateConfig extends Configuration implements IConfigurationSubGroup {
     protected ModBlockStates mod;
     protected ModuleEntry<IModule> entry;
-    
+
+    public BlockStateConfig(ConfigurationContainer container) {
+        super(container);
+    }
     public BlockStateConfig(ModBlockStates mod, ModuleEntry<IModule> modEntry) {
-        super(mod.getPlugin());
+        super(mod.getPlugin().getDocCommentStorage());
         this.mod = mod;
         entry = modEntry;
     }

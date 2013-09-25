@@ -3,11 +3,14 @@ package de.jaschastarke.minecraft.limitedcreative.inventories;
 import org.bukkit.configuration.ConfigurationSection;
 
 import de.jaschastarke.bukkit.lib.configuration.Configuration;
+import de.jaschastarke.bukkit.lib.configuration.ConfigurationContainer;
 import de.jaschastarke.configuration.IConfigurationNode;
 import de.jaschastarke.configuration.IConfigurationSubGroup;
 import de.jaschastarke.configuration.InvalidValueException;
 import de.jaschastarke.configuration.annotations.IsConfigurationNode;
 import de.jaschastarke.maven.ArchiveDocComments;
+import de.jaschastarke.maven.PluginConfigurations;
+import de.jaschastarke.minecraft.limitedcreative.Config;
 import de.jaschastarke.minecraft.limitedcreative.ModInventories;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
@@ -19,10 +22,14 @@ import de.jaschastarke.modularize.ModuleEntry.ModuleState;
  * http://dev.bukkit.org/server-mods/limited-creative/pages/features/inventory/
  */
 @ArchiveDocComments
+@PluginConfigurations(parent = Config.class)
 public class InventoryConfig extends Configuration implements IConfigurationSubGroup {
     protected ModInventories mod;
     protected ModuleEntry<IModule> entry;
     
+    public InventoryConfig(ConfigurationContainer container) {
+        super(container);
+    }
     public InventoryConfig(ModInventories modInventories, ModuleEntry<IModule> modEntry) {
         super(modInventories.getPlugin());
         mod = modInventories;

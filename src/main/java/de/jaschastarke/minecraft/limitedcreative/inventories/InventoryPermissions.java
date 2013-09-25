@@ -20,6 +20,7 @@ package de.jaschastarke.minecraft.limitedcreative.inventories;
 import org.bukkit.permissions.PermissionDefault;
 
 import de.jaschastarke.maven.ArchiveDocComments;
+import de.jaschastarke.maven.PluginPermissions;
 import de.jaschastarke.minecraft.lib.permissions.BasicPermission;
 import de.jaschastarke.minecraft.lib.permissions.IPermission;
 import de.jaschastarke.minecraft.lib.permissions.SimplePermissionContainer;
@@ -31,6 +32,7 @@ import de.jaschastarke.minecraft.limitedcreative.Permissions;
  *
  */
 @ArchiveDocComments
+@PluginPermissions
 public class InventoryPermissions extends SimplePermissionContainer {
     
     /**

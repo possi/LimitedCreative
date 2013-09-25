@@ -20,6 +20,7 @@ package de.jaschastarke.minecraft.limitedcreative.blockstate;
 import org.bukkit.permissions.PermissionDefault;
 
 import de.jaschastarke.maven.ArchiveDocComments;
+import de.jaschastarke.maven.PluginPermissions;
 import de.jaschastarke.minecraft.lib.permissions.BasicPermission;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
 import de.jaschastarke.minecraft.lib.permissions.IPermission;
@@ -33,7 +34,7 @@ public class BlockStatePermissions extends SimplePermissionContainerNode {
         super(parent, name);
     }
     
-    
+    @PluginPermissions
     public static final IPermissionContainer PARENT = new BlockStatePermissions(Permissions.CONTAINER, "blockstate");
     
     /**

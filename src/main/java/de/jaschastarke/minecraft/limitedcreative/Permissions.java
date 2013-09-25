@@ -20,6 +20,7 @@ package de.jaschastarke.minecraft.limitedcreative;
 import org.bukkit.permissions.PermissionDefault;
 
 import de.jaschastarke.maven.ArchiveDocComments;
+import de.jaschastarke.maven.PluginPermissions;
 import de.jaschastarke.minecraft.lib.permissions.BasicPermission;
 import de.jaschastarke.minecraft.lib.permissions.IPermission;
 import de.jaschastarke.minecraft.lib.permissions.SimplePermissionContainerNode;
@@ -30,6 +31,7 @@ public class Permissions extends SimplePermissionContainerNode {
         super(name);
     }
 
+    @PluginPermissions
     public final static Permissions CONTAINER = new Permissions("limitedcreative");
     
     /**

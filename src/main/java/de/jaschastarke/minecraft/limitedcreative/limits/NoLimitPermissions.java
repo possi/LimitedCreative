@@ -26,6 +26,7 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.permissions.PermissionDefault;
 
 import de.jaschastarke.maven.ArchiveDocComments;
+import de.jaschastarke.maven.PluginPermissions;
 import de.jaschastarke.minecraft.lib.permissions.BasicPermission;
 import de.jaschastarke.minecraft.lib.permissions.DynamicPermission;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
@@ -43,7 +44,7 @@ public class NoLimitPermissions extends SimplePermissionContainerNode {
         super(parent, name);
     }
     
-    
+    @PluginPermissions
     public static final IPermissionContainer PARENT = new NoLimitPermissions(Permissions.CONTAINER, "nolimit");
     
     /**

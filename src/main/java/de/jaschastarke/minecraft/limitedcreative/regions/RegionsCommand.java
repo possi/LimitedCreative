@@ -24,6 +24,7 @@ import de.jaschastarke.bukkit.lib.commands.annotations.IsCommand;
 import de.jaschastarke.bukkit.lib.commands.annotations.Usages;
 import de.jaschastarke.bukkit.lib.commands.parser.DefinedParameterParser;
 import de.jaschastarke.maven.ArchiveDocComments;
+import de.jaschastarke.maven.PluginCommand;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
 import de.jaschastarke.minecraft.limitedcreative.ModRegions;
 import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.FlagList;
@@ -36,6 +37,7 @@ import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.Region;
  * @permission limitedcreative.region
  */
 @ArchiveDocComments
+@PluginCommand
 public class RegionsCommand extends BukkitCommand implements IHelpDescribed {
     private final static String GLOBAL_REGION = "__global__";
     private ModRegions mod;

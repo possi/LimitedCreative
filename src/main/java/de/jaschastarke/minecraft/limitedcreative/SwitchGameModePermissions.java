@@ -3,6 +3,7 @@ package de.jaschastarke.minecraft.limitedcreative;
 import org.bukkit.permissions.PermissionDefault;
 
 import de.jaschastarke.maven.ArchiveDocComments;
+import de.jaschastarke.maven.PluginPermissions;
 import de.jaschastarke.minecraft.lib.permissions.BasicPermission;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
 import de.jaschastarke.minecraft.lib.permissions.IsChildPermission;
@@ -13,6 +14,7 @@ public class SwitchGameModePermissions extends ParentPermissionContainerNode {
     /**
      * Allows switching of own game mode to creative/adventure and back
      */
+    @PluginPermissions
     public final static SwitchGameModePermissions ALL = new SwitchGameModePermissions(Permissions.CONTAINER, "switch_gamemode");
     
     protected SwitchGameModePermissions(IAbstractPermission parent, String name) {

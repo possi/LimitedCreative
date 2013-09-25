@@ -3,6 +3,7 @@ package de.jaschastarke.minecraft.limitedcreative.regions;
 import org.bukkit.permissions.PermissionDefault;
 
 import de.jaschastarke.maven.ArchiveDocComments;
+import de.jaschastarke.maven.PluginPermissions;
 import de.jaschastarke.minecraft.lib.permissions.BasicPermission;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
 import de.jaschastarke.minecraft.lib.permissions.IPermission;
@@ -26,6 +27,7 @@ final public class RegionPermissions extends SimplePermissionContainerNode imple
     /**
      * Grants access to the /lcr command, which allows to define Limited Creatives region-flags 
      */
+    @PluginPermissions
     public static final RegionPermissions REGION = new RegionPermissions(Permissions.CONTAINER, "region");
 
     /**

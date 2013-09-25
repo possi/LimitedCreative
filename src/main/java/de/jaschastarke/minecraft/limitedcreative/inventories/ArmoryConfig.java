@@ -9,12 +9,14 @@ import org.bukkit.material.MaterialData;
 
 import de.jaschastarke.bukkit.lib.ModuleLogger;
 import de.jaschastarke.bukkit.lib.configuration.Configuration;
+import de.jaschastarke.bukkit.lib.configuration.ConfigurationContainer;
 import de.jaschastarke.bukkit.lib.items.MaterialDataNotRecognizedException;
 import de.jaschastarke.bukkit.lib.items.MaterialNotRecognizedException;
 import de.jaschastarke.bukkit.lib.items.ItemUtils;
 import de.jaschastarke.configuration.IConfigurationSubGroup;
 import de.jaschastarke.configuration.annotations.IsConfigurationNode;
 import de.jaschastarke.maven.ArchiveDocComments;
+import de.jaschastarke.maven.PluginConfigurations;
 import de.jaschastarke.minecraft.limitedcreative.ModInventories;
 
 /**
@@ -23,10 +25,15 @@ import de.jaschastarke.minecraft.limitedcreative.ModInventories;
  * When set, all creative Player automatically wears the given items as Armor. So they are better seen by other Players.
  */
 @ArchiveDocComments
+@PluginConfigurations(parent = InventoryConfig.class)
 public class ArmoryConfig extends Configuration implements IConfigurationSubGroup {
     protected ModInventories mod;
+    
+    public ArmoryConfig(ConfigurationContainer container) {
+        super(container);
+    }
     public ArmoryConfig(ModInventories modInventories) {
-        super(modInventories.getPlugin());
+        super(modInventories.getPlugin().getDocCommentStorage());
         mod = modInventories;
     }
 

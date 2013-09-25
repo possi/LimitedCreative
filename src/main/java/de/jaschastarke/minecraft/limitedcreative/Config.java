@@ -3,11 +3,13 @@ package de.jaschastarke.minecraft.limitedcreative;
 import org.bukkit.configuration.ConfigurationSection;
 
 import de.jaschastarke.bukkit.lib.Core;
+import de.jaschastarke.bukkit.lib.configuration.ConfigurationContainer;
 import de.jaschastarke.bukkit.lib.configuration.PluginConfiguration;
 import de.jaschastarke.configuration.IConfigurationNode;
 import de.jaschastarke.configuration.InvalidValueException;
 import de.jaschastarke.configuration.annotations.IsConfigurationNode;
 import de.jaschastarke.maven.ArchiveDocComments;
+import de.jaschastarke.maven.PluginConfigurations;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
 import de.jaschastarke.modularize.ModuleEntry.ModuleState;
@@ -21,7 +23,11 @@ import de.jaschastarke.modularize.ModuleEntry.ModuleState;
  * removed.
  */
 @ArchiveDocComments
+@PluginConfigurations
 public class Config extends PluginConfiguration {
+    public Config(ConfigurationContainer container) {
+        super(container);
+    }
     public Config(Core plugin) {
         super(plugin);
     }
@@ -30,9 +36,8 @@ public class Config extends PluginConfiguration {
     public void setValues(ConfigurationSection sect) {
         super.setValues(sect);
         
-        if (plugin.getModules().size() > 0) {
+        if (plugin.getModules().size() > 0)
             setModuleStates();
-        }
     }
     
     public void setModuleStates() {
