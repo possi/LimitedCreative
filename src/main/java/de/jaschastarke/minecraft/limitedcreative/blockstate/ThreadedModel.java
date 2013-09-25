@@ -85,21 +85,10 @@ public class ThreadedModel extends AbstractModel implements DBModel, Listener {
     @Override
     public Map<Block, Boolean> getRestrictedStates(List<Block> blocks) {
         Map<Block, Boolean> ret = new HashMap<Block, Boolean>();
-        Cuboid c;
-        do {
-            c = new Cuboid();
-            for (Block block : blocks) {
-                HasBlockState has = getMetaBlock(block);
-                if (has.set) {
-                    ret.put(block, has.restricted);
-                } else {
-                    c.add(block.getLocation());
-                    ret.put(block, null);
-                }
-            }
-            if (!c.isEmpty())
-                threads.callUpdate(c);
-        } while(!c.isEmpty());
+        for (Block block : blocks) {
+            HasBlockState has = getMetaBlock(block);
+            ret.put(block, has.restricted);
+        }
         return ret;
     }
     
