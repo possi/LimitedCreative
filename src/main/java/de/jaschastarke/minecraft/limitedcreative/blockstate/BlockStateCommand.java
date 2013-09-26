@@ -2,6 +2,7 @@ package de.jaschastarke.minecraft.limitedcreative.blockstate;
 
 import java.util.Date;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,6 +13,7 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 
 import de.jaschastarke.LocaleString;
+import de.jaschastarke.bukkit.lib.chat.ChatFormattings;
 import de.jaschastarke.bukkit.lib.commands.BukkitCommand;
 import de.jaschastarke.bukkit.lib.commands.CommandContext;
 import de.jaschastarke.bukkit.lib.commands.CommandException;
@@ -20,6 +22,10 @@ import de.jaschastarke.bukkit.lib.commands.IHelpDescribed;
 import de.jaschastarke.bukkit.lib.commands.MissingPermissionCommandException;
 import de.jaschastarke.bukkit.lib.commands.annotations.IsCommand;
 import de.jaschastarke.bukkit.lib.commands.annotations.Usages;
+import de.jaschastarke.bukkit.lib.commands.parser.DefinedParameterParser;
+import de.jaschastarke.bukkit.lib.database.DBHelper;
+import de.jaschastarke.database.DatabaseConfigurationException;
+import de.jaschastarke.database.db.Database;
 import de.jaschastarke.maven.ArchiveDocComments;
 import de.jaschastarke.maven.PluginCommand;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
@@ -27,6 +33,7 @@ import de.jaschastarke.minecraft.limitedcreative.ModBlockStates;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockState.Source;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.DBModel.Cuboid;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.DBModel.DBTransaction;
+import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 
 /**
  * LimitedCreative-BlockState-Command: modify blockstate database to prevent drops of selected blocks (requires WorldEdit)
@@ -43,7 +50,8 @@ public class BlockStateCommand extends BukkitCommand implements IHelpDescribed {
         this.help = this.getDefaultHelpCommand();
     }
     public BlockStateCommand(ModBlockStates mod) {
-        this();
+        super(mod.getPlugin());
+        this.help = this.getDefaultHelpCommand();
         this.mod = mod;
     }
     
@@ -68,7 +76,7 @@ public class BlockStateCommand extends BukkitCommand implements IHelpDescribed {
 
     @Override
     public CharSequence[] getUsages() {
-        return null;
+        return new String[]{"..."};
     }
 
     @Override
@@ -80,6 +88,12 @@ public class BlockStateCommand extends BukkitCommand implements IHelpDescribed {
     public CharSequence getPackageName() {
         return mod.getPlugin().getName() + " - " + mod.getName();
     }
+    
+    public boolean execute(final CommandContext context, final String[] args) throws MissingPermissionCommandException, CommandException {
+        if (mod.getModuleEntry().getState() != ModuleState.ENABLED)
+            throw new CommandException("Module " + mod.getName() + " is disabled");
+        return super.execute(context, args);
+    }
 
     /**
      * Modifies the Block-GameMode-Database and sets all blocks in the selection to the provided gamemode. Set it
@@ -89,7 +103,6 @@ public class BlockStateCommand extends BukkitCommand implements IHelpDescribed {
      * @throws MissingPermissionCommandException 
      */
     @IsCommand("set")
-    //@NeedsPermission("region")
     @Usages("<gamemode>")
     public boolean setGameMode(final CommandContext context, String... args) throws CommandException, MissingPermissionCommandException {
         if (!mod.getPlugin().getServer().getPluginManager().isPluginEnabled("WorldEdit")) {
@@ -167,6 +180,60 @@ public class BlockStateCommand extends BukkitCommand implements IHelpDescribed {
                 context.response(L("command.blockstate.command_updated", count));
             }
         });
+        return true;
+    }
+
+    /**
+     * Imports BlockState Data from a given Database to the current active Database.
+     * A Server-Restart is needed after migration!
+     * Parameters:
+     *  -u  --update    Don't delete existing records / only overwrite if newer
+     */
+    @IsCommand("migrate")
+    @Usages("-u <dsn> [username] [password]")
+    public boolean migrateDatabase(final CommandContext context, String... args) throws CommandException, MissingPermissionCommandException {
+        DefinedParameterParser params = new DefinedParameterParser(args, new String[]{"debug", "d", "update", "u", "confirm"});
+        if (params.getArgumentCount() < 1) {// doesn't count parameters
+            return false;
+        }
+        
+        if (Bukkit.getServer().getOnlinePlayers().length > (context.isPlayer() ? 1 : 0)) {
+            context.responseFormatted(ChatFormattings.ERROR, L("command.blockstate.migrate_useronline_error"));
+            return true;
+        }
+        
+        Database source;
+        Database target;
+        try {
+            
+            if (params.getArgumentCount() < 2)
+                source = DBHelper.createConnection(params.getArgument(0));
+            else if (params.getArgumentCount() < 3)
+                source = DBHelper.createConnection(params.getArgument(0), params.getArgument(1), null);
+            else
+                source = DBHelper.createConnection(params.getArgument(0), params.getArgument(1), params.getArgument(2));
+            
+            target = mod.getPlugin().getDatabaseConnection();
+        } catch (DatabaseConfigurationException e) {
+            context.responseFormatted(ChatFormattings.ERROR, L("command.blockstate.migrate_connect_error", e.getMessage()));
+            return true;
+        }
+        
+        if (!params.getFlags().contains("confirm")) {
+            context.responseFormatted(ChatFormattings.INFO, L("command.blockstate.migrate_confirm", "--confirm"));
+            return true;
+        }
+        
+        mod.getModuleEntry().disable();
+        DatabaseMigrationThread thread = new DatabaseMigrationThread(mod, context, source, target);
+        if (params.getFlags().contains("update") || params.getFlags().contains("u")) {
+            thread.setMode(DatabaseMigrationThread.Mode.UPDATE);
+        }
+        if (params.getFlags().contains("debug") || params.getFlags().contains("d")) {
+            thread.setDebug(true);
+        }
+        thread.start();
+        context.response(L("command.blockstate.migrate_started", source.getType(), target.getType()));
         return true;
     }
     

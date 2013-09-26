@@ -26,6 +26,7 @@ public class MainCommand extends BukkitCommand implements IHelpDescribed, IMetho
     public MainCommand() {
     }
     public MainCommand(LimitedCreative plugin) {
+        super(plugin);
         this.plugin = plugin;
     }
     

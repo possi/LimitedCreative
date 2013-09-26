@@ -10,23 +10,24 @@ import java.util.List;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 
+import de.jaschastarke.bukkit.lib.database.ResultIterator;
 import de.jaschastarke.database.Type;
 import de.jaschastarke.database.db.Database;
-import de.jaschastarke.minecraft.limitedcreative.ModBlockStates;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockState.Source;
+import de.jaschastarke.utils.IDebugLogHolder;
 
 public class DBQueries {
     private Database db;
-    private ModBlockStates mod;
-    public DBQueries(ModBlockStates mod, Database db) {
-        this.mod = mod;
+    private IDebugLogHolder dbg;
+    public DBQueries(IDebugLogHolder mod, Database db) {
+        this.dbg = mod;
         this.db = db;
     }
     
     private PreparedStatement find = null;
     public BlockState find(Location loc) throws SQLException {
-        if (mod.isDebug())
-            mod.getLog().debug("DBQuery: find: " + loc.toString());
+        if (dbg.isDebug())
+            dbg.getLog().debug("DBQuery: find: " + loc.toString());
         if (find == null) {
             find = db.prepare("SELECT * FROM lc_block_state WHERE x = ? AND y = ? AND z = ? AND world = ?");
         }
@@ -42,15 +43,17 @@ public class DBQueries {
             bs.setGameMode(getGameMode(rs));
             bs.setPlayerName(rs.getString("player"));
             bs.setSource(getSource(rs));
+            rs.close();
             return bs;
         }
+        rs.close();
         return null;
     }
     
     private PreparedStatement findall = null;
     public List<BlockState> findAllIn(DBModel.Cuboid c) throws SQLException {
-        if (mod.isDebug())
-            mod.getLog().debug("DBQuery: findAllIn: " + c.toString());
+        if (dbg.isDebug())
+            dbg.getLog().debug("DBQuery: findAllIn: " + c.toString());
         List<BlockState> blocks = new ArrayList<BlockState>();
         if (findall == null) {
             findall = db.prepare("SELECT * FROM lc_block_state WHERE x >= ? AND x <= ? AND y >= ? AND y <= ? AND z >= ? AND z <= ? AND world = ?");
@@ -72,7 +75,35 @@ public class DBQueries {
             bs.setSource(getSource(rs));
             blocks.add(bs);
         }
+        rs.close();
         return blocks;
+    }
+    public Iterable<BlockState> iterateAllIn(final DBModel.Cuboid c) throws SQLException {
+        if (dbg.isDebug())
+            dbg.getLog().debug("DBQuery: iterateAllIn: " + c.toString());
+        if (findall == null) {
+            findall = db.prepare("SELECT * FROM lc_block_state WHERE x >= ? AND x <= ? AND y >= ? AND y <= ? AND z >= ? AND z <= ? AND world = ?");
+        }
+        findall.setInt(1, c.getMinX());
+        findall.setInt(2, c.getMaxX());
+        findall.setInt(3, c.getMinY());
+        findall.setInt(4, c.getMaxY());
+        findall.setInt(5, c.getMinZ());
+        findall.setInt(6, c.getMaxZ());
+        findall.setString(7, c.getWorld().getUID().toString());
+        ResultSet rs = findall.executeQuery();
+        return new ResultIterator<BlockState>(rs) {
+            @Override
+            protected BlockState fetch(ResultSet rs) throws SQLException {
+                BlockState bs = new BlockState();
+                bs.setLocation(new Location(c.getWorld(), rs.getInt("x"), rs.getInt("y"), rs.getInt("z")));
+                bs.setDate(rs.getTimestamp("cdate"));
+                bs.setGameMode(getGameMode(rs));
+                bs.setPlayerName(rs.getString("player"));
+                bs.setSource(getSource(rs));
+                return bs;
+            }
+        };
     }
 
     private PreparedStatement delete = null;
@@ -80,8 +111,8 @@ public class DBQueries {
         return delete(s.getLocation());
     }
     public boolean delete(Location loc) throws SQLException {
-        if (mod.isDebug())
-            mod.getLog().debug("DBQuery: delete: " + loc.toString());
+        if (dbg.isDebug())
+            dbg.getLog().debug("DBQuery: delete: " + loc.toString());
         if (delete == null) {
             delete = db.prepare("DELETE FROM lc_block_state WHERE x = ? AND y = ? AND z = ? AND world = ?");
         }
@@ -94,8 +125,8 @@ public class DBQueries {
 
     private PreparedStatement update = null;
     public boolean update(BlockState s) throws SQLException {
-        if (mod.isDebug())
-            mod.getLog().debug("DBQuery: update: " + s.toString());
+        if (dbg.isDebug())
+            dbg.getLog().debug("DBQuery: update: " + s.toString());
         if (update == null) {
             update = db.prepare("UPDATE lc_block_state SET gm = ?, player = ?, cdate = ?, source = ?"+
                         "WHERE x = ? AND y = ? AND z = ? AND world = ? ");
@@ -128,8 +159,8 @@ public class DBQueries {
     }
 
     public boolean move(Location oldLoc, Location newLoc) throws SQLException {
-        if (mod.isDebug())
-            mod.getLog().debug("DBQuery: move: " + oldLoc.toString() + ", " + newLoc.toString());
+        if (dbg.isDebug())
+            dbg.getLog().debug("DBQuery: move: " + oldLoc.toString() + ", " + newLoc.toString());
         if (move == null) {
             move = db.prepare("UPDATE lc_block_state SET x = ?, y = ?, z = ? "+
                         "WHERE x = ? AND y = ? AND z = ? AND world = ?");
@@ -156,8 +187,8 @@ public class DBQueries {
     }*/
     private PreparedStatement insert = null;
     public boolean insert(BlockState s) throws SQLException {
-        if (mod.isDebug())
-            mod.getLog().debug("DBQuery: insert: " + s.toString());
+        if (dbg.isDebug())
+            dbg.getLog().debug("DBQuery: insert: " + s.toString());
         if (insert == null) {
             insert = db.prepare("INSERT INTO lc_block_state (x, y, z, world, gm, player, cdate, source)"+
                             " VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
@@ -220,8 +251,8 @@ public class DBQueries {
         switch (db.getType()) {
             case SQLite:
                 if (!db.getDDL().tableExists("lc_block_state")) {
-                    if (mod.isDebug())
-                        mod.getLog().debug("DBQuery: initTable SQLite: lc_block_state");
+                    if (dbg.isDebug())
+                        dbg.getLog().debug("DBQuery: initTable SQLite: lc_block_state");
                     db.execute(
                         "CREATE TABLE lc_block_state ("+
                             "x                         integer,"+
@@ -236,14 +267,14 @@ public class DBQueries {
                             "constraint ck_lc_block_state_gm check (gm in (0,1,2)),"+
                             "constraint ck_lc_block_state_source check (source in (0,1,2,3,4))"+
                         ")"
-                    );
+                    ).close();
                     db.getLogger().info("Created SQLite-Table: lc_block_state");
                 }
                 break;
             case MySQL:
                 if (!db.getDDL().tableExists("lc_block_state")) {
-                    if (mod.isDebug())
-                        mod.getLog().debug("DBQuery: initTable MySQL: lc_block_state");
+                    if (dbg.isDebug())
+                        dbg.getLog().debug("DBQuery: initTable MySQL: lc_block_state");
                     db.execute(
                         "CREATE TABLE IF NOT EXISTS lc_block_state ("+
                             "x                         INT NOT NULL,"+
@@ -256,7 +287,7 @@ public class DBQueries {
                             "source                    ENUM('SEED','PLAYER','EDIT','COMMAND','UNKNOWN') NOT NULL,"+
                             "PRIMARY KEY (x, y, z, world)"+
                         ")"
-                    );
+                    ).close();
                     db.getLogger().info("Created MySQL-Table: lc_block_state");
                 }
                 break;

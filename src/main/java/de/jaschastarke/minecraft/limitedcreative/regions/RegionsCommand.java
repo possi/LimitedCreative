@@ -30,6 +30,7 @@ import de.jaschastarke.minecraft.limitedcreative.ModRegions;
 import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.FlagList;
 import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.FlagValue;
 import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.Region;
+import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 
 /**
  * LimitedCreative-Region-Command: configure creative regions
@@ -48,7 +49,8 @@ public class RegionsCommand extends BukkitCommand implements IHelpDescribed {
         this.help = this.getDefaultHelpCommand();
     }
     public RegionsCommand(ModRegions mod) {
-        this();
+        super(mod.getPlugin());
+        this.help = this.getDefaultHelpCommand();
         this.mod = mod;
         this.wg = (WorldGuardPlugin) mod.getPlugin().getServer().getPluginManager().getPlugin(WorldGuardIntegration.PLUGIN_NAME);
     }
@@ -61,6 +63,12 @@ public class RegionsCommand extends BukkitCommand implements IHelpDescribed {
     @Override
     public String[] getAliases() {
         return new String[]{"/region"};
+    }
+    
+    public boolean execute(final CommandContext context, final String[] args) throws MissingPermissionCommandException, CommandException {
+        if (mod.getModuleEntry().getState() != ModuleState.ENABLED)
+            throw new CommandException("Module " + mod.getName() + " is disabled");
+        return super.execute(context, args);
     }
 
     /**
