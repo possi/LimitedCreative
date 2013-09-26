@@ -5,6 +5,7 @@ import org.bukkit.event.Listener;
 import de.jaschastarke.bukkit.lib.CoreModule;
 import de.jaschastarke.bukkit.lib.commands.AliasHelpedCommand;
 import de.jaschastarke.bukkit.lib.modules.AdditionalBlockBreaks;
+import de.jaschastarke.bukkit.lib.modules.BlockFall;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockListener;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStateCommand;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStateConfig;
@@ -47,6 +48,7 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
         if (plugin.getModule(AdditionalBlockBreaks.class) == null) {
             plugin.addModule(new AdditionalBlockBreaks(plugin));
         }
+        addModule(new BlockFall(plugin));
         
         listeners.addListener(new BlockListener(this));
         listeners.addListener(new HangingListener(this));
