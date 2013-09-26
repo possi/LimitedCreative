@@ -28,6 +28,7 @@ import de.jaschastarke.minecraft.limitedcreative.ModBlockStates;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.DBModel.DBTransaction;
 
 public class BlockListener implements Listener {
+    private final static String FALLING_ENTITY_BSMDKEY = "blockstate";
     private ModBlockStates mod;
     private MetadataValue blockAlreadExtended;
     
@@ -69,6 +70,18 @@ public class BlockListener implements Listener {
     public void onBlockMoved(BlockMovedEvent event) {
         if (mod.getConfig().getIgnoredWorlds().contains(event.getBlock().getWorld().getName()))
             return;
+        for (MetadataValue md : event.getEntity().getMetadata(FALLING_ENTITY_BSMDKEY)) {
+            if (md.value() instanceof BlockState) {
+                BlockState bs = (BlockState) md.value();
+                // The state of the source block should be always be cached yet, as we either asked it before, or
+                // it was just placed
+                if (bs != mod.getModel().getState(event.getSource())) {
+                    bs.setLocation(event.getBlock().getLocation());
+                    mod.getModel().setState(bs);
+                    return;
+                }
+            }
+        }
         mod.getModel().moveState(event.getSource(), event.getBlock());
     }
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -80,6 +93,9 @@ public class BlockListener implements Listener {
                         mod.getLog().debug("Falling block: " + event.getBlock().getLocation().toString() + " was placed by creative (drop prevented)");
                     FallingBlock fe = (FallingBlock) event.getEntity();
                     fe.setDropItem(false);
+                    // Using getState to fetch the full state from database synchronous isn't optimal, but either it is
+                    // cached, as it was just placed, or it isn't that important, as it is a rare event
+                    fe.setMetadata(FALLING_ENTITY_BSMDKEY, new FixedMetadataValue(mod.getPlugin(), mod.getModel().getState(event.getBlock())));
                 }
             }
         }
