@@ -219,8 +219,13 @@ public class DBQueries {
         try {
             switch (db.getType()) {
                 case SQLite:
-                    return GameMode.getByValue(rs.getInt("gm"));
+                    int gm = rs.getInt("gm");
+                    if (rs.wasNull())
+                        return null;
+                    return GameMode.getByValue(gm);
                 case MySQL:
+                    if (rs.getString("gm") == null)
+                        return null;
                     return GameMode.valueOf(rs.getString("gm"));
                 default:
                     throw new RuntimeException("Unsupported Database-Type.");

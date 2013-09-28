@@ -115,7 +115,7 @@ public class SyncronizedModel extends AbstractModel implements DBModel {
     @Override
     public boolean isRestricted(Block block) {
         BlockState state = getState(block);
-        return state != null ? state.isRestricted() : null;
+        return state != null ? state.isRestricted() : false;
     }
     
     public BlockState getState(Block block) {
