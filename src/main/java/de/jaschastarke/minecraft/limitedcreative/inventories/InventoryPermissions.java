@@ -39,4 +39,9 @@ public class InventoryPermissions extends SimplePermissionContainer {
      * Allows bypassing the inventory separation
      */
     public static final IPermission KEEP_INVENTORY = new BasicPermission(Permissions.CONTAINER, "keepinventory", PermissionDefault.FALSE);
+    
+    /**
+     * Allows bypassing creative armor settings. No armor is changed on going to creative.
+     */
+    public static final IPermission BYPASS_CREATIVE_ARMOR = new BasicPermission(Permissions.CONTAINER, "bypass_creativearmor", PermissionDefault.FALSE);
 }

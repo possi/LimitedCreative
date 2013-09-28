@@ -10,6 +10,7 @@ import org.bukkit.material.MaterialData;
 import de.jaschastarke.bukkit.lib.ModuleLogger;
 import de.jaschastarke.bukkit.lib.configuration.Configuration;
 import de.jaschastarke.bukkit.lib.configuration.ConfigurationContainer;
+import de.jaschastarke.bukkit.lib.configuration.command.ICommandConfigCallback;
 import de.jaschastarke.bukkit.lib.items.MaterialDataNotRecognizedException;
 import de.jaschastarke.bukkit.lib.items.MaterialNotRecognizedException;
 import de.jaschastarke.bukkit.lib.items.ItemUtils;
@@ -26,7 +27,7 @@ import de.jaschastarke.minecraft.limitedcreative.ModInventories;
  */
 @ArchiveDocComments
 @PluginConfigurations(parent = InventoryConfig.class)
-public class ArmoryConfig extends Configuration implements IConfigurationSubGroup {
+public class ArmoryConfig extends Configuration implements IConfigurationSubGroup, ICommandConfigCallback {
     protected ModInventories mod;
     
     public ArmoryConfig(ConfigurationContainer container) {
@@ -71,7 +72,7 @@ public class ArmoryConfig extends Configuration implements IConfigurationSubGrou
         if (getEnabled()) {
             Map<String, ItemStack> armor = new HashMap<String, ItemStack>();
             for (Map.Entry<String, Object> entry : config.getValues(false).entrySet()) {
-                if (!entry.getKey().equals("enabled")) {
+                if (!entry.getKey().equals("enabled") && !entry.getKey().equals("fixed")) {
                     if (entry.getValue() instanceof ItemStack) {
                         armor.put(entry.getKey(), (ItemStack) entry.getValue());
                     } else {
@@ -97,9 +98,11 @@ public class ArmoryConfig extends Configuration implements IConfigurationSubGrou
     /**
      * InventoryCreativeArmorItems
      * 
-     * Allows changing of the "Creative-Armor" to be wear when in creative mode
-     * 
+     * Allows changing of the "Creative-Armor" to be wear when in creative mode.
      * *see Blacklist for details on Item-Types
+     * 
+     * When using commands to change this options, use "current" (without quotes) to set it to the currently wearing item. 
+     * This way you can easily set it to dyed leather armor.
      */
     @IsConfigurationNode(order = 500)
     public Object getHead() {
@@ -117,11 +120,41 @@ public class ArmoryConfig extends Configuration implements IConfigurationSubGrou
     public Object getFeet() {
         return config.get("feet", "CHAINMAIL_BOOTS");
     }
+    
+    /* -- Doesn't work, because of bugged bukkit... the event isn't fired if you try again --*
+     * InventoryCreativeArmorFixed
+     * 
+     * Prevent players from changing armor while in creative.
+     * 
+     * default: true
+     *//*
+    @IsConfigurationNode(order = 600, name = "fixed")
+    public boolean getFixedArmor() {
+        return config.getBoolean("fixed", true);
+    }*/
 
     public String L(String msg, Object... objects) {
         return mod.getPlugin().getLocale().trans(msg, objects);
     }
     public ModuleLogger getLog() {
         return mod.getLog();
+    }
+    @Override
+    public void onConfigCommandChange(Callback cb) {
+        String n = cb.getNode().getName();
+        if (n.equals("head") || n.equals("chest") || n.equals("legs") || n.equals("feet")) {
+            if (cb.getValue().equals("current") || cb.getValue().equals("this")) {
+                if (cb.getContext().isPlayer()) {
+                    if (n.equals("head"))
+                        cb.setValue(cb.getContext().getPlayer().getInventory().getHelmet());
+                    if (n.equals("chest"))
+                        cb.setValue(cb.getContext().getPlayer().getInventory().getChestplate());
+                    if (n.equals("legs"))
+                        cb.setValue(cb.getContext().getPlayer().getInventory().getLeggings());
+                    if (n.equals("feet"))
+                        cb.setValue(cb.getContext().getPlayer().getInventory().getBoots());
+                }
+            }
+        }
     }
 }

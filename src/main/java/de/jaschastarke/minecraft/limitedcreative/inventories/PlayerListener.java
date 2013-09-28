@@ -49,10 +49,22 @@ public class PlayerListener implements Listener {
         mod.onSetGameMode(event.getPlayer(), event.getNewGameMode());
     }
     
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
             mod.setCreativeArmor(event.getPlayer());
         }
     }
+    
+    /*@EventHandler(ignoreCancelled = true)
+    public void onCreativeInventory(InventoryCreativeEvent event) {
+        if (event.getWhoClicked() instanceof Player) {
+            Player player = (Player) event.getWhoClicked();
+            if (event.getSlotType() == SlotType.ARMOR && mod.getArmorConfig().getFixedArmor()) {
+                if (!mod.getPlugin().getPermManager().hasPermission(player, InventoryPermissions.BYPASS_CREATIVE_ARMOR)) {
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }*/
 }

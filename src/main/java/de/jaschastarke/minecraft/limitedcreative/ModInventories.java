@@ -69,6 +69,9 @@ public class ModInventories extends CoreModule<LimitedCreative> {
     public InventoryConfig getConfig() {
         return config;
     }
+    public ArmoryConfig getArmorConfig() {
+        return armor_config;
+    }
     
     public PlayerInventoryStorage getStorage() {
         return storage;
@@ -119,18 +122,20 @@ public class ModInventories extends CoreModule<LimitedCreative> {
     }
     
     public void setCreativeArmor(Player player) {
-        Map<String, ItemStack> armor = armor_config.getCreativeArmor();
-        if (armor != null) {
-            ItemStack[] is = new ItemStack[4];
-            if (armor.containsKey("feet"))
-                is[0] = armor.get("feet");
-            if (armor.containsKey("legs"))
-                is[1] = armor.get("legs");
-            if (armor.containsKey("chest"))
-                is[2] = armor.get("chest");
-            if (armor.containsKey("head"))
-                is[3] = armor.get("head");
-            player.getInventory().setArmorContents(is);
+        if (!getPlugin().getPermManager().hasPermission(player, InventoryPermissions.BYPASS_CREATIVE_ARMOR)) {
+            Map<String, ItemStack> armor = armor_config.getCreativeArmor();
+            if (armor != null) {
+                ItemStack[] is = new ItemStack[4];
+                if (armor.containsKey("feet"))
+                    is[0] = armor.get("feet");
+                if (armor.containsKey("legs"))
+                    is[1] = armor.get("legs");
+                if (armor.containsKey("chest"))
+                    is[2] = armor.get("chest");
+                if (armor.containsKey("head"))
+                    is[3] = armor.get("head");
+                player.getInventory().setArmorContents(is);
+            }
         }
     }
 }

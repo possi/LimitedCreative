@@ -31,7 +31,7 @@ public class InventoryConfig extends Configuration implements IConfigurationSubG
         super(container);
     }
     public InventoryConfig(ModInventories modInventories, ModuleEntry<IModule> modEntry) {
-        super(modInventories.getPlugin());
+        super(modInventories.getPlugin().getDocCommentStorage());
         mod = modInventories;
         entry = modEntry;
     }
