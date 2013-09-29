@@ -107,7 +107,7 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
     /**
      * BlockStateTool
      * 
-     * The id or technical name (http://tinyurl.com/bukkit-material) of an item that displays information about the 
+     * The id or technical name (http://public.ja-s.de/bukkit/material) of an item that displays information about the 
      * right-clicked block.
      * 
      * default: WOOD_PICKAXE
