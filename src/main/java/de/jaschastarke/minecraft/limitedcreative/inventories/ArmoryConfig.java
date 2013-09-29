@@ -14,6 +14,7 @@ import de.jaschastarke.bukkit.lib.configuration.command.ICommandConfigCallback;
 import de.jaschastarke.bukkit.lib.items.MaterialDataNotRecognizedException;
 import de.jaschastarke.bukkit.lib.items.MaterialNotRecognizedException;
 import de.jaschastarke.bukkit.lib.items.ItemUtils;
+import de.jaschastarke.configuration.ConfigurationStyle;
 import de.jaschastarke.configuration.IConfigurationSubGroup;
 import de.jaschastarke.configuration.annotations.IsConfigurationNode;
 import de.jaschastarke.maven.ArchiveDocComments;
@@ -108,15 +109,15 @@ public class ArmoryConfig extends Configuration implements IConfigurationSubGrou
     public Object getHead() {
         return config.get("head", "CHAINMAIL_HELMET");
     }
-    @IsConfigurationNode(order = 501)
+    @IsConfigurationNode(order = 501, style = ConfigurationStyle.GROUPED_PREVIOUS)
     public Object getChest() {
         return config.get("chest", "CHAINMAIL_CHESTPLATE");
     }
-    @IsConfigurationNode(order = 502)
+    @IsConfigurationNode(order = 502, style = ConfigurationStyle.GROUPED_PREVIOUS)
     public Object getLegs() {
         return config.get("legs", "CHAINMAIL_LEGGINGS");
     }
-    @IsConfigurationNode(order = 503)
+    @IsConfigurationNode(order = 503, style = ConfigurationStyle.GROUPED_PREVIOUS)
     public Object getFeet() {
         return config.get("feet", "CHAINMAIL_BOOTS");
     }
