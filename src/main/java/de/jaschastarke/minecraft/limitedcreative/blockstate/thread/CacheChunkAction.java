@@ -26,10 +26,14 @@ public class CacheChunkAction implements Action {
             return;
         Set<Block> knownBlocks = new HashSet<Block>();
         try {
-            for (BlockState state : q.findAllIn(getBlocks())) {
-                Block b = state.getLocation().getBlock();
-                knownBlocks.add(b);
-                link.setSimpleMetaState(b, state);
+            if (chunk.isLoaded()) {
+                for (BlockState state : q.findAllIn(getBlocks())) {
+                    if (chunk.isLoaded()) {
+                        Block b = state.getLocation().getBlock();
+                        knownBlocks.add(b);
+                        link.setSimpleMetaState(b, state);
+                    }
+                }
             }
             /*int h = chunk.getWorld().getMaxHeight();
             for (int y = 0; y < h; y++) {
