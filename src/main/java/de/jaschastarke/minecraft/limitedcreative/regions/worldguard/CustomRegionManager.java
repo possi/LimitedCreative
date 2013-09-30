@@ -170,7 +170,7 @@ public class CustomRegionManager {
     
     public String getRegionsHash(Location loc) {
         StringBuilder hash = new StringBuilder(loc.getWorld().getName());
-        List<String> idlist = getWGGlobalManager().get(loc.getWorld()).getApplicableRegionsIDs(BukkitUtil.toVector(loc));
+        List<String> idlist = getWGManager(loc.getWorld()).getApplicableRegionsIDs(BukkitUtil.toVector(loc));
         if (idlist.size() > 0) {
             hash.append("#");
             String[] ids = idlist.toArray(new String[idlist.size()]);

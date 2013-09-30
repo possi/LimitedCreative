@@ -19,6 +19,9 @@ import de.jaschastarke.minecraft.limitedcreative.blockstate.ThreadedModel;
 
 public class ThreadLink {
     private static final int BATCH_ACTION_LENGTH = 10;
+    private static final int QUEUE_ACCESS_WARNING_DURATION = 5;
+    private static final int COUNT_WARNING_QUEUE = 5;
+    private static final int COUNT_ERROR_QUEUE = 20;
     private Stack<Action> updateQueue = new Stack<Action>();
     
     private boolean shutdown = false;
@@ -59,6 +62,11 @@ public class ThreadLink {
                     synchronized (updateQueue) {
                         while (updateQueue.isEmpty() && !shutdown)
                             updateQueue.wait();
+                        if (updateQueue.size() > (BATCH_ACTION_LENGTH * COUNT_ERROR_QUEUE)) {
+                            getLog().severe("Extrem large DB-Queue in " + Thread.currentThread().getName() + ": " + updateQueue.size());
+                        } else if (updateQueue.size() > (BATCH_ACTION_LENGTH * COUNT_WARNING_QUEUE)) {
+                            getLog().warn("Large DB-Queue in " + Thread.currentThread().getName() + ": " + updateQueue.size());
+                        }
                         for (int i = 0; i < BATCH_ACTION_LENGTH && !updateQueue.isEmpty(); i++) {
                             acts.add(updateQueue.pop());
                         }
@@ -95,9 +103,14 @@ public class ThreadLink {
     
     
     public void queueUpdate(Block block) {
+        long l = System.currentTimeMillis();
         synchronized (updateQueue) {
             updateQueue.add(new UpdateBlockStateAction(block));
             updateQueue.notify();
+        }
+        long l2 = System.currentTimeMillis();
+        if (l2 - l > QUEUE_ACCESS_WARNING_DURATION) {
+            getLog().warn("queueUpdate-action took to long: " + (l - 2) + "ms");
         }
     }
     

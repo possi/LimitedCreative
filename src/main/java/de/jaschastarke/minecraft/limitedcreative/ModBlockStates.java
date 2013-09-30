@@ -90,9 +90,10 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
     }
     @Override
     public void onDisable() {
-        model.onDisable();
+        if (model != null)
+            model.onDisable();
         super.onDisable();
-        if (model instanceof Listener)
+        if (model != null && model instanceof Listener)
             listeners.removeListener((Listener) model);
         model = null;
     }

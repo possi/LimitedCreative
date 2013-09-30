@@ -132,11 +132,6 @@ public class ThreadedModel extends AbstractModel implements DBModel, Listener {
     }
     @Override
     public boolean isRestricted(Block block) {
-        HasBlockState has = getMetaBlock(block);
-        if (!has.set) {
-            BlockState state = threads.callUpdate(block);
-            return state != null ? state.isRestricted() : false;
-        }
         return getMetaBlock(block).restricted;
     }
 
