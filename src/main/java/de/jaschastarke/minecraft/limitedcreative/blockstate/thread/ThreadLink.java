@@ -19,9 +19,11 @@ import de.jaschastarke.minecraft.limitedcreative.blockstate.ThreadedModel;
 
 public class ThreadLink {
     private static final int BATCH_ACTION_LENGTH = 10;
-    private static final int QUEUE_ACCESS_WARNING_DURATION = 5;
+    private static final int QUEUE_ACCESS_WARNING_DURATION = 5; // ms
     private static final int COUNT_WARNING_QUEUE = 5;
     private static final int COUNT_ERROR_QUEUE = 20;
+    private static final int QUEUE_TIMING_DURATION = 500; // ms
+    private long lastTimeout;
     private Stack<Action> updateQueue = new Stack<Action>();
     
     private boolean shutdown = false;
@@ -56,6 +58,7 @@ public class ThreadLink {
         public void run() {
             if (getModule().isDebug())
                 log.debug("DB-Thread '" + Thread.currentThread().getName() + "' started.");
+            lastTimeout = System.currentTimeMillis();
             while (!shutdown || !updateQueue.isEmpty()) {
                 try {
                     List<Action> acts = new LinkedList<Action>();
@@ -63,9 +66,17 @@ public class ThreadLink {
                         while (updateQueue.isEmpty() && !shutdown)
                             updateQueue.wait();
                         if (updateQueue.size() > (BATCH_ACTION_LENGTH * COUNT_ERROR_QUEUE)) {
-                            getLog().severe("Extrem large DB-Queue in " + Thread.currentThread().getName() + ": " + updateQueue.size());
+                            if (System.currentTimeMillis() - lastTimeout > QUEUE_TIMING_DURATION) {
+                                getLog().warn("Extrem large DB-Queue in " + Thread.currentThread().getName() + ": " + updateQueue.size());
+                                lastTimeout = System.currentTimeMillis();
+                            }
                         } else if (updateQueue.size() > (BATCH_ACTION_LENGTH * COUNT_WARNING_QUEUE)) {
-                            getLog().warn("Large DB-Queue in " + Thread.currentThread().getName() + ": " + updateQueue.size());
+                            if (System.currentTimeMillis() - lastTimeout > QUEUE_TIMING_DURATION) {
+                                getLog().info("Large DB-Queue in " + Thread.currentThread().getName() + ": " + updateQueue.size());
+                                lastTimeout = System.currentTimeMillis();
+                            }
+                        } else if (updateQueue.size() <= BATCH_ACTION_LENGTH) {
+                            lastTimeout = System.currentTimeMillis();
                         }
                         for (int i = 0; i < BATCH_ACTION_LENGTH && !updateQueue.isEmpty(); i++) {
                             acts.add(updateQueue.pop());

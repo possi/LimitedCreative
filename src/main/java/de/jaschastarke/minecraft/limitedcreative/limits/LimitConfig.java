@@ -50,7 +50,7 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
     @Override
     public void setValues(ConfigurationSection sect) {
         super.setValues(sect);
-        entry.setEnabled(getEnabled());
+        entry.setDefaultEnabled(getEnabled());
         
         // Config Upgrade
         if (!sect.contains("interact") && sect.contains("sign")) {

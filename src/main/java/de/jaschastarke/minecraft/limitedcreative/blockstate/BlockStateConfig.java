@@ -56,7 +56,7 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
     @Override
     public void setValues(ConfigurationSection sect) {
         super.setValues(sect);
-        entry.setEnabled(getEnabled());
+        entry.setDefaultEnabled(getEnabled());
     }
     @Override
     public String getName() {

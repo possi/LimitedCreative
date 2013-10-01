@@ -53,7 +53,7 @@ public class InventoryConfig extends Configuration implements IConfigurationSubG
         }
         
         super.setValues(sect);
-        entry.setEnabled(getEnabled());
+        entry.setDefaultEnabled(getEnabled());
         
         // Config Upgrade
         if (!sect.contains("storeCreative") && sect.contains("creative"))

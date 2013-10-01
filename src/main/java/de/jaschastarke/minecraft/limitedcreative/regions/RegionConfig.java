@@ -47,7 +47,7 @@ public class RegionConfig extends Configuration implements IConfigurationSubGrou
     @Override
     public void setValues(ConfigurationSection sect) {
         super.setValues(sect);
-        entry.setEnabled(getEnabled());
+        entry.setDefaultEnabled(getEnabled());
         
         // Config Upgrade
         if (!sect.contains("rememberOptional") && sect.contains("remember"))

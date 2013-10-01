@@ -1,7 +1,5 @@
 package de.jaschastarke.minecraft.limitedcreative;
 
-import org.bukkit.configuration.ConfigurationSection;
-
 import de.jaschastarke.bukkit.lib.Core;
 import de.jaschastarke.bukkit.lib.configuration.ConfigurationContainer;
 import de.jaschastarke.bukkit.lib.configuration.PluginConfiguration;
@@ -32,24 +30,12 @@ public class Config extends PluginConfiguration {
     }
     
     @Override
-    public void setValues(ConfigurationSection sect) {
-        super.setValues(sect);
-        
-        if (plugin.getModules().count() > 0)
-            setModuleStates();
-    }
-    
-    public void setModuleStates() {
-        ModuleEntry<IModule> metricsEntry = plugin.getModule(FeatureMetrics.class).getModuleEntry();
-        metricsEntry.setEnabled(getMetrics());
-    }
-    
-    @Override
     public void setValue(IConfigurationNode node, Object pValue) throws InvalidValueException {
         super.setValue(node, pValue);
         
         if (node.getName().equals("metrics")) {
-            setModuleStates();
+            ModuleEntry<IModule> metricsEntry = plugin.getModule(FeatureMetrics.class).getModuleEntry();
+            metricsEntry.setEnabled(getMetrics());
         }
     }
 

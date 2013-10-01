@@ -48,7 +48,7 @@ public class GMPermConfig extends Configuration implements IConfigurationSubGrou
     @Override
     public void setValues(ConfigurationSection sect) {
         super.setValues(sect);
-        entry.setEnabled(getEnabled());
+        entry.setDefaultEnabled(getEnabled());
     }
     @Override
     public String getName() {

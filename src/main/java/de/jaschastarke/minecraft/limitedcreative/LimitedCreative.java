@@ -35,11 +35,10 @@ public class LimitedCreative extends Core {
         addModule(new ModCmdBlocker(this));
         addModule(new ModGameModePerm(this));
         addModule(new ModBlockStates(this));
-        addModule(new FeatureMetrics(this));
+        addModule(new FeatureMetrics(this)).setDefaultEnabled(config.getMetrics());
         
         listeners.addListener(new DependencyListener(this));
         
-        config.setModuleStates();
         config.saveDefault();
         
         try {
