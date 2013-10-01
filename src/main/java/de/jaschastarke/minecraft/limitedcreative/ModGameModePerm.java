@@ -6,7 +6,6 @@ import de.jaschastarke.minecraft.limitedcreative.gmperm.PermissionInterface;
 import de.jaschastarke.minecraft.limitedcreative.gmperm.PlayerListener;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
-import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 
 public class ModGameModePerm extends CoreModule<LimitedCreative> {
     private GMPermConfig config;
@@ -30,7 +29,7 @@ public class ModGameModePerm extends CoreModule<LimitedCreative> {
         if (!plugin.getServer().getPluginManager().isPluginEnabled("Vault")) {
             if (config.getEnabled())
                 getLog().warn(plugin.getLocale().trans("gmperm.warning.vault_not_found", getName()));
-            entry.initialState = ModuleState.NOT_INITIALIZED;
+            entry.deactivateUsage();
             return;
         }
         
@@ -39,7 +38,7 @@ public class ModGameModePerm extends CoreModule<LimitedCreative> {
         if (config.getEnabled()) {
             if (!permission.isPresent()) {
                 getLog().warn(plugin.getLocale().trans("gmperm.warning.vault_not_found", getName()));
-                entry.initialState = ModuleState.NOT_INITIALIZED;
+                entry.deactivateUsage();
                 return;
             } /*else if (!getVaultPermission().hasGroupSupport()) {
                 getLog().warn(plugin.getLocale().trans("gmperm.warning.no_group_support", getName()));

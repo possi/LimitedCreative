@@ -14,7 +14,6 @@ import de.jaschastarke.minecraft.limitedcreative.Config;
 import de.jaschastarke.minecraft.limitedcreative.ModCmdBlocker;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
-import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 
 /**
  * CommandBlocker-Feature
@@ -39,20 +38,14 @@ public class CmdBlockerConfig extends Configuration implements IConfigurationSub
     @Override
     public void setValues(ConfigurationSection sect) {
         super.setValues(sect);
-        if (entry.initialState != ModuleState.NOT_INITIALIZED)
-            entry.initialState = getEnabled() ? ModuleState.ENABLED : ModuleState.DISABLED;
+        entry.setEnabled(getEnabled());
     }
 
     @Override
     public void setValue(IConfigurationNode node, Object pValue) throws InvalidValueException {
         super.setValue(node, pValue);
         if (node.getName().equals("enabled")) {
-            if (getEnabled()) {
-                if (entry.initialState != ModuleState.NOT_INITIALIZED)
-                    entry.enable();
-            } else {
-                entry.disable();
-            }
+            entry.setEnabled(getEnabled());
         }
     }
 

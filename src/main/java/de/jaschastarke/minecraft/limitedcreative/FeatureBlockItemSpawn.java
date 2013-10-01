@@ -97,10 +97,8 @@ public class FeatureBlockItemSpawn extends CoreModule<LimitedCreative> implement
         scheduleCleanUp();
     }
     
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onItemSpawn(ItemSpawnEvent event) {
-        if (event.isCancelled())
-            return;
         if (event.getEntity() instanceof Item) {
             if (this.isBlocked(event.getLocation().getBlock().getLocation(), ((Item) event.getEntity()).getItemStack().getType())) {
                 event.setCancelled(true);

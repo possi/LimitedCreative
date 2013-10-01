@@ -71,8 +71,8 @@ public class SyncronizedModel extends AbstractModel implements DBModel {
         Cuboid c = new Cuboid();
         for (Block block : blocks) {
             HasBlockState has = getMetaBlock(block);
-            if (has.set) {
-                ret.put(block, has.state);
+            if (has.isSet()) {
+                ret.put(block, has.getState());
             } else {
                 c.add(block.getLocation());
             }
@@ -120,7 +120,7 @@ public class SyncronizedModel extends AbstractModel implements DBModel {
     
     public BlockState getState(Block block) {
         HasBlockState has = getMetaBlock(block);
-        if (!has.set) {
+        if (!has.isSet()) {
             try {
                 BlockState state = q.find(block.getLocation());
                 setMetaBlock(block, state);
@@ -131,7 +131,7 @@ public class SyncronizedModel extends AbstractModel implements DBModel {
                 return null;
             }
         }
-        return has.state;
+        return has.getState();
     }
     public void setState(BlockState state) {
         Block block = state.getLocation().getBlock();

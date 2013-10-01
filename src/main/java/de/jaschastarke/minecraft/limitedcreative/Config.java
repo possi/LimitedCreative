@@ -12,7 +12,6 @@ import de.jaschastarke.maven.ArchiveDocComments;
 import de.jaschastarke.maven.PluginConfigurations;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
-import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 
 /**
  * Limited Creative - Configuration
@@ -36,14 +35,13 @@ public class Config extends PluginConfiguration {
     public void setValues(ConfigurationSection sect) {
         super.setValues(sect);
         
-        if (plugin.getModules().size() > 0)
+        if (plugin.getModules().count() > 0)
             setModuleStates();
     }
     
     public void setModuleStates() {
         ModuleEntry<IModule> metricsEntry = plugin.getModule(FeatureMetrics.class).getModuleEntry();
-        if (metricsEntry.initialState != ModuleState.NOT_INITIALIZED)
-            metricsEntry.initialState = getMetrics() ? ModuleState.ENABLED : ModuleState.DISABLED;
+        metricsEntry.setEnabled(getMetrics());
     }
     
     @Override
@@ -51,13 +49,7 @@ public class Config extends PluginConfiguration {
         super.setValue(node, pValue);
         
         if (node.getName().equals("metrics")) {
-            ModuleEntry<IModule> metricsEntry = plugin.getModule(FeatureMetrics.class).getModuleEntry();
-            if (getMetrics()) {
-                if (metricsEntry.initialState != ModuleState.NOT_INITIALIZED)
-                    metricsEntry.enable();
-            } else {
-                metricsEntry.disable();
-            }
+            setModuleStates();
         }
     }
 

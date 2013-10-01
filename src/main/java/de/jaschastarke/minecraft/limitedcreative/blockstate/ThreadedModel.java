@@ -91,7 +91,7 @@ public class ThreadedModel extends AbstractModel implements DBModel, Listener {
         Map<Block, Boolean> ret = new HashMap<Block, Boolean>();
         for (Block block : blocks) {
             HasBlockState has = getMetaBlock(block);
-            ret.put(block, has.restricted);
+            ret.put(block, has.isRestricted());
         }
         return ret;
     }
@@ -104,8 +104,8 @@ public class ThreadedModel extends AbstractModel implements DBModel, Listener {
             c = new Cuboid();
             for (Block block : blocks) {
                 HasBlockState has = getMetaBlock(block);
-                if (has.set) {
-                    ret.put(block, has.state);
+                if (has.getState() != null || has.isNull()) {
+                    ret.put(block, has.getState());
                 } else {
                     c.add(block.getLocation());
                     ret.put(block, null);
@@ -125,14 +125,17 @@ public class ThreadedModel extends AbstractModel implements DBModel, Listener {
     @Override
     public BlockState getState(Block block) {
         HasBlockState has = getMetaBlock(block);
-        if (!has.set || (has.dbSet && has.state == null)) {
+        if (has.getState() == null && !has.isNull()) {
+            // The DB-Entry isn't set
+            // and the entry doesn't tell us that it knows that it isn't set
+            //   (while using the threaded model, even having no Metadata entry, tells us there is no one in DB)
             return threads.callUpdate(block);
         }
-        return has.state;
+        return has.getState();
     }
     @Override
     public boolean isRestricted(Block block) {
-        return getMetaBlock(block).restricted;
+        return getMetaBlock(block).isRestricted();
     }
 
     @Override
@@ -201,37 +204,56 @@ public class ThreadedModel extends AbstractModel implements DBModel, Listener {
             block.setMetadata(BSMDKEY, metadataSet);
     }
     protected HasBlockState getMetaBlock(Metadatable m) {
-        HasBlockState has = new HasBlockState();
+        HasBlockState has = null;
         List<MetadataValue> metadata = m.getMetadata(BSMDKEY);
         for (MetadataValue v : metadata) {
             if (v.value() instanceof BlockState) {
-                has.set = true;
-                has.state = (BlockState) v.value();
-                has.dbSet = true;
-                has.restricted = has.state.isRestricted();
+                // The actual DB-entry is in Metadata (requires more memory)
+                has = new HasBlockState((BlockState) v.value());
                 break;
             } else if (v.getOwningPlugin() == mod.getPlugin()) {
                 if (v == metadataNull) {
-                    has.set = true;
-                    has.state = null;
+                    // Metadata knows, that there is no entry in DB
+                    has = new HasBlockState(true);
+                    break;
                 } else if (v == metadataSet) {
-                    has.set = true;
-                    has.state = null;
-                    has.dbSet = true;
+                    // Metadata knows, that there is survival-entry in DB
+                    has = new HasBlockState(true, false);
+                    break;
                 } else if (v == metadataSetRestricted) {
-                    has.set = true;
-                    has.state = null;
-                    has.dbSet = true;
-                    has.restricted = true;
+                    // Metadata knows, that there is creative-entry in DB
+                    has = new HasBlockState(true, true);
                 }
                 break;
             }
         }
-        return has;
+        if (has == null)
+            return new HasBlockState(false);
+        else
+            return has;
     }
     public static class HasBlockState extends AbstractModel.HasBlockState {
-        public boolean dbSet = false;
-        public boolean restricted = false;
+        private boolean restricted = false;
+        private boolean isNull = false;
+        
+        public HasBlockState(BlockState state) {
+            super(state);
+            restricted = state.isRestricted();
+        }
+        public HasBlockState(boolean isSet) {
+            super(isSet);
+            isNull = true;
+        }
+        public HasBlockState(boolean isSet, boolean isRestricted) {
+            super(isSet);
+            restricted = isRestricted;
+        }
+        public boolean isRestricted() {
+            return restricted;
+        }
+        public boolean isNull() {
+            return isNull;
+        }
     }
     
     public ModBlockStates getModel() {

@@ -18,7 +18,6 @@ import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.CustomRegion
 import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.PlayerRegionListener;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
-import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 
 public class ModRegions extends CoreModule<LimitedCreative> {
     private CustomRegionManager mgr;
@@ -40,16 +39,14 @@ public class ModRegions extends CoreModule<LimitedCreative> {
     public void initialize(ModuleEntry<IModule> pEntry) {
         super.initialize(pEntry);
         
-        blockDrops = plugin.getModule(FeatureBlockItemSpawn.class);
-        if (blockDrops == null)
-            blockDrops = plugin.addModule(new FeatureBlockItemSpawn(plugin)).getModule();
+        blockDrops = modules.linkSharedModule(FeatureBlockItemSpawn.class, plugin.getModules());
         
         config = plugin.getPluginConfig().registerSection(new RegionConfig(this, entry));
         
         if (!plugin.getServer().getPluginManager().isPluginEnabled("WorldGuard")) {
             if (config.getEnabled())
                 getLog().warn(plugin.getLocale().trans("region.warning.worldguard_not_found", getName()));
-            entry.initialState = ModuleState.NOT_INITIALIZED;
+            entry.deactivateUsage();
             return;
         }
         

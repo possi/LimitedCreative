@@ -16,7 +16,6 @@ import de.jaschastarke.minecraft.limitedcreative.Config;
 import de.jaschastarke.minecraft.limitedcreative.ModBlockStates;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
-import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 
 /**
  * BlockState-Feature
@@ -45,14 +44,9 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
         else
             super.setValue(node, pValue);
         if (node.getName().equals("enabled")) {
-            if (getEnabled()) {
-                if (entry.initialState != ModuleState.NOT_INITIALIZED)
-                    entry.enable();
-            } else {
-                entry.disable();
-            }
+            entry.setEnabled(getEnabled());
         } else if (node.getName().equals("useThreading")) {
-            if (entry.getState() == ModuleState.ENABLED) {
+            if (entry.isEnabled()) {
                 entry.disable();
                 entry.enable();
             }
@@ -62,8 +56,7 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
     @Override
     public void setValues(ConfigurationSection sect) {
         super.setValues(sect);
-        if (entry.initialState != ModuleState.NOT_INITIALIZED)
-            entry.initialState = getEnabled() ? ModuleState.ENABLED : ModuleState.DISABLED;
+        entry.setEnabled(getEnabled());
     }
     @Override
     public String getName() {

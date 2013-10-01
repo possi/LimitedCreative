@@ -24,8 +24,7 @@ public class DependencyListener implements Listener {
             String incomp = Hooks.InventoryIncompatible.test();
             if (incomp != null) {
                 mod.getLog().warn(plugin.getLocale().trans("inventory.warning.conflict", incomp, mod.getName()));
-                mod.getModuleEntry().initialState = ModuleState.NOT_INITIALIZED;
-                mod.getModuleEntry().disable();
+                mod.getModuleEntry().deactivateUsage();
             }
         }
     }
@@ -36,15 +35,13 @@ public class DependencyListener implements Listener {
             ModGameModePerm mod = plugin.getModule(ModGameModePerm.class);
             if (mod != null && mod.getModuleEntry().getState() == ModuleState.ENABLED) {
                 mod.getLog().warn(plugin.getLocale().trans("gmperm.warning.vault_not_found", mod.getName()));
-                mod.getModuleEntry().initialState = ModuleState.NOT_INITIALIZED;
-                mod.getModuleEntry().disable();
+                mod.getModuleEntry().deactivateUsage();
             }
         } else if (event.getPlugin().getName().equals("WorldGuard")) {
             ModRegions mod = plugin.getModule(ModRegions.class);
             if (mod != null && mod.getModuleEntry().getState() == ModuleState.ENABLED) {
                 mod.getLog().warn(plugin.getLocale().trans("region.warning.worldguard_not_found", mod.getName()));
-                mod.getModuleEntry().initialState = ModuleState.NOT_INITIALIZED;
-                mod.getModuleEntry().disable();
+                mod.getModuleEntry().deactivateUsage();
             }
         }
     }

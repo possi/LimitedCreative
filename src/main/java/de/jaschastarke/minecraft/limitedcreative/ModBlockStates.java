@@ -18,7 +18,6 @@ import de.jaschastarke.minecraft.limitedcreative.blockstate.ThreadedModel;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.worldedit.LCEditSessionFactory;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
-import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 
 public class ModBlockStates extends CoreModule<LimitedCreative> {
     private BlockStateConfig config;
@@ -38,17 +37,12 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
     public void initialize(ModuleEntry<IModule> entry) {
         super.initialize(entry);
         
-        blockDrops = plugin.getModule(FeatureBlockItemSpawn.class);
-        if (blockDrops == null)
-            blockDrops = plugin.addModule(new FeatureBlockItemSpawn(plugin)).getModule();
-        
         config = new BlockStateConfig(this, entry);
         plugin.getPluginConfig().registerSection(config);
         
-        if (plugin.getModule(AdditionalBlockBreaks.class) == null) {
-            plugin.addModule(new AdditionalBlockBreaks(plugin));
-        }
-        addModule(new BlockFall(plugin));
+        blockDrops = modules.linkSharedModule(FeatureBlockItemSpawn.class, plugin.getModules());
+        modules.linkSharedModule(AdditionalBlockBreaks.class, plugin.getModules());
+        this.addModule(new BlockFall(plugin));
         
         listeners.addListener(new BlockListener(this));
         listeners.addListener(new HangingListener(this));
@@ -72,7 +66,7 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
         } catch (Exception e) {
             e.printStackTrace();
             getLog().warn(plugin.getLocale().trans("block_state.error.sql_connection_failed", getName()));
-            entry.initialState = ModuleState.NOT_INITIALIZED;
+            entry.deactivateUsage();
             return;
         }
         super.onEnable();

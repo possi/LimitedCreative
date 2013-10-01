@@ -19,7 +19,6 @@ import de.jaschastarke.minecraft.limitedcreative.inventories.store.InvYamlStorag
 import de.jaschastarke.minecraft.limitedcreative.inventories.store.PlayerInventoryStorage;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
-import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 
 public class ModInventories extends CoreModule<LimitedCreative> {
     protected PlayerInventoryStorage storage;
@@ -42,17 +41,13 @@ public class ModInventories extends CoreModule<LimitedCreative> {
         config = plugin.getPluginConfig().registerSection(new InventoryConfig(this, entry));
         armor_config = config.registerSection(new ArmoryConfig(this));
         
-        if (!config.getEnabled()) {
-            entry.initialState = ModuleState.DISABLED;
-            return;
-        }
         if (plugin.getServer().getPluginManager().isPluginEnabled("AuthMe")) {
             addModule(new AuthMeInventories(plugin, this));
         }
         String incomp = Hooks.InventoryIncompatible.test();
         if (config.getEnabled() && incomp != null) {
             getLog().warn(plugin.getLocale().trans("inventory.warning.conflict", incomp, this.getName()));
-            entry.initialState = ModuleState.NOT_INITIALIZED;
+            entry.deactivateUsage();
         }
     }
     @Override

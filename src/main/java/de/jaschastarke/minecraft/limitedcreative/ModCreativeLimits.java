@@ -12,7 +12,6 @@ import de.jaschastarke.minecraft.limitedcreative.limits.LimitConfig;
 import de.jaschastarke.minecraft.limitedcreative.limits.PlayerListener;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
-import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 
 public class ModCreativeLimits extends CoreModule<LimitedCreative> {
     protected LimitConfig config;
@@ -37,18 +36,8 @@ public class ModCreativeLimits extends CoreModule<LimitedCreative> {
         listeners.addListener(new BlockListener(this));
         config = plugin.getPluginConfig().registerSection(new LimitConfig(this, entry));
         
-        blockDrops = plugin.getModule(FeatureBlockItemSpawn.class);
-        if (blockDrops == null)
-            blockDrops = plugin.addModule(new FeatureBlockItemSpawn(plugin)).getModule();
-        
-        if (plugin.getModule(AdditionalBlockBreaks.class) == null) {
-            plugin.addModule(new AdditionalBlockBreaks(plugin));
-        }
-        
-        if (!config.getEnabled()) {
-            entry.initialState = ModuleState.DISABLED;
-            return;
-        }
+        blockDrops = modules.linkSharedModule(FeatureBlockItemSpawn.class, plugin.getModules());
+        modules.linkSharedModule(AdditionalBlockBreaks.class, plugin.getModules());
     }
     
     public FeatureBlockItemSpawn getBlockSpawn() {

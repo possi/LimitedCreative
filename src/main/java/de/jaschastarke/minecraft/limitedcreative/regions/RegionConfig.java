@@ -15,7 +15,6 @@ import de.jaschastarke.minecraft.limitedcreative.ModRegions;
 import de.jaschastarke.minecraft.limitedcreative.limits.BlackList;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
-import de.jaschastarke.modularize.ModuleEntry.ModuleState;
 
 /**
  * Region GameModes-Feature
@@ -42,19 +41,13 @@ public class RegionConfig extends Configuration implements IConfigurationSubGrou
         if (!(pValue instanceof BlackList))
             super.setValue(node, pValue);
         if (node.getName().equals("enabled")) {
-            if (getEnabled()) {
-                if (entry.initialState != ModuleState.NOT_INITIALIZED)
-                    entry.enable();
-            } else {
-                entry.disable();
-            }
+            entry.setEnabled(getEnabled());
         }
     }
     @Override
     public void setValues(ConfigurationSection sect) {
         super.setValues(sect);
-        if (entry.initialState != ModuleState.NOT_INITIALIZED)
-            entry.initialState = getEnabled() ? ModuleState.ENABLED : ModuleState.DISABLED;
+        entry.setEnabled(getEnabled());
         
         // Config Upgrade
         if (!sect.contains("rememberOptional") && sect.contains("remember"))

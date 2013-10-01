@@ -20,7 +20,7 @@ public abstract class AbstractModel {
     
     protected void moveMetaState(Block from, Block to) {
         HasBlockState metaBlock = getMetaBlock(from);
-        if (metaBlock.set && metaBlock.state != null) {
+        if (metaBlock.isSet() && metaBlock.getState() != null) {
             BlockState state = metaBlock.state;
             state.setLocation(to.getLocation());
             setMetaBlock(to, state);
@@ -45,28 +45,43 @@ public abstract class AbstractModel {
             m.setMetadata(BSMDKEY, new FixedMetadataValue(plugin, s));
     }
     protected HasBlockState getMetaBlock(Metadatable m) {
-        HasBlockState has = new HasBlockState();
+        HasBlockState has = null;
         List<MetadataValue> metadata = m.getMetadata(BSMDKEY);
         for (MetadataValue v : metadata) {
             if (v.value() instanceof BlockState) {
-                has.set = true;
-                has.state = (BlockState) v.value();
+                has = new HasBlockState((BlockState) v.value());
                 break;
             } else if (v == metadataNull) {
-                has.set = true;
-                has.state = null;
+                // Metadata Knows, that there is no entry in DB
+                has = new HasBlockState(true);
                 break;
             }
         }
-        return has;
+        if (has == null)
+            return new HasBlockState(false);
+        else
+            return has;
     }
     protected void removeMetaBlock(Metadatable m) {
         m.removeMetadata(BSMDKEY, plugin);
     }
     
     public static class HasBlockState {
-        public boolean set = false;
-        public BlockState state = null;
+        private boolean set = false;
+        private BlockState state = null;
+        public HasBlockState(BlockState state) {
+            set = true;
+            this.state = state;
+        }
+        public HasBlockState(boolean isSet) {
+            set = isSet;
+        }
+        public boolean isSet() {
+            return set;
+        }
+        public BlockState getState() {
+            return state;
+        }
     }
 
 }
