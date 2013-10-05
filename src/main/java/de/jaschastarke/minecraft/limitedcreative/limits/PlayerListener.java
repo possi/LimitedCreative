@@ -109,7 +109,7 @@ public class PlayerListener implements Listener {
         if (!event.isCancelled() && event.getPlayer().getGameMode() == GameMode.CREATIVE) {
             LimitConfig.BlockPickup pickup = mod.getConfig().getBlockPickup();
             if (pickup != null) {
-                if (checkPermission(event, NoLimitPermissions.DROP))
+                if (checkPermission(event, NoLimitPermissions.PICKUP))
                     return;
                 
                 if (pickup == BlockPickup.REMOVE) {
