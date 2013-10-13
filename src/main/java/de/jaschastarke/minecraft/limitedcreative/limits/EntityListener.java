@@ -54,11 +54,15 @@ public class EntityListener implements Listener {
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
         if (event.getEntity() instanceof LivingEntity && event.getDroppedExp() > 0) {
-            if (mod.getNoXPMobs().containsKey(event.getEntity())) {
+            if (mod.getNoDropMobs().isXPPrevented(event.getEntity())) {
                 event.setDroppedExp(0);
-                mod.getNoXPMobs().remove(event.getEntity());
+                event.getDrops().clear();
             }
         }
+        if (event.getDrops().size() > 0 && mod.getNoDropMobs().isDropPrevented(event.getEntity())) {
+            event.getDrops().clear();
+        }
+        mod.getNoDropMobs().remove(event.getEntity());
     }
     
     private boolean checkPermission(Player player, IAbstractPermission perm) {

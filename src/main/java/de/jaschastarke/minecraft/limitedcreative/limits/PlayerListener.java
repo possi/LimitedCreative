@@ -218,7 +218,7 @@ public class PlayerListener implements Listener {
         }
     }
     
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityDamageByEntity(EntityDamageEvent rawevent) {
         if (rawevent instanceof EntityDamageByEntityEvent && !rawevent.isCancelled()) {
             EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) rawevent;
@@ -240,7 +240,12 @@ public class PlayerListener implements Listener {
                         }
                     } else if (event.getEntity() instanceof LivingEntity) {
                         if (!checkPermission(player, NoLimitPermissions.STATS_XP)) {
-                            mod.getNoXPMobs().put(event.getEntity(), null);
+                            mod.getNoDropMobs().preventXP(event.getEntity());
+                        }
+                    }
+                    if (!event.isCancelled()) {
+                        if (!checkPermission(player, NoLimitPermissions.DROP)) {
+                            mod.getNoDropMobs().preventDrop(event.getEntity());
                         }
                     }
                 }

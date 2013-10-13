@@ -70,10 +70,10 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
     /**
      * BlockStateEnabled
      * 
-     * This experimental Feature stores the GameMode a Block was created in, and prevents drops if a Block was created 
+     * This Feature stores the GameMode a Block was created in, and prevents drops if a Block was created 
      * in creative mode. 
      * 
-     * Due to the Experimental state this Feature isn't enabled by default. It uses the Database-credentials from 
+     * Due to the huge load of this Feature, it isn't enabled by default. It uses the Database-credentials from 
      * bukkit.yml (http://wiki.bukkit.org/Bukkit.yml#database) in the server-directory.
      * 
      * default: false
@@ -86,9 +86,9 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
     /**
      * BlockStateThreading
      * 
-     * This experimental variant of the experimental Feature uses Threading to minimize lag. This fully relies on
-     * Bukkit metadata implementation. You only should need this, if there are often plays more then 10 players at once 
-     * on your server. Be aware that this requires more memory.
+     * Uses Threading to minimize lag. This fully relies on Bukkit metadata implementation. You only should need this,
+     * if there are often plays more then 10 players at once on your server. Be aware that this requires more memory,
+     * to increase the performance
      * 
      * default: false
      */
