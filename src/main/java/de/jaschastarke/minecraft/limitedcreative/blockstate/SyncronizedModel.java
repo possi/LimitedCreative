@@ -135,21 +135,15 @@ public class SyncronizedModel extends AbstractModel implements DBModel {
     }
     public void setState(BlockState state) {
         Block block = state.getLocation().getBlock();
-        boolean update = hasMetaBlock(block);
-        boolean store = state.isRestricted() || mod.getConfig().getLogSurvival();
+        boolean store = state != null && (state.isRestricted() || mod.getConfig().getLogSurvival());
         
         setMetaBlock(block, store ? state : null);
         
         try {
-            if (update) {
-                if (!store)
-                    q.delete(state);
-                else if (!q.update(state))
-                    q.insert(state);
-            } else {
-                if (store)
-                    q.insert(state);
-            }
+            if (!store)
+                q.delete(state);
+            else if (!q.update(state))
+                q.insert(state);
         } catch (SQLException e) {
             mod.getLog().severe(e.getMessage());
             mod.getLog().warn("Failed to update BlockState in DB at " + block.getLocation().toString());
