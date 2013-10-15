@@ -1,65 +1,28 @@
 package de.jaschastarke.minecraft.limitedcreative.blockstate;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
-import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 
 import de.jaschastarke.bukkit.lib.chat.ChatFormattings;
 import de.jaschastarke.bukkit.lib.commands.CommandContext;
+import de.jaschastarke.bukkit.lib.database.ResultIterator;
 import de.jaschastarke.database.db.Database;
 import de.jaschastarke.minecraft.limitedcreative.ModBlockStates;
+import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockState.Source;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.DBModel.Cuboid;
-import de.jaschastarke.utils.IDebugLogHolder;
-import de.jaschastarke.utils.ISimpleLogger;
 
-public class DatabaseMigrationThread extends Thread implements IDebugLogHolder {
-    protected static final int CHUNK_SIZE = 512;
-    protected ModBlockStates mod;
-    protected CommandContext context;
-    protected Database source;
-    protected Database target;
-    protected Mode mode = Mode.REPLACE;
-    private boolean debug = false;
-    
-    public static enum Mode {
-        REPLACE,
-        UPDATE
-    }
-
-    public DatabaseMigrationThread(ModBlockStates mod, CommandContext context, Database source, Database target) {
-        this.mod = mod;
-        this.context = context;
-        this.source = source;
-        this.target = target;
-        setName("LC BlockState Database-Migration");
-        setPriority(MIN_PRIORITY);
-    }
-    
-    public Mode getMode() {
-        return mode;
-    }
-    public void setMode(Mode mode) {
-        this.mode = mode;
-    }
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    }
-
-    @Override
-    public boolean isDebug() {
-        return debug;
-    }
-
-    @Override
-    public ISimpleLogger getLog() {
-        return mod.getLog();
+public class CreativeControlImportThread extends DatabaseMigrationThread {
+    public CreativeControlImportThread(ModBlockStates mod, CommandContext context, Database source, Database target) {
+        super(mod, context, source, target);
     }
 
     @Override
@@ -76,19 +39,26 @@ public class DatabaseMigrationThread extends Thread implements IDebugLogHolder {
                 targetConnection.createStatement().execute("DELETE FROM lc_block_state");
             }
             
-            DBQueries sourceDB = new DBQueries(this, source);
             DBQueries targetDB = new DBQueries(this, target);
             
             List<WorldSize> worldBounds = new ArrayList<WorldSize>();
-            ResultSet fetchBounds = sourceConnection.createStatement().executeQuery("SELECT world, MIN(x), MIN(z), MAX(x), MAX(z) FROM lc_block_state GROUP BY world");
-            while (fetchBounds.next()) {
-                worldBounds.add(new WorldSize(fetchBounds.getString("world"),
-                                fetchBounds.getInt(2),
-                                fetchBounds.getInt(3),
-                                fetchBounds.getInt(4),
-                                fetchBounds.getInt(5)));
+            for (World w : mod.getPlugin().getServer().getWorlds()) {
+                try {
+                    ResultSet fetchBounds = sourceConnection.createStatement().executeQuery("SELECT MIN(x), MIN(z), MAX(x), MAX(z) FROM crcr_blocks_" + w.getName());
+                    while (fetchBounds.next()) {
+                        worldBounds.add(new WorldSize(w,
+                                        fetchBounds.getInt(1),
+                                        fetchBounds.getInt(2),
+                                        fetchBounds.getInt(3),
+                                        fetchBounds.getInt(4)));
+                    }
+                    fetchBounds.close();
+                } catch (SQLException e) {
+                    if (isDebug())
+                        mod.getLog().debug("crcr_blocks_" + w.getName() + " not found: " + e.getMessage());
+                    mod.getLog().info("CreativeControl has BlockData for World " + w.getName());
+                }
             }
-            fetchBounds.close();
             
             for (WorldSize bounds : worldBounds) {
                 World world = mod.getPlugin().getServer().getWorld(bounds.getWorld());
@@ -105,7 +75,7 @@ public class DatabaseMigrationThread extends Thread implements IDebugLogHolder {
                             c.add(new Location(world, x + CHUNK_SIZE, world.getMaxHeight(), z + CHUNK_SIZE));
                             System.out.println("Fetching Cuboid: " + c.toString());
                             
-                            for (BlockState bs : sourceDB.iterateAllIn(c)) {
+                            for (BlockState bs : iterateAllIn(c)) {
                                 if (mode == Mode.UPDATE) {
                                     BlockState xs = targetDB.find(bs.getLocation());
                                     if (xs == null) {
@@ -138,48 +108,32 @@ public class DatabaseMigrationThread extends Thread implements IDebugLogHolder {
             context.responseFormatted(ChatFormattings.ERROR, L("command.blockstate.migration_error", e.getMessage()));
         }
     }
-    
-    protected String L(String msg, Object... args) {
-        return mod.getPlugin().getLocale().trans(msg, args);
-    }
-    
-    protected static class WorldSize {
-        UUID w;
-        int minX, minZ, maxX, maxZ;
-        
-        public WorldSize(String w, int minX, int minZ, int maxX, int maxZ) {
-            this.w = UUID.fromString(w);
-            this.minX = minX;
-            this.minZ = minZ;
-            this.maxX = maxX;
-            this.maxZ = maxZ;
+
+    private PreparedStatement findall = null;
+    private Iterable<BlockState> iterateAllIn(final DBModel.Cuboid c) throws SQLException {
+        if (isDebug())
+            getLog().debug("DBQuery: iterateAllIn: " + c.toString());
+        if (findall == null) {
+            findall = source.prepare("SELECT * FROM crcr_blocks_" + c.getWorld().getName() + " LEFT JOIN crcr_players ON owner = id WHERE x >= ? AND x <= ? AND y >= ? AND y <= ? AND z >= ? AND z <= ?");
         }
-        public WorldSize(World w, int minX, int minZ, int maxX, int maxZ) {
-            this.w = w.getUID();
-            this.minX = minX;
-            this.minZ = minZ;
-            this.maxX = maxX;
-            this.maxZ = maxZ;
-        }
-        public String toString() {
-            World world = Bukkit.getServer().getWorld(w);
-            String wn = world == null ? w.toString() : world.getName();
-            return getClass().getSimpleName() + "{world = " + wn + ", minX = " + minX + ", minZ = " + minZ + ", maxX = " + maxX + ", maxZ = " + maxZ + "}";
-        }
-        public UUID getWorld() {
-            return w;
-        }
-        public int getMinX() {
-            return minX;
-        }
-        public int getMinZ() {
-            return minZ;
-        }
-        public int getMaxX() {
-            return maxX;
-        }
-        public int getMaxZ() {
-            return maxZ;
-        }
+        findall.setInt(1, c.getMinX());
+        findall.setInt(2, c.getMaxX());
+        findall.setInt(3, c.getMinY());
+        findall.setInt(4, c.getMaxY());
+        findall.setInt(5, c.getMinZ());
+        findall.setInt(6, c.getMaxZ());
+        ResultSet rs = findall.executeQuery();
+        return new ResultIterator<BlockState>(rs) {
+            @Override
+            protected BlockState fetch(ResultSet rs) throws SQLException {
+                BlockState bs = new BlockState();
+                bs.setLocation(new Location(c.getWorld(), rs.getInt("x"), rs.getInt("y"), rs.getInt("z")));
+                bs.setDate(new Date(rs.getLong("time")));
+                bs.setGameMode(GameMode.CREATIVE);
+                bs.setPlayerName(rs.getString("player"));
+                bs.setSource(Source.PLAYER);
+                return bs;
+            }
+        };
     }
 }

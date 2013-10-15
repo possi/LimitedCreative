@@ -174,11 +174,8 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
      * values aren't supported yet. If you don't add a data-value, all blocks of this material are blocked.
      * 
      * default:
-     *  - SIGN
+     *  - WALL_SIGN
      *  - SIGN_POST
-     *  - LEVER
-     *  - STONE_BUTTON
-     *  - WOOD_BUTTON
      *  - JUKEBOX
      */
     @IsConfigurationNode(name = "interact", order = 600)
@@ -188,9 +185,6 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
             if (!config.contains("interact")) {
                 interactList.add(new BlackList.Blacklisted(Material.WALL_SIGN));
                 interactList.add(new BlackList.Blacklisted(Material.SIGN_POST));
-                interactList.add(new BlackList.Blacklisted(Material.LEVER));
-                interactList.add(new BlackList.Blacklisted(Material.STONE_BUTTON));
-                interactList.add(new BlackList.Blacklisted(Material.WOOD_BUTTON));
                 interactList.add(new BlackList.Blacklisted(Material.JUKEBOX));
             }
         }

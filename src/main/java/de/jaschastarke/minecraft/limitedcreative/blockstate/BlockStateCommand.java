@@ -187,10 +187,12 @@ public class BlockStateCommand extends BukkitCommand implements IHelpDescribed {
      * Imports BlockState Data from a given Database to the current active Database.
      * A Server-Restart is needed after migration!
      * Parameters:
-     *  -u  --update    Don't delete existing records / only overwrite if newer
+     *  -u  --update            Don't delete existing records / only overwrite if newer
+     *      --import=<type>     Import from other Plugins. Supported Types:
+     *               cc             CreativeControl
      */
     @IsCommand("migrate")
-    @Usages("-u <dsn> [username] [password]")
+    @Usages("-u --import=cc <dsn> [username] [password]")
     public boolean migrateDatabase(final CommandContext context, String... args) throws CommandException, MissingPermissionCommandException {
         DefinedParameterParser params = new DefinedParameterParser(args, new String[]{"debug", "d", "update", "u", "confirm"});
         if (params.getArgumentCount() < 1) {// doesn't count parameters
@@ -219,19 +221,31 @@ public class BlockStateCommand extends BukkitCommand implements IHelpDescribed {
             return true;
         }
         
-        if (!params.getFlags().contains("confirm")) {
-            context.responseFormatted(ChatFormattings.INFO, L("command.blockstate.migrate_confirm", "--confirm"));
-            return true;
+        DatabaseMigrationThread thread;
+        if (params.getParameter("import") != null) {
+            if (params.getParameter("import").equals("cc")) {
+                thread = new CreativeControlImportThread(mod, context, source, target);
+            } else {
+                context.responseFormatted(ChatFormattings.ERROR, L("command.blockstate.migrate_importtype_error", params.getParameter("import")));
+                return false;
+            }
+        } else {
+             thread = new DatabaseMigrationThread(mod, context, source, target);
         }
-        
-        mod.getModuleEntry().disable();
-        DatabaseMigrationThread thread = new DatabaseMigrationThread(mod, context, source, target);
         if (params.getFlags().contains("update") || params.getFlags().contains("u")) {
             thread.setMode(DatabaseMigrationThread.Mode.UPDATE);
         }
         if (params.getFlags().contains("debug") || params.getFlags().contains("d")) {
             thread.setDebug(true);
         }
+        
+        if (!params.getFlags().contains("confirm")) {
+            context.responseFormatted(ChatFormattings.INFO, L("command.blockstate.migrate_confirm", "--confirm"));
+            return true;
+        }
+        
+        mod.getModuleEntry().disable();
+        
         thread.start();
         context.response(L("command.blockstate.migrate_started", source.getType(), target.getType()));
         return true;
