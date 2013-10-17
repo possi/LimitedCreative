@@ -60,6 +60,11 @@
         <id>luricos.de-repo</id>
         <url>http://repo.luricos.de/bukkit-plugins/</url>
     </repository><!- - -->
+    <!-- Official LogBlock repository -->
+    <repository>
+        <id>md5</id>
+        <url>http://repo.md-5.net/content/groups/public/</url>
+    </repository>
   </repositories>
   
   <dependencies>
@@ -114,7 +119,7 @@
         <!-- http://dev.bukkit.org/bukkit-plugins/logblock/ -->
         <groupId>de.diddiz</groupId>
         <artifactId>logblock</artifactId>
-        <version>1.70</version>
+        <version>dev-SNAPSHOT</version>
     </dependency>
   </dependencies>
   
