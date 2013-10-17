@@ -4,16 +4,15 @@ import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import uk.org.whoami.authme.events.RestoreInventoryEvent;
-import uk.org.whoami.authme.events.StoreInventoryEvent;
 import de.jaschastarke.bukkit.lib.SimpleModule;
 import de.jaschastarke.minecraft.limitedcreative.LimitedCreative;
 import de.jaschastarke.minecraft.limitedcreative.ModInventories;
+import fr.xephi.authme.events.RestoreInventoryEvent;
+import fr.xephi.authme.events.StoreInventoryEvent;
 
-@Deprecated // AuthMe 3.0 released. Compatibility for older versions will be removed sometime
-public class AuthMeInventories extends SimpleModule<LimitedCreative> implements Listener {
+public class AuthMe3Inventories extends SimpleModule<LimitedCreative> implements Listener {
     ModInventories invmod;
-    public AuthMeInventories(LimitedCreative plugin, ModInventories modInventories) {
+    public AuthMe3Inventories(LimitedCreative plugin, ModInventories modInventories) {
         super(plugin);
         invmod = modInventories;
     }

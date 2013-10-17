@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 
 import de.jaschastarke.hooking.BooleanHooker;
 import de.jaschastarke.hooking.GetHooker;
+import de.jaschastarke.minecraft.limitedcreative.hooks.AuthMe3Hooks;
 import de.jaschastarke.minecraft.limitedcreative.hooks.AuthMeHooks;
 import de.jaschastarke.minecraft.limitedcreative.hooks.MultiVerseHooks;
 import de.jaschastarke.minecraft.limitedcreative.hooks.PlayerCheckHooker;
@@ -26,10 +27,12 @@ public final class Hooks {
         IsMultiVerse.clearHooks();
         InventoryIncompatible.clearHooks();
         
-        if (isPluginEnabled("AuthMe")) {
+        if (isAuthMePresent()) {
             new AuthMeHooks(plugin);
+        } else if (isAuthMe3Present()) {
+             plugin.getModules().addSharedModule(new AuthMe3Hooks(plugin));
         }
-        if (isPluginEnabled("xAuth")) {
+        if (isXAuth20Present()) {
             new xAuthHooks(plugin);
         }
         if (isPluginEnabled("Multiverse-Core")) {
@@ -48,5 +51,38 @@ public final class Hooks {
                 return null;
             }
         });
+    }
+    
+    public static boolean isAuthMePresent() {
+        if (isPluginEnabled("AuthMe")) {
+            try {
+                return Class.forName("uk.org.whoami.authme.api.API") != null;
+            } catch (ClassNotFoundException e) {
+                return false;
+            }
+        }
+        return false;
+    }
+    
+    public static boolean isAuthMe3Present() {
+        if (isPluginEnabled("AuthMe")) {
+            try {
+                return Class.forName("fr.xephi.authme.api.API") != null;
+            } catch (ClassNotFoundException e) {
+                return false;
+            }
+        }
+        return false;
+    }
+    
+    public static boolean isXAuth20Present() {
+        if (isPluginEnabled("xAuth")) {
+            try {
+                return Class.forName("com.cypherx.xauth.xAuth") != null;
+            } catch (ClassNotFoundException e) {
+                return false;
+            }
+        }
+        return false;
     }
 }

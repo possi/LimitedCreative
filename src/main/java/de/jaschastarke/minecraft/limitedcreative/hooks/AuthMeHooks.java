@@ -6,6 +6,7 @@ import uk.org.whoami.authme.api.API;
 import de.jaschastarke.minecraft.limitedcreative.Hooks;
 import de.jaschastarke.minecraft.limitedcreative.LimitedCreative;
 
+@Deprecated // AuthMe 3.0 released. Compatibility for older versions will be removed sometime
 public class AuthMeHooks {
     public AuthMeHooks(final LimitedCreative plugin) {
         Hooks.IsLoggedIn.register(new PlayerCheckHooker.Check() {

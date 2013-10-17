@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import de.jaschastarke.bukkit.lib.CoreModule;
 import de.jaschastarke.bukkit.lib.commands.AliasHelpedCommand;
+import de.jaschastarke.minecraft.limitedcreative.hooks.AuthMe3Hooks;
 import de.jaschastarke.minecraft.limitedcreative.regions.BlockListener;
 import de.jaschastarke.minecraft.limitedcreative.regions.IWorldGuardIntegration;
 import de.jaschastarke.minecraft.limitedcreative.regions.PlayerData;
@@ -48,6 +49,9 @@ public class ModRegions extends CoreModule<LimitedCreative> {
                 getLog().warn(plugin.getLocale().trans("region.warning.worldguard_not_found", getName()));
             entry.deactivateUsage();
             return;
+        }
+        if (Hooks.isAuthMe3Present()) {
+            modules.linkSharedModule(AuthMe3Hooks.class, plugin.getModules());
         }
         
         command = new RegionsCommand(this);

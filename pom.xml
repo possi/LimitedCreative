@@ -87,6 +87,12 @@
         <version>2.9.5</version>
     </dependency>
     <dependency>
+        <!-- http://dev.bukkit.org/server-mods/authme-reloaded/ -->
+        <groupId>fr.xephi</groupId>
+        <artifactId>authme</artifactId>
+        <version>3.0</version>
+    </dependency>
+    <dependency>
         <!-- http://dev.bukkit.org/server-mods/multiverse-core/ -->
         <groupId>com.onarandombox.multiversecore</groupId>
         <artifactId>Multiverse-Core</artifactId>
@@ -96,7 +102,7 @@
         <!-- http://dev.bukkit.org/bukkit-plugins/multiworld-v-2-0/ -->
         <groupId>multiworld</groupId>
         <artifactId>multiworld</artifactId>
-        <version>4.6.6</version>
+        <version>4.7.2</version>
     </dependency>
     <dependency>
         <!-- http://dev.bukkit.org/server-mods/xauth/ -->
