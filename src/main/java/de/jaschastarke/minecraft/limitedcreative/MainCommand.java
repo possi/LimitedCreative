@@ -1,10 +1,14 @@
 package de.jaschastarke.minecraft.limitedcreative;
 
+import java.util.List;
+
 import de.jaschastarke.LocaleString;
 import de.jaschastarke.bukkit.lib.commands.BukkitCommand;
 import de.jaschastarke.bukkit.lib.commands.CommandContext;
 import de.jaschastarke.bukkit.lib.commands.IHelpDescribed;
 import de.jaschastarke.bukkit.lib.commands.IMethodCommandContainer;
+import de.jaschastarke.bukkit.lib.commands.MethodCommand;
+import de.jaschastarke.bukkit.lib.commands.TabCompletionHelper;
 import de.jaschastarke.bukkit.lib.commands.annotations.Description;
 import de.jaschastarke.bukkit.lib.commands.annotations.IsCommand;
 import de.jaschastarke.bukkit.lib.commands.annotations.NeedsPermission;
@@ -88,5 +92,10 @@ public class MainCommand extends BukkitCommand implements IHelpDescribed, IMetho
             }
         });
         return true;
+    }
+    
+    @Override
+    public List<TabCompletionHelper> getTabCompleter(MethodCommand cmd) {
+        return null;
     }
 }

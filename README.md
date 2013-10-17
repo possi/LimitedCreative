@@ -10,16 +10,11 @@ Required dependencies
 Dependencies for optional integrations
 --------------------------------------
 
-* [WorldGuard](https://github.com/sk89q/worldguard)
-* [xAuth](http://dev.bukkit.org/server-mods/xauth/)
-* [AuthMe](http://dev.bukkit.org/server-mods/authme-reloaded/) ([GitSource](https://github.com/Multiplayer-italia/AuthMe-Reloaded))
-* [Multiverse-Core](http://dev.bukkit.org/server-mods/multiverse-core/)
-
-----
-
-To use Maven packaging
-----------------------
-
-For required development snapshots, that aren't found by maven, you have to clone the project and do:
-$ mvn install
-in the directory of the project
+* [WorldGuard](http://dev.bukkit.org/bukkit-plugins/worldguard/)
+* [WorldEdit](http://dev.bukkit.org/bukkit-plugins/worldedit/)
+* [xAuth](http://dev.bukkit.org/bukkit-plugins/xauth/)
+* [AuthMe](http://dev.bukkit.org/bukkit-plugins/authme-reloaded/)
+* [Multiverse-Core](http://dev.bukkit.org/bukkit-plugins/multiverse-core/)
+* [Vault](http://dev.bukkit.org/bukkit-plugins/vault/)
+* [Multiworld](http://dev.bukkit.org/bukkit-plugins/multiworld-v-2-0/)
+* [LogBlock](http://dev.bukkit.org/bukkit-plugins/logblock/)

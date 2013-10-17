@@ -18,6 +18,7 @@ import de.jaschastarke.bukkit.lib.commands.MethodCommand;
 import de.jaschastarke.bukkit.lib.commands.IMethodCommandContainer;
 import de.jaschastarke.bukkit.lib.commands.MissingPermissionCommandException;
 import de.jaschastarke.bukkit.lib.commands.NeedsPlayerArgumentCommandException;
+import de.jaschastarke.bukkit.lib.commands.TabCompletionHelper;
 import de.jaschastarke.bukkit.lib.commands.annotations.Alias;
 import de.jaschastarke.bukkit.lib.commands.annotations.Description;
 import de.jaschastarke.bukkit.lib.commands.annotations.IsCommand;
@@ -135,6 +136,11 @@ public class FeatureSwitchGameMode extends CoreModule<LimitedCreative> {
         @Usages("[player]")
         public boolean adventure(CommandContext context, String player) throws MissingPermissionCommandException, CommandException {
             return changeGameMode(context, player, GameMode.ADVENTURE, SwitchGameModePermissions.ADVENTURE);
+        }
+        
+        @Override
+        public List<TabCompletionHelper> getTabCompleter(MethodCommand cmd) {
+            return null;
         }
     }
 }
