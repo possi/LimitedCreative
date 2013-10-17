@@ -8,7 +8,7 @@
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <plib.version>1.3</plib.version>
+    <plib.version>1.4-SNAPSHOT</plib.version>
   </properties>
   
   <scm>

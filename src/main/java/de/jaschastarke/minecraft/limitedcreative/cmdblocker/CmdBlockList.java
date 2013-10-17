@@ -6,9 +6,11 @@ import java.util.List;
 
 import de.jaschastarke.bukkit.lib.configuration.ConfigurableList;
 import de.jaschastarke.bukkit.lib.configuration.IToGeneric;
+import de.jaschastarke.bukkit.lib.configuration.command.ITabComplete;
+import de.jaschastarke.bukkit.lib.configuration.command.ListConfigValue;
 import de.jaschastarke.configuration.InvalidValueException;
 
-public class CmdBlockList extends ArrayList<ICmdBlockEntry> implements ConfigurableList<ICmdBlockEntry>, IToGeneric {
+public class CmdBlockList extends ArrayList<ICmdBlockEntry> implements ConfigurableList<ICmdBlockEntry>, IToGeneric, ITabComplete {
     private static final long serialVersionUID = -125544131527849084L;
 
     @Override
@@ -45,5 +47,18 @@ public class CmdBlockList extends ArrayList<ICmdBlockEntry> implements Configura
     public void clearSettings() {
         clear();
     }
-
+    
+    public List<String> tabComplete(String[] args, String[] chain) {
+        if (args.length > 0 && chain.length > 0) {
+            if (chain[chain.length - 1].equalsIgnoreCase(ListConfigValue.REMOVE)) {
+                List<String> hints = new ArrayList<String>();
+                for (ICmdBlockEntry s : this) {
+                    if (s.toString().toLowerCase().startsWith(args[0].toLowerCase()))
+                        hints.add(s.toString());
+                }
+                return hints;
+            }
+        }
+        return null;
+    }
 }

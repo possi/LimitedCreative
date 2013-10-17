@@ -11,12 +11,14 @@ import org.bukkit.material.MaterialData;
 
 import de.jaschastarke.bukkit.lib.configuration.ConfigurableList;
 import de.jaschastarke.bukkit.lib.configuration.IToGeneric;
+import de.jaschastarke.bukkit.lib.configuration.command.ITabComplete;
+import de.jaschastarke.bukkit.lib.configuration.command.ListConfigValue;
 import de.jaschastarke.bukkit.lib.items.ItemUtils;
 import de.jaschastarke.bukkit.lib.items.MaterialDataNotRecognizedException;
 import de.jaschastarke.bukkit.lib.items.MaterialNotRecognizedException;
 import de.jaschastarke.configuration.InvalidValueException;
 
-public class BlackList extends ArrayList<BlackList.Blacklisted> implements ConfigurableList<BlackList.Blacklisted>, IToGeneric {
+public class BlackList extends ArrayList<BlackList.Blacklisted> implements ConfigurableList<BlackList.Blacklisted>, IToGeneric, ITabComplete {
     private static final long serialVersionUID = -3701659163474405152L;
 
     public static class Blacklisted {
@@ -30,9 +32,9 @@ public class BlackList extends ArrayList<BlackList.Blacklisted> implements Confi
                 md = ItemUtils.parseMaterial(rep);
                 hasData = rep.contains(ItemUtils.MATERIAL_DATA_SEP);
             } catch (MaterialNotRecognizedException e) {
-                throw new InvalidValueException(e);
+                throw new InvalidValueException("Invalid Material: " + rep, e);
             } catch (MaterialDataNotRecognizedException e) {
-                throw new InvalidValueException(e);
+                throw new InvalidValueException("Invalid Material with Data: " + rep, e);
             }
         }
         public Blacklisted(Material m) {
@@ -143,5 +145,28 @@ public class BlackList extends ArrayList<BlackList.Blacklisted> implements Confi
     @Override
     public void clearSettings() {
         clear();
+    }
+
+    @Override
+    public List<String> tabComplete(String[] args, String[] chain) {
+        if (args.length > 0 && chain.length > 0) {
+            List<String> hints = new ArrayList<String>();
+            String action = chain[chain.length - 1];
+            if (action.equalsIgnoreCase(ListConfigValue.ADD)) {
+                for (Material m : Material.values()) {
+                    if (m.name().toLowerCase().startsWith(args[0].toLowerCase())) {
+                        hints.add(m.name());
+                    }
+                }
+            } else if (action.equalsIgnoreCase(ListConfigValue.REMOVE)) {
+                for (Blacklisted bl : this) {
+                    if (bl.toString().toLowerCase().startsWith(args[0].toLowerCase())) {
+                        hints.add(bl.toString());
+                    }
+                }
+            }
+            return hints;
+        }
+        return null;
     }
 }

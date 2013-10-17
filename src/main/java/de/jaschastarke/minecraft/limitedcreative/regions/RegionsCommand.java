@@ -1,6 +1,10 @@
 package de.jaschastarke.minecraft.limitedcreative.regions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 
@@ -18,8 +22,13 @@ import de.jaschastarke.bukkit.lib.commands.BukkitCommand;
 import de.jaschastarke.bukkit.lib.commands.CommandContext;
 import de.jaschastarke.bukkit.lib.commands.CommandException;
 import de.jaschastarke.bukkit.lib.commands.HelpCommand;
+import de.jaschastarke.bukkit.lib.commands.ICommand;
 import de.jaschastarke.bukkit.lib.commands.IHelpDescribed;
+import de.jaschastarke.bukkit.lib.commands.MethodCommand;
 import de.jaschastarke.bukkit.lib.commands.MissingPermissionCommandException;
+import de.jaschastarke.bukkit.lib.commands.TabCompletionHelper;
+import de.jaschastarke.bukkit.lib.commands.TabCompletionHelper.Completer;
+import de.jaschastarke.bukkit.lib.commands.TabCompletionHelper.Context;
 import de.jaschastarke.bukkit.lib.commands.annotations.IsCommand;
 import de.jaschastarke.bukkit.lib.commands.annotations.Usages;
 import de.jaschastarke.bukkit.lib.commands.parser.DefinedParameterParser;
@@ -53,6 +62,7 @@ public class RegionsCommand extends BukkitCommand implements IHelpDescribed {
         this.help = this.getDefaultHelpCommand();
         this.mod = mod;
         this.wg = (WorldGuardPlugin) mod.getPlugin().getServer().getPluginManager().getPlugin(WorldGuardIntegration.PLUGIN_NAME);
+        fullfillTabCompletion();
     }
     
     @Override
@@ -99,6 +109,48 @@ public class RegionsCommand extends BukkitCommand implements IHelpDescribed {
         else
             return RegionPermissions.REGION.getPermission(subPerm);
     }*/
+    
+    protected void fullfillTabCompletion() {
+        for (ICommand cmd : handler.getCommands()) {
+            if (cmd instanceof MethodCommand) {
+                if (cmd.getName().equals("info")) {
+                    ((MethodCommand) cmd).getCompleter().add(TabCompletionHelper.forUsageLine("[region]"));
+                }
+                for (TabCompletionHelper c : ((MethodCommand) cmd).getCompleter()) {
+                    c.setCompleter("region", new RegionCompleter());
+                }
+            }
+        }
+    }
+    
+    private class RegionCompleter implements Completer {
+        @Override
+        public List<String> get(Context context, String arg) {
+            int idx = -1;
+            String[] args = context.getHelper().getArguments();
+            for (int i = 0; i < args.length; i++) {
+                if (args[i].equals("world")) {
+                    idx = i;
+                    break;
+                }
+            }
+            World w = context.getCommandContext().isPlayer() ? context.getCommandContext().getPlayer().getWorld() : null;
+            if (idx > -1 && context.getArgument(idx) != null)
+                w = Bukkit.getWorld(context.getArgument(idx));
+            if (w != null) {
+                RegionManager mgr = getWorldGuard().getGlobalRegionManager().get(w);
+                if (mgr != null) {
+                    List<String> hints = new ArrayList<String>();
+                    for (String rId : mgr.getRegions().keySet()) {
+                        if (rId.toLowerCase().startsWith(arg.toLowerCase()))
+                            hints.add(rId);
+                    }
+                    return hints;
+                }
+            }
+            return null;
+        }
+    }
     
     /**
      * Sets the Flag of a region to a new value. If no value given, the flag is removed.
@@ -165,7 +217,7 @@ public class RegionsCommand extends BukkitCommand implements IHelpDescribed {
     
     @IsCommand("info")
     //@NeedsPermission("region")
-    @Usages("[world] [id]")
+    @Usages("[world] [region]")
     public boolean getInfo(CommandContext context, String... args) throws CommandException {
         DefinedParameterParser params = new DefinedParameterParser(args, new String[]{"s"}, 1);
         
