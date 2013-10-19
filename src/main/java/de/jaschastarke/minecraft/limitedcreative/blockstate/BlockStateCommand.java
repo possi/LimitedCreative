@@ -94,9 +94,33 @@ public class BlockStateCommand extends BukkitCommand implements IHelpDescribed {
             throw new CommandException("Module " + mod.getName() + " is disabled");
         return super.execute(context, args);
     }
+    
+    /**
+     * Deletes no longer used data from the BlockState-Database. Currently it only removes non-creative entries
+     * from the database, if you changed to "logSurvival"-config from true to false.
+     */
+    @IsCommand("cleanup")
+    @Usages("")
+    public boolean cleanupDatabase(final CommandContext context, String... args) throws CommandException {
+        if (mod.getConfig().getLogSurvival()) {
+            context.responseFormatted(ChatFormattings.INFO, L("command.blockstate.nothing_to_cleanup"));
+        } else {
+            mod.getPlugin().getServer().getScheduler().runTaskAsynchronously(mod.getPlugin(), new BukkitRunnable() {
+                @Override
+                public void run() {
+                    int countDeleted = mod.getModel().cleanUp(DBModel.Cleanup.SURVIVAL);
+                    if (countDeleted < 0)
+                        context.responseFormatted(ChatFormattings.ERROR, L("command.blockstate.cleanup_error"));
+                    else
+                        context.responseFormatted(ChatFormattings.SUCCESS, L("command.blockstate.cleanup_success", countDeleted));
+                }
+            });
+        }
+        return true;
+    }
 
     /**
-     * Modifies the Block-GameMode-Database and sets all blocks in the selection to the provided gamemode. Set it
+     * Modifies the BlockState-Database and sets all blocks in the selection to the provided gamemode. Set it
      * to "creative" to disable drop of this block on destroying. Set it to "survival" to allow it.
      * WorldEdit is required, because the selection Region is used.
      * gamemode can be: survival / creative / adventure / s / c / a / 0 / 1 / 2
@@ -247,7 +271,13 @@ public class BlockStateCommand extends BukkitCommand implements IHelpDescribed {
         mod.getModuleEntry().disable();
         
         thread.start();
-        context.response(L("command.blockstate.migrate_started", source.getType(), target.getType()));
+        String sourceType = source.getType().toString();
+        if (params.getParameter("import") != null) {
+            if (params.getParameter("import").equals("cc")) {
+                sourceType = "CreativeControl-" + sourceType;
+            }
+        }
+        context.response(L("command.blockstate.migrate_started", sourceType, target.getType()));
         return true;
     }
     

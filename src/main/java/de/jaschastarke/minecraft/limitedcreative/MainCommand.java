@@ -8,10 +8,10 @@ import de.jaschastarke.bukkit.lib.commands.CommandContext;
 import de.jaschastarke.bukkit.lib.commands.IHelpDescribed;
 import de.jaschastarke.bukkit.lib.commands.IMethodCommandContainer;
 import de.jaschastarke.bukkit.lib.commands.MethodCommand;
-import de.jaschastarke.bukkit.lib.commands.TabCompletionHelper;
 import de.jaschastarke.bukkit.lib.commands.annotations.Description;
 import de.jaschastarke.bukkit.lib.commands.annotations.IsCommand;
 import de.jaschastarke.bukkit.lib.commands.annotations.NeedsPermission;
+import de.jaschastarke.bukkit.lib.commands.parser.TabCompletion;
 import de.jaschastarke.maven.ArchiveDocComments;
 import de.jaschastarke.maven.PluginCommand;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
@@ -95,7 +95,7 @@ public class MainCommand extends BukkitCommand implements IHelpDescribed, IMetho
     }
     
     @Override
-    public List<TabCompletionHelper> getTabCompleter(MethodCommand cmd) {
+    public List<TabCompletion> getTabCompleter(MethodCommand cmd) {
         return null;
     }
 }

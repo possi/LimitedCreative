@@ -18,6 +18,7 @@ import org.bukkit.metadata.Metadatable;
 
 import de.jaschastarke.database.DatabaseConfigurationException;
 import de.jaschastarke.minecraft.limitedcreative.ModBlockStates;
+import de.jaschastarke.minecraft.limitedcreative.blockstate.thread.CallableAction;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.thread.ThreadLink;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.thread.Transaction;
 
@@ -258,5 +259,22 @@ public class ThreadedModel extends AbstractModel implements DBModel, Listener {
     
     public ModBlockStates getModel() {
         return mod;
+    }
+
+    @Override
+    public int cleanUp(final Cleanup target) {
+        return threads.call(new CallableAction<Integer>() {
+            @Override
+            public void process(ThreadLink link, DBQueries q) { 
+                this.returnSet = true;
+                try {
+                    this.returnValue = q.cleanup(target);
+                } catch (SQLException e) {
+                    this.returnValue = -1;
+                    mod.getLog().severe(e.getMessage());
+                    mod.getLog().warn("Failed to cleanup BlockState-DB");
+                }
+            }
+        });
     }
 }

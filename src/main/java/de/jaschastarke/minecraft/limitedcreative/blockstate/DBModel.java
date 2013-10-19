@@ -64,6 +64,10 @@ public interface DBModel {
         }
     }
     
+    public enum Cleanup {
+        SURVIVAL;
+    }
+    
     public void onEnable() throws Exception;
     public void onDisable();
     public void moveState(Block from, Block to);
@@ -83,4 +87,6 @@ public interface DBModel {
         public void removeState(Block block);
         public void finish();
     }
+
+    public int cleanUp(Cleanup target);
 }

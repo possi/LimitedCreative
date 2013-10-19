@@ -14,6 +14,7 @@ import de.jaschastarke.bukkit.lib.database.ResultIterator;
 import de.jaschastarke.database.Type;
 import de.jaschastarke.database.db.Database;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockState.Source;
+import de.jaschastarke.minecraft.limitedcreative.blockstate.DBModel.Cleanup;
 import de.jaschastarke.utils.IDebugLogHolder;
 
 public class DBQueries {
@@ -300,6 +301,23 @@ public class DBQueries {
                 throw new RuntimeException("Currently only SQLite is supported.");
         }
     }
+
+    public int cleanup(Cleanup q) throws SQLException {
+        PreparedStatement delete;
+        if (dbg.isDebug())
+            dbg.getLog().debug("DBQuery: cleanup: " + q.toString());
+        if (q == Cleanup.SURVIVAL) {
+            delete = db.prepare("DELETE FROM lc_block_state WHERE gm = ?");
+            if (db.getType() == Type.MySQL)
+                delete.setString(1, GameMode.SURVIVAL.name());
+            else
+                delete.setInt(1, GameMode.SURVIVAL.getValue());
+        } else {
+            return -1;
+        }
+        return delete.executeUpdate();
+    }
+    
     public Database getDB() {
         return db;
     }

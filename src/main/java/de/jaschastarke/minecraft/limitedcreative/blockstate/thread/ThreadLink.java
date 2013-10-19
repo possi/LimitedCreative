@@ -134,6 +134,20 @@ public class ThreadLink {
         return action.getValue();
     }
     
+    public void queue(Action act) {
+        synchronized (updateQueue) {
+            updateQueue.add(act);
+            updateQueue.notify();
+        }
+    }
+    public <T> T call(CallableAction<T> act) {
+        synchronized (updateQueue) {
+            updateQueue.push(act);
+            updateQueue.notify();
+        }
+        return act.getValue();
+    }
+    
     public List<BlockState> callUpdate(Cuboid c) {
         FetchCuboidAction action = new FetchCuboidAction(c);
         synchronized (updateQueue) {

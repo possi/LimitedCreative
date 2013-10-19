@@ -18,12 +18,12 @@ import de.jaschastarke.bukkit.lib.commands.MethodCommand;
 import de.jaschastarke.bukkit.lib.commands.IMethodCommandContainer;
 import de.jaschastarke.bukkit.lib.commands.MissingPermissionCommandException;
 import de.jaschastarke.bukkit.lib.commands.NeedsPlayerArgumentCommandException;
-import de.jaschastarke.bukkit.lib.commands.TabCompletionHelper;
 import de.jaschastarke.bukkit.lib.commands.annotations.Alias;
 import de.jaschastarke.bukkit.lib.commands.annotations.Description;
 import de.jaschastarke.bukkit.lib.commands.annotations.IsCommand;
 import de.jaschastarke.bukkit.lib.commands.annotations.NeedsPermission;
 import de.jaschastarke.bukkit.lib.commands.annotations.Usages;
+import de.jaschastarke.bukkit.lib.commands.parser.TabCompletion;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
 import de.jaschastarke.minecraft.lib.permissions.IPermission;
 import de.jaschastarke.modularize.ModuleEntry.ModuleState;
@@ -139,7 +139,7 @@ public class FeatureSwitchGameMode extends CoreModule<LimitedCreative> {
         }
         
         @Override
-        public List<TabCompletionHelper> getTabCompleter(MethodCommand cmd) {
+        public List<TabCompletion> getTabCompleter(MethodCommand cmd) {
             return null;
         }
     }

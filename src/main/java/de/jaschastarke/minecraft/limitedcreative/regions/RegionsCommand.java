@@ -26,12 +26,12 @@ import de.jaschastarke.bukkit.lib.commands.ICommand;
 import de.jaschastarke.bukkit.lib.commands.IHelpDescribed;
 import de.jaschastarke.bukkit.lib.commands.MethodCommand;
 import de.jaschastarke.bukkit.lib.commands.MissingPermissionCommandException;
-import de.jaschastarke.bukkit.lib.commands.TabCompletionHelper;
-import de.jaschastarke.bukkit.lib.commands.TabCompletionHelper.Completer;
-import de.jaschastarke.bukkit.lib.commands.TabCompletionHelper.Context;
 import de.jaschastarke.bukkit.lib.commands.annotations.IsCommand;
 import de.jaschastarke.bukkit.lib.commands.annotations.Usages;
 import de.jaschastarke.bukkit.lib.commands.parser.DefinedParameterParser;
+import de.jaschastarke.bukkit.lib.commands.parser.TabCompletion;
+import de.jaschastarke.bukkit.lib.commands.parser.TabCompletion.Completer;
+import de.jaschastarke.bukkit.lib.commands.parser.TabCompletion.Context;
 import de.jaschastarke.maven.ArchiveDocComments;
 import de.jaschastarke.maven.PluginCommand;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
@@ -114,9 +114,9 @@ public class RegionsCommand extends BukkitCommand implements IHelpDescribed {
         for (ICommand cmd : handler.getCommands()) {
             if (cmd instanceof MethodCommand) {
                 if (cmd.getName().equals("info")) {
-                    ((MethodCommand) cmd).getCompleter().add(TabCompletionHelper.forUsageLine("[region]"));
+                    ((MethodCommand) cmd).getCompleter().add(TabCompletion.forUsageLine("[region]"));
                 }
-                for (TabCompletionHelper c : ((MethodCommand) cmd).getCompleter()) {
+                for (TabCompletion c : ((MethodCommand) cmd).getCompleter()) {
                     c.setCompleter("region", new RegionCompleter());
                 }
             }

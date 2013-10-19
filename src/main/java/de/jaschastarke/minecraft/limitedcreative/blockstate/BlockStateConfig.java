@@ -130,11 +130,11 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
      * Log all Block-Places to the database. Disable to make the database more slim by not adding blocks placed in 
      * survival-mode.
      * 
-     * default: true
+     * default: false
      */
     @IsConfigurationNode(order = 400)
     public boolean getLogSurvival() {
-        return config.getBoolean("logSurvival", true);
+        return config.getBoolean("logSurvival", false);
     }
     
     private StringList ignoredWorlds = null;

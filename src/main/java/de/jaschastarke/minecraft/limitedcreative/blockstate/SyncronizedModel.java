@@ -198,4 +198,15 @@ public class SyncronizedModel extends AbstractModel implements DBModel {
             }
         }
     }
+
+    @Override
+    public int cleanUp(Cleanup target) {
+        try {
+            return q.cleanup(target);
+        } catch (SQLException e) {
+            mod.getLog().severe(e.getMessage());
+            mod.getLog().warn("Failed to cleanup BlockState-DB");
+            return -1;
+        }
+    }
 }
