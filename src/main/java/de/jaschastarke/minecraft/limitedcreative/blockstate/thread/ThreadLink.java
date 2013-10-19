@@ -23,6 +23,7 @@ public class ThreadLink {
     private static final int COUNT_WARNING_QUEUE = 5;
     private static final int COUNT_ERROR_QUEUE = 20;
     private static final int QUEUE_TIMING_DURATION = 500; // ms
+    private static final int STARTUP_TIMING = 30000; // ms
     private long lastTimeout;
     private Stack<Action> updateQueue = new Stack<Action>();
     
@@ -58,7 +59,14 @@ public class ThreadLink {
         public void run() {
             if (getModule().isDebug())
                 log.debug("DB-Thread '" + Thread.currentThread().getName() + "' started.");
-            lastTimeout = System.currentTimeMillis();
+            lastTimeout = System.currentTimeMillis() + STARTUP_TIMING;
+            updateQueue.add(new Action() { // After Initial Queue caching
+                @Override
+                public void process(ThreadLink link, DBQueries q) {
+                    if (lastTimeout > System.currentTimeMillis())
+                        lastTimeout = System.currentTimeMillis();
+                }
+            });
             while (!shutdown || !updateQueue.isEmpty()) {
                 try {
                     List<Action> acts = new LinkedList<Action>();
