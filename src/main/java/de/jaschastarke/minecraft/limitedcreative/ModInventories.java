@@ -9,9 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import de.jaschastarke.bukkit.lib.CoreModule;
-import de.jaschastarke.minecraft.limitedcreative.hooks.AuthMe3Hooks;
 import de.jaschastarke.minecraft.limitedcreative.inventories.ArmoryConfig;
-import de.jaschastarke.minecraft.limitedcreative.inventories.AuthMe3Inventories;
 import de.jaschastarke.minecraft.limitedcreative.inventories.AuthMeInventories;
 import de.jaschastarke.minecraft.limitedcreative.inventories.Inventory;
 import de.jaschastarke.minecraft.limitedcreative.inventories.InventoryConfig;
@@ -45,9 +43,6 @@ public class ModInventories extends CoreModule<LimitedCreative> {
         
         if (Hooks.isAuthMePresent()) {
             addModule(new AuthMeInventories(plugin, this));
-        } else if (Hooks.isAuthMe3Present()) {
-            modules.linkSharedModule(AuthMe3Hooks.class, plugin.getModules());
-            addModule(new AuthMe3Inventories(plugin, this));
         }
         String incomp = Hooks.InventoryIncompatible.test();
         if (config.getEnabled() && incomp != null) {

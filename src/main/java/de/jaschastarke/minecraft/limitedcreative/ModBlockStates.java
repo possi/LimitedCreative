@@ -90,6 +90,9 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
         if (model != null && model instanceof Listener)
             listeners.removeListener((Listener) model);
         model = null;
+        
+        plugin.getCommandHandler().removeCommand(command);
+        plugin.getMainCommand().removeCommand(command);
     }
     
     public BlockStateConfig getConfig() {

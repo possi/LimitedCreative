@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 
 import de.jaschastarke.hooking.BooleanHooker;
 import de.jaschastarke.hooking.GetHooker;
-import de.jaschastarke.minecraft.limitedcreative.hooks.AuthMe3Hooks;
 import de.jaschastarke.minecraft.limitedcreative.hooks.AuthMeHooks;
 import de.jaschastarke.minecraft.limitedcreative.hooks.MultiVerseHooks;
 import de.jaschastarke.minecraft.limitedcreative.hooks.PlayerCheckHooker;
@@ -29,8 +28,6 @@ public final class Hooks {
         
         if (isAuthMePresent()) {
             new AuthMeHooks(plugin);
-        } else if (isAuthMe3Present()) {
-             plugin.getModules().addSharedModule(new AuthMe3Hooks(plugin));
         }
         if (isXAuth20Present()) {
             new xAuthHooks(plugin);
@@ -57,17 +54,6 @@ public final class Hooks {
         if (isPluginEnabled("AuthMe")) {
             try {
                 return Class.forName("uk.org.whoami.authme.api.API") != null;
-            } catch (ClassNotFoundException e) {
-                return false;
-            }
-        }
-        return false;
-    }
-    
-    public static boolean isAuthMe3Present() {
-        if (isPluginEnabled("AuthMe")) {
-            try {
-                return Class.forName("fr.xephi.authme.api.API") != null;
             } catch (ClassNotFoundException e) {
                 return false;
             }
