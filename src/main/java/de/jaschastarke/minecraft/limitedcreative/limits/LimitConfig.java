@@ -144,11 +144,10 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
      * LimitPickup
      * 
      * Prevents the pickup of items while in creative mode. Either the items are just stay on ground and ignore that a 
-     * creative player walks over it ("prevent"), or the are "remove"d when a creative player walks over it. This is 
-     * helpful e.g. when the creative player destroys a long line of rails.
+     * creative player walks over it ("prevent"), or the are "remove"d when a creative player walks over it.
      * 
      * valid options: remove / prevent / false
-     * default: remove
+     * default: prevent
      */
     @IsConfigurationNode(name = "pickup", order = 300)
     public BlockPickup getBlockPickup() {
@@ -200,7 +199,7 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
      * if you're not sure). 
      * 
      * default:
-     *  - ITEM_FRAME
+     *  - VILLAGER
      */
     @IsConfigurationNode(name = "entityInteract", order = 650)
     public BlackListEntity getBlockEntityInteraction() {
