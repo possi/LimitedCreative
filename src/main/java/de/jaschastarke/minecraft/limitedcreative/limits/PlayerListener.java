@@ -64,7 +64,7 @@ public class PlayerListener implements Listener {
      * @return The relevant "isCancelled"
      */
     public static boolean isCancelled(PlayerInteractEvent event) {
-        return event.isCancelled() || (event.useInteractedBlock() == Event.Result.DENY && event.useItemInHand() == Event.Result.DENY);
+        return (event.useInteractedBlock() == Event.Result.DENY && event.useItemInHand() == Event.Result.DENY);
     }
 
     @EventHandler
@@ -162,7 +162,7 @@ public class PlayerListener implements Listener {
         }
     }
     
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler // Do not use ignoreCancelled here, as some AIR-Interacts are interpreted as isCancelled by default
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (!isCancelled(event) && event.getPlayer().getGameMode() == GameMode.CREATIVE) {
             if (event.getItem() != null && mod.getConfig().getBlockUse().isListed(event.getItem())) {
