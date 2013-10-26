@@ -60,13 +60,6 @@ public class ThreadLink {
             if (getModule().isDebug())
                 log.debug("DB-Thread '" + Thread.currentThread().getName() + "' started.");
             lastTimeout = System.currentTimeMillis() + STARTUP_TIMING;
-            updateQueue.add(new Action() { // After Initial Queue caching
-                @Override
-                public void process(ThreadLink link, DBQueries q) {
-                    if (lastTimeout > System.currentTimeMillis())
-                        lastTimeout = System.currentTimeMillis();
-                }
-            });
             while (!shutdown || !updateQueue.isEmpty()) {
                 try {
                     List<Action> acts = new LinkedList<Action>();
