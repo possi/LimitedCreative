@@ -2,6 +2,7 @@ package de.jaschastarke.minecraft.limitedcreative;
 
 import de.jaschastarke.bukkit.lib.CoreModule;
 import de.jaschastarke.bukkit.lib.modules.AdditionalBlockBreaks;
+import de.jaschastarke.bukkit.lib.modules.InstantHangingBreak;
 import de.jaschastarke.minecraft.limitedcreative.limits.BlockListener;
 import de.jaschastarke.minecraft.limitedcreative.limits.EntityListener;
 import de.jaschastarke.minecraft.limitedcreative.limits.EntityNoDrop;
@@ -37,6 +38,7 @@ public class ModCreativeLimits extends CoreModule<LimitedCreative> {
         
         blockDrops = modules.linkSharedModule(FeatureBlockItemSpawn.class, plugin.getModules());
         modules.linkSharedModule(AdditionalBlockBreaks.class, plugin.getModules());
+        modules.linkSharedModule(InstantHangingBreak.class, plugin.getModules());
     }
     
     public FeatureBlockItemSpawn getBlockSpawn() {

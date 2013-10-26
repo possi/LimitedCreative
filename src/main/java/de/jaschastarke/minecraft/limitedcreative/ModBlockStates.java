@@ -6,6 +6,7 @@ import de.jaschastarke.bukkit.lib.CoreModule;
 import de.jaschastarke.bukkit.lib.commands.AliasHelpedCommand;
 import de.jaschastarke.bukkit.lib.modules.AdditionalBlockBreaks;
 import de.jaschastarke.bukkit.lib.modules.BlockFall;
+import de.jaschastarke.bukkit.lib.modules.InstantHangingBreak;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockListener;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStateCommand;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStateConfig;
@@ -42,6 +43,7 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
         
         blockDrops = modules.linkSharedModule(FeatureBlockItemSpawn.class, plugin.getModules());
         modules.linkSharedModule(AdditionalBlockBreaks.class, plugin.getModules());
+        modules.linkSharedModule(InstantHangingBreak.class, plugin.getModules());
         this.addModule(new BlockFall(plugin));
         
         listeners.addListener(new BlockListener(this));

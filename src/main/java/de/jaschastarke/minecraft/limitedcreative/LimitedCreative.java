@@ -5,6 +5,7 @@ import de.jaschastarke.bukkit.lib.Core;
 import de.jaschastarke.bukkit.lib.PluginLang;
 import de.jaschastarke.bukkit.lib.configuration.command.ConfigCommand;
 import de.jaschastarke.bukkit.lib.modules.AdditionalBlockBreaks;
+import de.jaschastarke.bukkit.lib.modules.InstantHangingBreak;
 import de.jaschastarke.utils.ClassDescriptorStorage;
 
 public class LimitedCreative extends Core {
@@ -27,6 +28,7 @@ public class LimitedCreative extends Core {
         Hooks.inizializeHooks(this);
         
         modules.addSharedModule(new AdditionalBlockBreaks(this));
+        modules.addSharedModule(new InstantHangingBreak(this));
         modules.addSharedModule(new FeatureBlockItemSpawn(this));
         addModule(new FeatureSwitchGameMode(this));
         addModule(new ModInventories(this));

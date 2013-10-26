@@ -25,6 +25,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import de.jaschastarke.bukkit.lib.events.AttachedBlockDestroyedByPlayerEvent;
+import de.jaschastarke.bukkit.lib.events.HangingBreakByPlayerBlockEvent;
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
 import de.jaschastarke.minecraft.lib.permissions.IDynamicPermission;
 import de.jaschastarke.minecraft.limitedcreative.ModCreativeLimits;
@@ -65,6 +66,14 @@ public class BlockListener implements Listener {
             if (!checkPermission(event.getPlayer(), NoLimitPermissions.DROP)) {
                 mod.getBlockSpawn().block(event.getBlock());
             }
+        }
+    }
+    @EventHandler(ignoreCancelled = true)
+    public void onHangingBreakByPlayer(HangingBreakByPlayerBlockEvent event) {
+        if (mod.isDebug())
+            mod.getLog().debug("Attached Hanging " + event.getEntity().getType() + " destroyed by player block place/break: " + event.getPlayer().getName() + " in GM " + event.getPlayer().getGameMode().toString());
+        if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
+            event.getDrops().clear();
         }
     }
     

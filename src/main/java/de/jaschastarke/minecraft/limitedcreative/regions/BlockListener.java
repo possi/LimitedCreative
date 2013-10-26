@@ -13,6 +13,7 @@ import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingPlaceEvent;
 
 import de.jaschastarke.bukkit.lib.Utils;
 import de.jaschastarke.minecraft.limitedcreative.ModRegions;
@@ -72,6 +73,26 @@ public class BlockListener extends Listener {
         
         PlayerMeta pdata = new PlayerMeta(event.getPlayer());
         boolean diffrent_region = getRM().isDiffrentRegion(event.getPlayer(), event.getBlock().getLocation());
+        
+        if (pdata.isActiveRegionGameMode() && diffrent_region) {
+            // do not build outside of "gamemod-change-region" when in the region
+            if (getRM().getRegionSet(event.getBlock()).getFlag(Flags.GAMEMODE, event.getPlayer()) != pdata.getActiveRegionGameMode()) { 
+                event.getPlayer().sendMessage(L("blocked.outside_place"));
+                event.setCancelled(true);
+            }
+        } else if (diffrent_region) {
+            // do not build inside of "survial-region in creative world" when outside
+            if (getRM().getRegionSet(event.getBlock()).getFlag(Flags.GAMEMODE) != null && getRM().getRegionSet(event.getBlock()).getFlag(Flags.GAMEMODE, event.getPlayer()) != event.getPlayer().getGameMode()) {
+                event.getPlayer().sendMessage(L("blocked.inside_place"));
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onHangingPlace(HangingPlaceEvent event) {
+        PlayerMeta pdata = new PlayerMeta(event.getPlayer());
+        boolean diffrent_region = getRM().isDiffrentRegion(event.getPlayer(), event.getEntity().getLocation());
         
         if (pdata.isActiveRegionGameMode() && diffrent_region) {
             // do not build outside of "gamemod-change-region" when in the region
