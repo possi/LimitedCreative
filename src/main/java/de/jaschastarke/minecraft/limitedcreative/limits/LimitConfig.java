@@ -225,6 +225,7 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
      * 
      * default:
      *  - EXP_BOTTLE
+     *  - EYE_OF_ENDER
      *  - BEDROCK
      */
     @IsConfigurationNode(name = "use", order = 700)
@@ -233,6 +234,7 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
             useList = new BlackList(config.getList("use"));
             if (!config.contains("use")) {
                 useList.add(new BlackList.Blacklisted(Material.EXP_BOTTLE));
+                useList.add(new BlackList.Blacklisted(Material.EYE_OF_ENDER));
                 useList.add(new BlackList.Blacklisted(Material.BEDROCK));
             }
         }
