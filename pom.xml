@@ -9,6 +9,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <plib.version>1.4-SNAPSHOT</plib.version>
+    <bukkit.version>1.6.4-R1.0</bukkit.version>
   </properties>
   
   <scm>
@@ -77,7 +78,7 @@
         <!-- http://dl.bukkit.org/ -->
         <groupId>org.bukkit</groupId>
         <artifactId>bukkit</artifactId>
-        <version>1.6.2-R0.1</version>
+        <version>${bukkit.version}</version>
     </dependency>
     <dependency>
         <!-- http://dev.bukkit.org/server-mods/worldguard/ -->
@@ -120,6 +121,12 @@
         <groupId>de.diddiz</groupId>
         <artifactId>logblock</artifactId>
         <version>dev-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <!-- http://dev.bukkit.org/bukkit-plugins/coreprotect/ -->
+        <groupId>net.coreprotect</groupId>
+        <artifactId>coreprotect</artifactId>
+        <version>2.0.8</version>
     </dependency>
   </dependencies>
   
@@ -165,6 +172,7 @@
                 <param>Multiverse-Inventories</param>
                 <param>Vault</param>
                 <param>LogBlock</param>
+                <param>CoreProtect</param>
               </softdepend>
               <custom>
                 <dev-url>http://dev.bukkit.org/server-mods/limited-creative/</dev-url>

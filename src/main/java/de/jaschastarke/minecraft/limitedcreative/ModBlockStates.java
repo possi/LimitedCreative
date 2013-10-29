@@ -1,6 +1,7 @@
 package de.jaschastarke.minecraft.limitedcreative;
 
 import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import de.jaschastarke.bukkit.lib.CoreModule;
 import de.jaschastarke.bukkit.lib.commands.AliasHelpedCommand;
@@ -72,11 +73,17 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
             return;
         }
         super.onEnable();
-        try {
-            if (plugin.getServer().getPluginManager().isPluginEnabled("WorldEdit"))
-                LCEditSessionFactory.initFactory(this);
-        } catch (Exception e) {
-            getLog().warn(plugin.getLocale().trans("block_state.warning.worldedit_sessionfactory_failed", e.getMessage()));
+        if (plugin.getServer().getPluginManager().isPluginEnabled("WorldEdit")) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    try {
+                        LCEditSessionFactory.initFactory(ModBlockStates.this);
+                    } catch (Exception e) {
+                        getLog().warn(plugin.getLocale().trans("block_state.warning.worldedit_sessionfactory_failed", e.getMessage()));
+                    }
+                }
+            }.runTaskLater(plugin, 1L);
         }
         
         plugin.getCommandHandler().registerCommand(command);

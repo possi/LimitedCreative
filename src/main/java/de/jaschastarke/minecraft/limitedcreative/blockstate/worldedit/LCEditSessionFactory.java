@@ -25,7 +25,8 @@ public class LCEditSessionFactory extends EditSessionFactory {
     
     static enum EditSessionParent {
         WORLDEDIT,
-        LOGBLOCK("de.jaschastarke.minecraft.limitedcreative.blockstate.worldedit.LCEditSession_LogBlock");
+        LOGBLOCK("de.jaschastarke.minecraft.limitedcreative.blockstate.worldedit.LCEditSession_LogBlock"),
+        COREPROTECT("de.jaschastarke.minecraft.limitedcreative.blockstate.worldedit.LCEditSession_CoreProtect");
         
         private String cls = null;
         EditSessionParent() {
@@ -141,6 +142,10 @@ public class LCEditSessionFactory extends EditSessionFactory {
             if (mod.isDebug())
                 mod.getLog().debug("Replacing LogBlocks WorldEdit-SessionFactory");
             WorldEdit.getInstance().setEditSessionFactory(new LCEditSessionFactory(mod, EditSessionParent.LOGBLOCK));
+        } else if (currentEditSessionFactory.getClass().getName().equals("net.coreprotect.worldedit.CoreProtectEditSessionFactory")) {
+            if (mod.isDebug())
+                mod.getLog().debug("Replacing CoreProtects WorldEdit-SessionFactory");
+            WorldEdit.getInstance().setEditSessionFactory(new LCEditSessionFactory(mod, EditSessionParent.COREPROTECT));
         } else {
             throw new Exception("WorldEdit-SessionFactory is hooked by an unknown another Plugin (" + currentEditSessionFactory.getClass().getName() + ").");
         }
