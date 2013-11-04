@@ -73,7 +73,8 @@ public class CreativeControlImportThread extends DatabaseMigrationThread {
                             Cuboid c = new Cuboid();
                             c.add(new Location(world, x, 0, z));
                             c.add(new Location(world, x + CHUNK_SIZE, world.getMaxHeight(), z + CHUNK_SIZE));
-                            System.out.println("Fetching Cuboid: " + c.toString());
+                            if (mod.isDebug())
+                                mod.getLog().debug("Fetching Cuboid: " + c.toString());
                             
                             for (BlockState bs : iterateAllIn(c)) {
                                 if (mode == Mode.UPDATE) {
