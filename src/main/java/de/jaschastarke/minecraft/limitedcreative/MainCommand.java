@@ -11,6 +11,7 @@ import de.jaschastarke.bukkit.lib.commands.MethodCommand;
 import de.jaschastarke.bukkit.lib.commands.annotations.Description;
 import de.jaschastarke.bukkit.lib.commands.annotations.IsCommand;
 import de.jaschastarke.bukkit.lib.commands.annotations.NeedsPermission;
+import de.jaschastarke.bukkit.lib.commands.annotations.Usages;
 import de.jaschastarke.bukkit.lib.commands.parser.TabCompletion;
 import de.jaschastarke.maven.ArchiveDocComments;
 import de.jaschastarke.maven.PluginCommand;
@@ -70,6 +71,7 @@ public class MainCommand extends BukkitCommand implements IHelpDescribed, IMetho
     }
     
     @IsCommand("reload")
+    @Usages("")
     @Description(value = "command.config.reload", translate = true)
     @NeedsPermission(value={"config"})
     public boolean doReload(final CommandContext context) {
