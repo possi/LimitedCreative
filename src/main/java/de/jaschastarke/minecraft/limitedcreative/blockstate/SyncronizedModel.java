@@ -61,7 +61,7 @@ public class SyncronizedModel extends AbstractModel implements DBModel {
     public Map<Block, Boolean> getRestrictedStates(List<Block> blocks) {
         Map<Block, Boolean> ret = new HashMap<Block, Boolean>();
         for (Map.Entry<Block, BlockState> entry : getStates(blocks).entrySet()) {
-            ret.put(entry.getKey(), entry.getValue().isRestricted());
+            ret.put(entry.getKey(), entry.getValue() != null && entry.getValue().isRestricted());
         }
         return ret;
     }
