@@ -18,7 +18,7 @@ import de.jaschastarke.minecraft.limitedcreative.blockstate.DBQueries;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.ThreadedModel;
 
 public class ThreadLink {
-    private static final int BATCH_ACTION_LENGTH = 10;
+    private static final int BATCH_ACTION_LENGTH = 25;
     private static final int QUEUE_ACCESS_WARNING_DURATION = 5; // ms
     private static final int COUNT_WARNING_QUEUE = 5;
     private static final int COUNT_ERROR_QUEUE = 20;
@@ -83,8 +83,11 @@ public class ThreadLink {
                             acts.add(updateQueue.pop());
                         }
                     }
-                    if (getModule().isDebug())
+                    long t = 0;
+                    if (getModule().isDebug()) {
+                        t = System.currentTimeMillis();
                         log.debug("DB-Thread '" + Thread.currentThread().getName() + "' run: " + acts.size());
+                    }
                     for (Action act : acts) {
                         if (!shutdown || !(act instanceof CacheChunkAction)) {
                             if (act instanceof CallableAction) {
@@ -97,6 +100,8 @@ public class ThreadLink {
                             }
                         }
                     }
+                    if (getModule().isDebug())
+                        log.debug("DB-Thread '" + Thread.currentThread().getName() + "' execution time: " + (System.currentTimeMillis() - t) + "ms");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     log.severe("DB-Thread '" + Thread.currentThread().getName() + "' was harmfull interupted");

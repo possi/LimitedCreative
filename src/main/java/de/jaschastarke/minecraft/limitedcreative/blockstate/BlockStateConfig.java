@@ -87,8 +87,10 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
      * BlockStateThreading
      * 
      * Uses Threading to minimize lag. This fully relies on Bukkit metadata implementation. You only should need this,
-     * if there are often plays more then 10 players at once on your server. Be aware that this requires more memory,
-     * to increase the performance
+     * if there are often plays more then 10 players at once on your server, or you're about to use huge WorldEdits often.
+     * Be aware that this requires more memory, to increase the performance
+     * 
+     * Without threading, huge WorldEdits becomes much noticeable slower.
      * 
      * default: false
      */

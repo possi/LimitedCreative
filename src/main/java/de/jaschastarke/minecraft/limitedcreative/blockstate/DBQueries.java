@@ -133,7 +133,7 @@ public class DBQueries {
                         "WHERE x = ? AND y = ? AND z = ? AND world = ? ");
         }
         if (s.getGameMode() == null)
-            update.setNull(5, Types.INTEGER);
+            update.setNull(1, Types.INTEGER);
         else if (db.getType() == Type.MySQL)
             update.setString(1, s.getGameMode().name());
         else

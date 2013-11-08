@@ -18,6 +18,8 @@ import com.sk89q.worldedit.bukkit.BukkitWorld;
 import de.jaschastarke.minecraft.limitedcreative.ModBlockStates;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockState;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockState.Source;
+import de.jaschastarke.minecraft.limitedcreative.blockstate.DBModel;
+import de.jaschastarke.minecraft.limitedcreative.blockstate.DBModel.DBTransaction;
 
 public class LCEditSessionFactory extends EditSessionFactory {
     private ModBlockStates mod;
@@ -154,22 +156,57 @@ public class LCEditSessionFactory extends EditSessionFactory {
     /*public void onBlockEdit(Vector pt, BaseBlock block) {
         this.onBlockEdit(null, pt, block);
     }*/
+    
+    public DBModel getModel() {
+        return mod.getModel();
+    }
+    
     public boolean onBlockEdit(LocalPlayer player, Vector pt, BaseBlock block) {
         if (player != null) {
             Location loc = new Location(((BukkitWorld) player.getWorld()).getWorld(), pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
-            BlockState s = mod.getModel().getState(loc.getBlock());
-            if (s == null) {
-                s = new BlockState();
-                s.setLocation(loc);
+            if (block.getType() == 0) {
+                mod.getModel().removeState(loc.getBlock());
+            } else {
+                BlockState s = mod.getModel().getState(loc.getBlock());
+                if (s == null) {
+                    s = new BlockState();
+                    s.setLocation(loc);
+                }
+                s.setGameMode(null);
+                s.setPlayerName(player.getName());
+                s.setDate(new Date());
+                s.setSource(Source.EDIT);
+                if (mod.isDebug())
+                    mod.getLog().debug("Saving BlockState: " + s.toString());
+                
+                mod.getModel().setState(s);
             }
-            s.setGameMode(null);
-            s.setPlayerName(player.getName());
-            s.setDate(new Date());
-            s.setSource(Source.EDIT);
-            if (mod.isDebug())
-                mod.getLog().debug("Saving BlockState: " + s.toString());
-            
-            mod.getModel().setState(s);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean onTransactionBlockEdit(DBTransaction transaction, LocalPlayer player, Vector pt, BaseBlock block) {
+        if (player != null) {
+            Location loc = new Location(((BukkitWorld) player.getWorld()).getWorld(), pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
+            if (block.getType() == 0) {
+                transaction.removeState(loc.getBlock());
+            } else {
+                BlockState s = mod.getModel().getState(loc.getBlock());
+                if (s == null) {
+                    s = new BlockState();
+                    s.setLocation(loc);
+                }
+                s.setGameMode(null);
+                s.setPlayerName(player.getName());
+                s.setDate(new Date());
+                s.setSource(Source.EDIT);
+                if (mod.isDebug())
+                    mod.getLog().debug("Saving BlockState: " + s.toString());
+                
+                transaction.setState(s);
+            }
             return true;
         } else {
             return false;
