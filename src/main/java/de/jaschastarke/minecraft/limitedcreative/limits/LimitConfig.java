@@ -26,6 +26,11 @@ import de.jaschastarke.modularize.ModuleEntry;
 @ArchiveDocComments
 @PluginConfigurations(parent = Config.class)
 public class LimitConfig extends Configuration implements IConfigurationSubGroup {
+    private BlackList breakList;
+    private BlackListEntity interactEntityList;
+    private BlackList interactList;
+    private BlackList useList;
+    
     protected ModCreativeLimits mod;
     protected ModuleEntry<IModule> entry;
     
@@ -49,6 +54,10 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
     
     @Override
     public void setValues(ConfigurationSection sect) {
+        breakList = null;
+        interactEntityList = null;
+        interactList = null;
+        useList = null;
         super.setValues(sect);
         entry.setDefaultEnabled(getEnabled());
         
@@ -159,8 +168,6 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
         return getEnum(BlockPickup.class, "pickup", BlockPickup.PREVENT);
     }
     
-    
-    private BlackList interactList;
     /**
      * LimitInteraction
      * 
@@ -189,7 +196,7 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
         }
         return interactList;
     }
-    private BlackListEntity interactEntityList;
+    
     /**
      * LimitEntityInteraction
      * 
@@ -212,7 +219,6 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
         return interactEntityList;
     }
     
-    private BlackList useList;
     /**
      * LimitUse
      * 
@@ -241,7 +247,6 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
         return useList;
     }
     
-    private BlackList breakList;
     /**
      * LimitBreak
      * 

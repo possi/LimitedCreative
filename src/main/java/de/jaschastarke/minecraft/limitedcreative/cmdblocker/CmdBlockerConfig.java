@@ -23,6 +23,8 @@ import de.jaschastarke.modularize.ModuleEntry;
 @ArchiveDocComments
 @PluginConfigurations(parent = Config.class)
 public class CmdBlockerConfig extends Configuration implements IConfigurationSubGroup {
+    private CmdBlockList blockList;
+    
     protected ModCmdBlocker mod;
     protected ModuleEntry<IModule> entry;
     
@@ -37,6 +39,7 @@ public class CmdBlockerConfig extends Configuration implements IConfigurationSub
     
     @Override
     public void setValues(ConfigurationSection sect) {
+        blockList = null;
         super.setValues(sect);
         entry.setDefaultEnabled(getEnabled());
     }
@@ -69,8 +72,6 @@ public class CmdBlockerConfig extends Configuration implements IConfigurationSub
     public boolean getEnabled() {
         return config.getBoolean("enabled", true);
     }
-
-    private CmdBlockList blockList;
     
     /**
      * CmdBlockerList

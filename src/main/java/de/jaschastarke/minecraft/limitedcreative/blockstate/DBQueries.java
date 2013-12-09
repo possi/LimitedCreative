@@ -298,7 +298,7 @@ public class DBQueries {
                 }
                 break;
             default:
-                throw new RuntimeException("Currently only SQLite is supported.");
+                throw new RuntimeException("Currently only SQLite or MySQL is supported.");
         }
     }
 

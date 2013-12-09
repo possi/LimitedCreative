@@ -55,6 +55,7 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
     
     @Override
     public void setValues(ConfigurationSection sect) {
+        ignoredWorlds = null;
         super.setValues(sect);
         entry.setDefaultEnabled(getEnabled());
     }
