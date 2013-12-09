@@ -92,7 +92,9 @@ public class GMPermConfig extends Configuration implements IConfigurationSubGrou
      */
     @IsConfigurationNode(order = 300)
     public String getAdventureGroup() {
-        return config.getString("adventureGroup");
+        if (config.isBoolean("adventureGroup"))
+            return null;
+        return config.getString("adventureGroup", null);
     }
     
     @Override

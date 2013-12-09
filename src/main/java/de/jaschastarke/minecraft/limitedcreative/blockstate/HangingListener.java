@@ -5,9 +5,11 @@ import java.util.Date;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -39,6 +41,34 @@ public class HangingListener implements Listener {
                 BlockState s = new BlockState();
                 s.setLocation(event.getRightClicked().getLocation().getBlock().getLocation());
                 s.setPlayer(event.getPlayer());
+                s.setDate(new Date());
+                
+                if (mod.isDebug())
+                    mod.getLog().debug("Saving BlockState: " + s.toString());
+                
+                mod.getModel().setState(s);
+            }
+        }
+    }
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPlayerLeftInteractEntity(EntityDamageByEntityEvent event) {
+        if (mod.getConfig().getIgnoredWorlds().contains(event.getEntity().getWorld().getName()))
+            return;
+        if (event.getDamager() instanceof Player && event.getEntity() instanceof ItemFrame) {
+            if (mod.getModel().isRestricted(event.getEntity().getLocation().getBlock())) {
+                if (mod.isDebug())
+                    mod.getLog().debug("Modifying hanging: " + event.getEntity().getLocation().toString());
+                
+                if (((Player) event.getDamager()).getGameMode() != GameMode.CREATIVE) {
+                    if (mod.isDebug())
+                        mod.getLog().debug("... was placed by creative. Modify prevented");
+                    event.setCancelled(true);
+                    return;
+                }
+            } else {
+                BlockState s = new BlockState();
+                s.setLocation(event.getEntity().getLocation().getBlock().getLocation());
+                s.setPlayer((Player) event.getDamager());
                 s.setDate(new Date());
                 
                 if (mod.isDebug())
