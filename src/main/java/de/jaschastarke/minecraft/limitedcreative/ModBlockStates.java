@@ -73,7 +73,7 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
             return;
         }
         super.onEnable();
-        if (plugin.getServer().getPluginManager().isPluginEnabled("WorldEdit")) {
+        if (plugin.getServer().getPluginManager().isPluginEnabled("WorldEdit") && config.getWorldeditIntegration()) {
             new BukkitRunnable() {
                 @Override
                 public void run() {

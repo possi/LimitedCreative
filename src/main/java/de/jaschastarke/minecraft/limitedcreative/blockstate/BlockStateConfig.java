@@ -158,6 +158,20 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
         return ignoredWorlds;
     }
     
+    /**
+     * BlockStateWorldEditIntegration
+     * 
+     * Allows you to disable hook into WorldEdit for better Performance. By default Integration is enable, so it logs 
+     * block modifications via worldedit as creative-placed blocks in the database.
+     * A server reload (better restart) is needed to disabled WE-Integration.
+     * 
+     * default: true
+     */
+    @IsConfigurationNode(order = 600)
+    public boolean getWorldeditIntegration() {
+        return config.getBoolean("worldeditIntegration", true);
+    }
+    
     protected void setTool(Object val) throws InvalidValueException {
         String v = (String) val;
         Material m = null;
