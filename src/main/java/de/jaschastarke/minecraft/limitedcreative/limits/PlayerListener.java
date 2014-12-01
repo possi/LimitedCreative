@@ -45,6 +45,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.material.DirectionalContainer;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.projectiles.ProjectileSource;
 
 import de.jaschastarke.minecraft.lib.permissions.IAbstractPermission;
 import de.jaschastarke.minecraft.lib.permissions.IDynamicPermission;
@@ -224,8 +225,11 @@ public class PlayerListener implements Listener {
             EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) rawevent;
             
             Entity source = event.getDamager();
-            if (source instanceof Projectile)
-                source = ((Projectile) source).getShooter();
+            if (source instanceof Projectile) {
+                ProjectileSource shooter = ((Projectile) source).getShooter();
+                if (shooter instanceof Entity)
+                    source = (Entity) shooter;
+            }
             
             if (source instanceof Player) {
                 Player player = (Player) source;

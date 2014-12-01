@@ -9,7 +9,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <plib.version>1.4-SNAPSHOT</plib.version>
-    <bukkit.version>1.7.2-R0.1-SNAPSHOT</bukkit.version>
+    <bukkit.version>1.8-R0.1-SNAPSHOT</bukkit.version>
   </properties>
   
   <scm>
@@ -84,7 +84,7 @@
         <!-- http://dev.bukkit.org/server-mods/worldguard/ -->
         <groupId>com.sk89q</groupId>
         <artifactId>worldguard</artifactId>
-        <version>5.8-SNAPSHOT</version>
+        <version>6.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
         <!-- http://dev.bukkit.org/server-mods/authme-reloaded/ -->

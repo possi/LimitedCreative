@@ -243,7 +243,7 @@ public class RegionsCommand extends BukkitCommand implements IHelpDescribed {
             if (set.size() > 0) {
                 region = set.iterator().next();
             } else {
-                region = getWorldGuard().getGlobalRegionManager().get(w).getRegionExact(GLOBAL_REGION);
+                region = getWorldGuard().getGlobalRegionManager().get(w).getRegion(GLOBAL_REGION);
             }
         } else {
             int rpc = params.getArgumentCount() > 1 ? 1 : 0;

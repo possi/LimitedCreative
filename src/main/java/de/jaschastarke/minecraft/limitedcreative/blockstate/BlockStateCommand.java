@@ -223,7 +223,7 @@ public class BlockStateCommand extends BukkitCommand implements IHelpDescribed {
             return false;
         }
         
-        if (Bukkit.getServer().getOnlinePlayers().length > (context.isPlayer() ? 1 : 0)) {
+        if (Bukkit.getServer().getOnlinePlayers().size() > (context.isPlayer() ? 1 : 0)) {
             context.responseFormatted(ChatFormattings.ERROR, L("command.blockstate.migrate_useronline_error"));
             return true;
         }
