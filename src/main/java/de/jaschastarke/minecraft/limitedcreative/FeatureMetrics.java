@@ -3,11 +3,10 @@ package de.jaschastarke.minecraft.limitedcreative;
 import java.io.IOException;
 
 import org.bukkit.event.Listener;
+import org.mcstats.Metrics;
 
 import de.jaschastarke.bukkit.lib.CoreModule;
 import de.jaschastarke.bukkit.tools.stats.IStatistics;
-import de.jaschastarke.bukkit.tools.stats.MCStatsMetrics;
-import de.jaschastarke.bukkit.tools.stats.MCStatsMetrics.Graph;
 import de.jaschastarke.bukkit.tools.stats.PiwikStatistics;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
@@ -18,7 +17,7 @@ public class FeatureMetrics extends CoreModule<LimitedCreative> implements Liste
         super(plugin);
     }
     private IStatistics metric;
-    private MCStatsMetrics mcstats = null;
+    private Metrics mcstats = null;
     
     @Override
     public void onEnable() {
@@ -26,12 +25,12 @@ public class FeatureMetrics extends CoreModule<LimitedCreative> implements Liste
         metric = new PiwikStatistics(plugin);
         if (mcstats == null) {
             try {
-                mcstats = new MCStatsMetrics(plugin);
+                mcstats = new Metrics(plugin);
                 
-                Graph moduleGraph = mcstats.createGraph("Module Usage");
+                Metrics.Graph moduleGraph = mcstats.createGraph("Module Usage");
                 for (final ModuleEntry<IModule> mod : plugin.getModules()) {
                     if (mod.getModule() instanceof CoreModule<?>) {
-                        moduleGraph.addPlotter(new MCStatsMetrics.Plotter(((CoreModule<?>) mod.getModule()).getName()) {
+                        moduleGraph.addPlotter(new Metrics.Plotter(((CoreModule<?>) mod.getModule()).getName()) {
                             @Override
                             public int getValue() {
                                 return mod.getState() == ModuleState.ENABLED ? 1 : 0;
@@ -39,9 +38,9 @@ public class FeatureMetrics extends CoreModule<LimitedCreative> implements Liste
                         });
                     }
                 }
-                Graph depGraph = mcstats.createGraph("Dependencies");
+                Metrics.Graph depGraph = mcstats.createGraph("Dependencies");
                 for (final String dep : plugin.getDescription().getSoftDepend()) {
-                    depGraph.addPlotter(new MCStatsMetrics.Plotter(dep) {
+                    depGraph.addPlotter(new Metrics.Plotter(dep) {
                         @Override
                         public int getValue() {
                             return plugin.getServer().getPluginManager().isPluginEnabled(dep) ? 1 : 0;

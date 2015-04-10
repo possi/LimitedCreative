@@ -17,7 +17,7 @@ import de.jaschastarke.minecraft.limitedcreative.blockstate.HangingListener;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.PlayerListener;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.SyncronizedModel;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.ThreadedModel;
-import de.jaschastarke.minecraft.limitedcreative.blockstate.worldedit.LCEditSessionFactory;
+//import de.jaschastarke.minecraft.limitedcreative.blockstate.worldedit.LCEditSessionFactory;
 import de.jaschastarke.modularize.IModule;
 import de.jaschastarke.modularize.ModuleEntry;
 
@@ -77,11 +77,12 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    try {
+                    getLog().warn("WorldEdit Integration is not Supported in this Version! Lookout for updates!");
+                    /*try {
                         LCEditSessionFactory.initFactory(ModBlockStates.this);
                     } catch (Exception e) {
                         getLog().warn(plugin.getLocale().trans("block_state.warning.worldedit_sessionfactory_failed", e.getMessage()));
-                    }
+                    }*/
                 }
             }.runTaskLater(plugin, 1L);
         }

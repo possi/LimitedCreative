@@ -66,6 +66,11 @@
         <id>md5</id>
         <url>http://repo.md-5.net/content/groups/public/</url>
     </repository>
+    <!-- https://github.com/Hidendra/Plugin-Metrics/wiki/Usage -->
+    <repository>
+        <id>Plugin Metrics</id>
+        <url>http://repo.mcstats.org/content/repositories/public</url>
+    </repository>
   </repositories>
   
   <dependencies>
@@ -128,6 +133,13 @@
         <artifactId>coreprotect</artifactId>
         <version>2.0.8</version>
     </dependency>
+    <dependency>
+        <!-- https://github.com/Hidendra/Plugin-Metrics/wiki/Usage -->
+        <groupId>org.mcstats.bukkit</groupId>
+        <artifactId>metrics</artifactId>
+        <version>R7</version>
+        <scope>compile</scope>
+    </dependency>
   </dependencies>
   
   <build>
@@ -146,6 +158,9 @@
                 <!-- Needed to fetch DocComments from Source -->
                 <annotationProcessor>de.jaschastarke.maven.AnnotationProcessor</annotationProcessor>
               </annotationProcessors>
+              <excludes>
+                <exclude>**/de/jaschastarke/minecraft/limitedcreative/blockstate/worldedit/*</exclude>
+              </excludes>
           </configuration>
       </plugin>
       <plugin>
@@ -196,6 +211,7 @@
               <artifactSet>
                 <includes>
                   <include>de.jaschastarke:plib</include>
+                  <include>org.mcstats.*:*</include>
                 </includes>
               </artifactSet>
               <filters>
@@ -207,6 +223,12 @@
                   </excludes>
                 </filter>
               </filters>
+              <relocations>
+                <relocation>
+                   <pattern>org.mcstats</pattern>
+                   <shadedPattern>de.jaschastarke.minecraft.limitedcreative.metrics</shadedPattern>
+                </relocation>
+              </relocations>
             </configuration>
           </execution>
         </executions>
