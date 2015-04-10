@@ -128,18 +128,6 @@
         <version>2.0.26</version>
     </dependency>
     <dependency>
-        <!-- http://dev.bukkit.org/bukkit-plugins/logblock/ -->
-        <groupId>de.diddiz</groupId>
-        <artifactId>logblock</artifactId>
-        <version>dev-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-        <!-- http://dev.bukkit.org/bukkit-plugins/coreprotect/ -->
-        <groupId>net.coreprotect</groupId>
-        <artifactId>coreprotect</artifactId>
-        <version>2.0.8</version>
-    </dependency>
-    <dependency>
         <!-- https://github.com/Hidendra/Plugin-Metrics/wiki/Usage -->
         <groupId>org.mcstats.bukkit</groupId>
         <artifactId>metrics</artifactId>
@@ -189,8 +177,6 @@
                 <param>MultiInv</param>
                 <param>Multiverse-Inventories</param>
                 <param>Vault</param>
-                <param>LogBlock</param>
-                <param>CoreProtect</param>
               </softdepend>
               <custom>
                 <dev-url>http://dev.bukkit.org/server-mods/limited-creative/</dev-url>
