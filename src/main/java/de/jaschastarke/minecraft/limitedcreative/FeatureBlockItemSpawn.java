@@ -47,7 +47,7 @@ public class FeatureBlockItemSpawn extends CoreModule<LimitedCreative> implement
     private void scheduleCleanUp() {
         if (cleanup.maxTime == 0) { // if not scheduled yet
             cleanup.maxTime = System.currentTimeMillis();
-            plugin.getServer().getScheduler().runTaskLater(plugin, cleanup, TICK_OFFSET);
+            cleanup.runTaskLater(plugin, TICK_OFFSET);
         }
     }
     

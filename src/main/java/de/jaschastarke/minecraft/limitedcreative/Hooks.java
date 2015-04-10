@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 
 import de.jaschastarke.hooking.BooleanHooker;
 import de.jaschastarke.hooking.GetHooker;
-import de.jaschastarke.minecraft.limitedcreative.hooks.AuthMeHooks;
 import de.jaschastarke.minecraft.limitedcreative.hooks.MultiVerseHooks;
 import de.jaschastarke.minecraft.limitedcreative.hooks.PlayerCheckHooker;
 import de.jaschastarke.minecraft.limitedcreative.hooks.WorldTypeHooker;
@@ -20,6 +19,7 @@ public final class Hooks {
         return Bukkit.getServer().getPluginManager().isPluginEnabled(pluginName);
     }
     
+    @SuppressWarnings("deprecation")
     public static void inizializeHooks(LimitedCreative plugin) {
         IsLoggedIn.clearHooks();
         DefaultWorldGameMode.clearHooks();
@@ -27,7 +27,7 @@ public final class Hooks {
         InventoryIncompatible.clearHooks();
         
         if (isAuthMePresent()) {
-            new AuthMeHooks(plugin);
+            new de.jaschastarke.minecraft.limitedcreative.hooks.AuthMeHooks(plugin);
         }
         if (isXAuth20Present()) {
             new xAuthHooks(plugin);

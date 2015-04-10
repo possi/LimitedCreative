@@ -69,6 +69,7 @@ public class FeatureSwitchGameMode extends CoreModule<LimitedCreative> {
             return SwitchGameModePermissions.ALL.getPermission(subPerm);
         }
         
+        @SuppressWarnings("deprecation")
         protected boolean changeGameMode(CommandContext context, String player, GameMode tgm, IAbstractPermission permission) throws MissingPermissionCommandException, CommandException {
             Player target = null;
             if (player != null && !player.isEmpty()) {

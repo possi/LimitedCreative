@@ -10,7 +10,6 @@ import org.bukkit.inventory.ItemStack;
 
 import de.jaschastarke.bukkit.lib.CoreModule;
 import de.jaschastarke.minecraft.limitedcreative.inventories.ArmoryConfig;
-import de.jaschastarke.minecraft.limitedcreative.inventories.AuthMeInventories;
 import de.jaschastarke.minecraft.limitedcreative.inventories.Inventory;
 import de.jaschastarke.minecraft.limitedcreative.inventories.InventoryConfig;
 import de.jaschastarke.minecraft.limitedcreative.inventories.InventoryPermissions;
@@ -34,6 +33,7 @@ public class ModInventories extends CoreModule<LimitedCreative> {
         return "Inventory";
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void initialize(ModuleEntry<IModule> entry) {
         super.initialize(entry);
@@ -42,7 +42,7 @@ public class ModInventories extends CoreModule<LimitedCreative> {
         armor_config = config.registerSection(new ArmoryConfig(this));
         
         if (Hooks.isAuthMePresent()) {
-            addModule(new AuthMeInventories(plugin, this));
+            addModule(new de.jaschastarke.minecraft.limitedcreative.inventories.AuthMeInventories(plugin, this));
         }
         String incomp = Hooks.InventoryIncompatible.test();
         if (config.getEnabled() && incomp != null) {
