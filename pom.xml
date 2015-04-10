@@ -9,7 +9,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <plib.version>1.4-SNAPSHOT</plib.version>
-    <bukkit.version>1.8-R0.1-SNAPSHOT</bukkit.version>
+    <bukkit.version>1.8.3-R0.1-SNAPSHOT</bukkit.version>
   </properties>
   
   <scm>
@@ -41,9 +41,9 @@
       <url>http://repo.ja-s.de/mvn</url>
     </repository>
     
-    <!-- Official (Craft-)Bukkit repository -->
+    <!-- (Craft-)Bukkit repository -->
     <repository>
-      <id>bukkit-repo</id>
+      <id>spigot-repo</id>
       <url>http://repo.bukkit.org/content/groups/public</url>
     </repository>
     <!-- Official WorldGuard and WorldEdit repository -->
@@ -89,6 +89,12 @@
         <!-- http://dev.bukkit.org/server-mods/worldguard/ -->
         <groupId>com.sk89q</groupId>
         <artifactId>worldguard</artifactId>
+        <version>6.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <!-- http://dev.bukkit.org/server-mods/worldedit/ -->
+        <groupId>com.sk89q</groupId>
+        <artifactId>worldedit</artifactId>
         <version>6.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
@@ -158,9 +164,6 @@
                 <!-- Needed to fetch DocComments from Source -->
                 <annotationProcessor>de.jaschastarke.maven.AnnotationProcessor</annotationProcessor>
               </annotationProcessors>
-              <excludes>
-                <exclude>**/de/jaschastarke/minecraft/limitedcreative/blockstate/worldedit/*</exclude>
-              </excludes>
           </configuration>
       </plugin>
       <plugin>
