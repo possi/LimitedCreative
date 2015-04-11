@@ -125,7 +125,7 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
     }
     
     
-    public static enum BlockPickup implements IToGeneric {
+    public enum BlockPickup implements IToGeneric {
         PREVENT,
         REMOVE;
         
@@ -289,7 +289,7 @@ public class LimitConfig extends Configuration implements IConfigurationSubGroup
     public Object getValue(final IConfigurationNode node) {
         Object val = super.getValue(node);
         if (node.getName().equals("pickup") && val == null) {
-            return new Boolean(false);
+            return false;
         } else {
             return val;
         }

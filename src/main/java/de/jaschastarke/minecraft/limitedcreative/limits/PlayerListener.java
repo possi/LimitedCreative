@@ -35,13 +35,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerEvent;
-import org.bukkit.event.player.PlayerExpChangeEvent;
-import org.bukkit.event.player.PlayerGameModeChangeEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.material.DirectionalContainer;
 import org.bukkit.potion.PotionEffect;
@@ -185,13 +179,11 @@ public class PlayerListener implements Listener {
                     if (!checkPermission(event, NoLimitPermissions.CHEST)) {
                         event.setCancelled(true);
                         event.getPlayer().sendMessage(mod.getPlugin().getLocale().trans("blocked.chest"));
-                        return;
                     }
                 } else if (mod.getConfig().getBlockInteraction().isListed(block)) {
                     if (!checkPermission(event, NoLimitPermissions.INTERACT(block))) {
                         event.setCancelled(true);
                         event.getPlayer().sendMessage(mod.getPlugin().getLocale().trans("blocked.interact"));
-                        return;
                     }
                 }
             }
@@ -213,10 +205,14 @@ public class PlayerListener implements Listener {
                 if (!checkPermission(event, NoLimitPermissions.BASE_INTERACT)) {
                     event.setCancelled(true);
                     event.getPlayer().sendMessage(mod.getPlugin().getLocale().trans("blocked.entity"));
-                    return;
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
+        onPlayerInteractEntity(event);
     }
     
     @EventHandler(ignoreCancelled = true)

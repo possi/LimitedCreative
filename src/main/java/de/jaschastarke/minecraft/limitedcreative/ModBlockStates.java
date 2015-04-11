@@ -15,7 +15,7 @@ import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockListener;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStateCommand;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.BlockStateConfig;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.DBModel;
-import de.jaschastarke.minecraft.limitedcreative.blockstate.HangingListener;
+import de.jaschastarke.minecraft.limitedcreative.blockstate.HangingStandingListener;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.PlayerListener;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.SyncronizedModel;
 import de.jaschastarke.minecraft.limitedcreative.blockstate.ThreadedModel;
@@ -50,7 +50,7 @@ public class ModBlockStates extends CoreModule<LimitedCreative> {
         this.addModule(new BlockFall(plugin));
         
         listeners.addListener(new BlockListener(this));
-        listeners.addListener(new HangingListener(this));
+        listeners.addListener(new HangingStandingListener(this));
         listeners.addListener(new PlayerListener(this));
         
         command = new BlockStateCommand(this);

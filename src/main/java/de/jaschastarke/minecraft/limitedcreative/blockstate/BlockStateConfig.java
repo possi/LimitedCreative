@@ -93,11 +93,11 @@ public class BlockStateConfig extends Configuration implements IConfigurationSub
      * 
      * Without threading, huge WorldEdits becomes much noticeable slower.
      * 
-     * default: false
+     * default: true
      */
     @IsConfigurationNode(order = 150)
     public boolean getUseThreading() {
-        return config.getBoolean("useThreading", false);
+        return config.getBoolean("useThreading", true);
     }
     
     /**

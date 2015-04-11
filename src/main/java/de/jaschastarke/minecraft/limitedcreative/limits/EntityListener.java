@@ -19,7 +19,6 @@ package de.jaschastarke.minecraft.limitedcreative.limits;
 
 import org.bukkit.GameMode;
 import org.bukkit.entity.Creature;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -53,7 +52,7 @@ public class EntityListener implements Listener {
     
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
-        if (event.getEntity() instanceof LivingEntity && event.getDroppedExp() > 0) {
+        if (event.getEntity() != null && event.getDroppedExp() > 0) {
             if (mod.getNoDropMobs().isXPPrevented(event.getEntity())) {
                 event.setDroppedExp(0);
                 event.getDrops().clear();
