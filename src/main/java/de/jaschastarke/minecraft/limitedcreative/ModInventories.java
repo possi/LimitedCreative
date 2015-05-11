@@ -90,8 +90,12 @@ public class ModInventories extends CoreModule<LimitedCreative> {
         GameMode cgm = player.getGameMode();
         if (gm == GameMode.ADVENTURE && !config.getSeparateAdventure())
             gm = GameMode.SURVIVAL;
+        else if (gm == GameMode.SPECTATOR)
+            gm = GameMode.CREATIVE;
         if (cgm == GameMode.ADVENTURE && !config.getSeparateAdventure())
             cgm = GameMode.SURVIVAL;
+        else if (cgm == GameMode.SPECTATOR)
+            cgm = GameMode.CREATIVE;
         
         if (gm != cgm) {
             if (gm != GameMode.CREATIVE || config.getStoreCreative()) {

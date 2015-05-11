@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import de.jaschastarke.bukkit.lib.configuration.command.ITabComplete;
+import de.jaschastarke.bukkit.lib.configuration.command.ListConfigValue;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
@@ -11,8 +13,31 @@ import de.jaschastarke.bukkit.lib.configuration.ConfigurableList;
 import de.jaschastarke.bukkit.lib.configuration.IToGeneric;
 import de.jaschastarke.configuration.InvalidValueException;
 
-public class BlackListEntity extends ArrayList<BlackListEntity.Blacklisted> implements ConfigurableList<BlackListEntity.Blacklisted>, IToGeneric {
+public class BlackListEntity extends ArrayList<BlackListEntity.Blacklisted> implements ConfigurableList<BlackListEntity.Blacklisted>, IToGeneric, ITabComplete {
     private static final long serialVersionUID = 6150727863411513873L;
+
+    @Override
+    public List<String> tabComplete(String[] args, String[] chain) {
+        if (args.length > 0 && chain.length > 0) {
+            List<String> hints = new ArrayList<String>();
+            String action = chain[chain.length - 1];
+            if (action.equalsIgnoreCase(ListConfigValue.ADD)) {
+                for (EntityType m : EntityType.values()) {
+                    if (m.name().toLowerCase().startsWith(args[0].toLowerCase())) {
+                        hints.add(m.name());
+                    }
+                }
+            } else if (action.equalsIgnoreCase(ListConfigValue.REMOVE)) {
+                for (Blacklisted bl : this) {
+                    if (bl.toString().toLowerCase().startsWith(args[0].toLowerCase())) {
+                        hints.add(bl.toString());
+                    }
+                }
+            }
+            return hints;
+        }
+        return null;
+    }
 
     public static class Blacklisted {
         private String stringRep;
@@ -36,7 +61,7 @@ public class BlackListEntity extends ArrayList<BlackListEntity.Blacklisted> impl
             }
             
             if (type == null)
-                throw new InvalidValueException("Entity '" + stringRep + "' not found");
+                throw new InvalidValueException("Entity '" + rep + "' not found");
             stringRep = rep;
         }
         public Blacklisted(EntityType et) {

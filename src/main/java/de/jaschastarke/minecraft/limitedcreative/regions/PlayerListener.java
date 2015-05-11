@@ -10,7 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
@@ -48,7 +50,7 @@ public class PlayerListener extends Listener {
                 }
             } else if (diffrent_region) {
                 // do not break inside of "survial-region in creative world" when outside
-                if (getRM().getRegionSet(block).getFlag(Flags.GAMEMODE) != null && getRM().getRegionSet(block).getFlag(Flags.GAMEMODE, event.getPlayer()) != event.getPlayer().getGameMode()) { // TODO: Rework
+                if (getRM().getRegionSet(block).getFlag(Flags.GAMEMODE, event.getPlayer()) != event.getPlayer().getGameMode()) {
                     event.getPlayer().sendMessage(L("blocked.inside_interact"));
                     event.setCancelled(true);
                 }
@@ -69,11 +71,39 @@ public class PlayerListener extends Listener {
             }
         } else if (diffrent_region) {
             // do not break inside of "survial-region in creative world" when outside
-            if (getRM().getRegionSet(loc).getFlag(Flags.GAMEMODE) != null && getRM().getRegionSet(loc).getFlag(Flags.GAMEMODE, event.getPlayer()) != event.getPlayer().getGameMode()) {
+            if (getRM().getRegionSet(loc).getFlag(Flags.GAMEMODE, event.getPlayer()) != event.getPlayer().getGameMode()) {
                 event.getPlayer().sendMessage(L("blocked.inside_interact_entity"));
                 event.setCancelled(true);
             }
         }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerDamange(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Player) {
+            PlayerMeta pmeta = new PlayerMeta((Player) event.getDamager());
+            Location loc = event.getEntity().getLocation();
+            boolean diffrent_region = getRM().isDiffrentRegion((Player) event.getDamager(), loc);
+
+            if (pmeta.isActiveRegionGameMode() && diffrent_region) {
+                // do not break outside of "gamemod-change-region" when in the region
+                if (getRM().getRegionSet(loc).getFlag(Flags.GAMEMODE, (Player) event.getDamager()) != pmeta.getActiveRegionGameMode()) {
+                    event.getDamager().sendMessage(L("blocked.outside_interact_entity"));
+                    event.setCancelled(true);
+                }
+            } else if (diffrent_region) {
+                // do not break inside of "survial-region in creative world" when outside
+                if (getRM().getRegionSet(loc).getFlag(Flags.GAMEMODE, (Player) event.getDamager()) != ((Player) event.getDamager()).getGameMode()) {
+                    event.getDamager().sendMessage(L("blocked.inside_interact_entity"));
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
+        onPlayerInteractEntity(event);
     }
     
     private boolean isRegionOptional(Player player) {

@@ -31,7 +31,8 @@ public class Inventory {
     public enum Target {
         SURVIVAL,
         CREATIVE,
-        ADVENTURE;
+        ADVENTURE,
+        SPECTATOR;
         
         public static Target getTarget(GameMode gm) {
             return Target.valueOf(gm.name());

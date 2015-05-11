@@ -79,10 +79,12 @@ public class PlayerListener implements Listener {
     public void onInventoryOpen(InventoryOpenEvent event) {
         if (event.getPlayer() instanceof Player) {
             if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
-                if (checkPermission((Player) event.getPlayer(), NoLimitPermissions.INVENTORY(event.getInventory())))
-                    return;
-                event.setCancelled(true);
-                ((Player) event.getPlayer()).sendMessage(mod.getPlugin().getLocale().trans("blocked.inventory"));
+                if (!mod.getConfig().getBlockChestInteraction()) {
+                    if (checkPermission((Player) event.getPlayer(), NoLimitPermissions.INVENTORY(event.getInventory())))
+                        return;
+                    event.setCancelled(true);
+                    ((Player) event.getPlayer()).sendMessage(mod.getPlugin().getLocale().trans("blocked.inventory"));
+                }
             }
         }
     }
