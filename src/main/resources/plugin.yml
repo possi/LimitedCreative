@@ -1,0 +1,135 @@
+name: LimitedCreative
+version: 2.3-SNAPSHOT-acb0717644
+main: de.jaschastarke.minecraft.limitedcreative.LimitedCreative
+softdepend:
+- WorldGuard
+- WorldEdit
+- Multiverse-Core
+- Multiworld
+- xAuth
+- AuthMe
+- MultiInv
+- Multiverse-Inventories
+- Vault
+- LogBlock
+- CoreProtect
+dev-url: http://dev.bukkit.org/server-mods/limited-creative/
+commands:
+  lcbs:
+    aliases: []
+    description: 'LimitedCreative-BlockState-Command: modify blockstate database to prevent drops of selected blocks (requires WorldEdit)'
+    usage: /<command> - displays Regions-Command-Help
+    permission: limitedcreative.blockstate.command
+  limitedcreative:
+    aliases:
+    - lc
+    description: 'LimitedCreative: GameMode-Switch, Creative-Regions, Config and more'
+    usage: /<command> - displays LimitedCreative-Help
+    permission: limitedcreative.command
+  lcr:
+    aliases:
+    - /region
+    description: 'LimitedCreative-Region-Command: configure creative regions'
+    usage: /<command> - displays Regions-Command-Help
+    permission: limitedcreative.region
+permissions:
+  limitedcreative.config:
+    default: op
+    description: Allows changing plugin configuration ingame via commands
+  limitedcreative.command:
+    default: op
+    description: Needed for any player that want's to use the /lc or /limitedcreative-command. If not granted, the user shouldn't see the command in /help, but he also isn't able to use the /lc c-gamemode commands, even if switch_gamemode is granted.
+  limitedcreative.region:
+    default: op
+    description: Grants access to the /lcr command, which allows to define Limited Creatives region-flags
+  limitedcreative.region.bypass:
+    default: false
+    description: Ignores the force of a gamemode, when region optional is disabled
+  limitedcreative.keepinventory:
+    default: false
+    description: Allows bypassing the inventory separation
+  limitedcreative.bypass_creativearmor:
+    default: false
+    description: Allows bypassing creative armor settings. No armor is changed on going to creative.
+  limitedcreative.blockstate.tool:
+    default: op
+    description: Grants ability to use the configured tool to get info about placed blocks.
+  limitedcreative.blockstate.command:
+    default: op
+    description: Grants access to the blockstate admin command to modify the database.
+  limitedcreative.blockstate.bypass:
+    default: false
+    description: Allows to get drops even if a block was created from a creative player or WorldEdit.
+  limitedcreative.nolimit.*:
+    default: op
+    description: Grants bypassing of all nolimit-permissions.
+    children:
+      limitedcreative.nolimit.xp: true
+      limitedcreative.nolimit.chest: true
+      limitedcreative.nolimit.use: true
+      limitedcreative.nolimit.drop: true
+      limitedcreative.nolimit.pvp: true
+      limitedcreative.nolimit.interact: true
+      limitedcreative.nolimit.pickup: true
+      limitedcreative.nolimit.mob_damage: true
+      limitedcreative.nolimit.potion: true
+      limitedcreative.nolimit.health: true
+      limitedcreative.nolimit.break: true
+  limitedcreative.nolimit.chest:
+    default: false
+    description: Allows bypassing the "do not open a chest" and "do not open inventory"-limitation
+  limitedcreative.nolimit.drop:
+    default: false
+    description: Allows bypassing the "do not drop anything"-limitation
+  limitedcreative.nolimit.pickup:
+    default: false
+    description: Allows bypassing the "do not pickup anything"-limitation
+  limitedcreative.nolimit.pvp:
+    default: false
+    description: Allows bypassing the "no pvp"-limitation
+  limitedcreative.nolimit.mob_damage:
+    default: false
+    description: Allows bypassing the "no dealing damage to creatures"-limitation
+  limitedcreative.nolimit.interact:
+    default: false
+    description: Allows bypassing the "do not interact with specific blocks"-limitation
+  limitedcreative.nolimit.use:
+    default: false
+    description: Allows bypassing the "block place/item use"-limitation
+  limitedcreative.nolimit.break:
+    default: false
+    description: Allows bypassing the "block break"-limitation
+  limitedcreative.nolimit.health:
+    default: false
+    description: Allows bypassing the "don't change heal/food-state"-limitation
+  limitedcreative.nolimit.xp:
+    default: false
+    description: Allows bypassing the "don't get xp/level"-limitation
+  limitedcreative.nolimit.potion:
+    default: false
+    description: Allows bypassing the "remove all effects on leaving creative"-limitation
+  limitedcreative.switch_gamemode:
+    default: op
+    description: Allows switching of own game mode to creative/adventure and back
+    children:
+      limitedcreative.switch_gamemode.survival: true
+      limitedcreative.switch_gamemode.adventure: true
+      limitedcreative.switch_gamemode.creative: true
+  limitedcreative.switch_gamemode.backonly:
+    default: false
+    description: Allows switching of own game mode to default of the not world he is in, but not to an other
+  limitedcreative.switch_gamemode.survival:
+    default: false
+    description: Allows switching of own game mode to survival, but not to creative/adventure
+  limitedcreative.switch_gamemode.creative:
+    default: false
+    description: Allows switching of own game mode to creative, but not to survival/adventure
+  limitedcreative.switch_gamemode.adventure:
+    default: false
+    description: Allows switching of own game mode to adventure, but not to creative/survival
+  limitedcreative.switch_gamemode.other:
+    default: op
+    description: Allows switching of other users game mode
+  limitedcreative.cmdblock.*:
+    default: op
+    description: Allows bypassing the "command block"-limitation. So no commands are blocked for this users.
