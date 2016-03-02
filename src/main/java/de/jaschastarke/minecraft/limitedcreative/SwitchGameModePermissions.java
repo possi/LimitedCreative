@@ -46,6 +46,11 @@ public class SwitchGameModePermissions extends ParentPermissionContainerNode {
      */
     @IsChildPermission
     public final static BasicPermission ADVENTURE = new BasicPermission(ALL, "adventure", PermissionDefault.FALSE);
+    /**
+     * Allows switching of own game mode to spectator, but not to creative/survival/adventure
+     */
+    @IsChildPermission
+    public final static BasicPermission SPECTATOR = new BasicPermission(ALL, "spectator", PermissionDefault.FALSE);
     
     /**
      * Allows switching of other users game mode

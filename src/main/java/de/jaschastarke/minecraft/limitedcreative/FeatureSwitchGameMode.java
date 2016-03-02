@@ -138,6 +138,14 @@ public class FeatureSwitchGameMode extends CoreModule<LimitedCreative> {
         public boolean adventure(CommandContext context, String player) throws MissingPermissionCommandException, CommandException {
             return changeGameMode(context, player, GameMode.ADVENTURE, SwitchGameModePermissions.ADVENTURE);
         }
+        @IsCommand("spectator")
+        @Alias("sp")
+        @Description(value = "command.switch.spectator", translate = true)
+        @NeedsPermission(value={"spectator", "backonly"}, optional = true)
+        @Usages("[player]")
+        public boolean spectator(CommandContext context, String player) throws MissingPermissionCommandException, CommandException {
+            return changeGameMode(context, player, GameMode.SPECTATOR, SwitchGameModePermissions.SPECTATOR);
+        }
         
         @Override
         public List<TabCompletion> getTabCompleter(MethodCommand cmd) {
