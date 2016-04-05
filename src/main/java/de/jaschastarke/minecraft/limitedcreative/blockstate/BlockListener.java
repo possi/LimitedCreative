@@ -1,6 +1,5 @@
 package de.jaschastarke.minecraft.limitedcreative.blockstate;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -151,7 +150,8 @@ public class BlockListener implements Listener {
         
         if (movedBlocks.size() > 0) {
             DBTransaction update = mod.getModel().groupUpdate();
-            for (Block sblock : movedBlocks) {
+            for(int count = movedBlocks.size()-1; count >= 0; count--){
+        	Block sblock = movedBlocks.get(count);
                 Block dest = sblock.getRelative(event.getDirection());
                 if (mod.isDebug())
                     mod.getLog().debug("PistionExtend moves "+sblock.getType()+"-Block from "+sblock.getLocation()+" to "+dest.getLocation());
@@ -172,10 +172,13 @@ public class BlockListener implements Listener {
         if(movedBlocks.size() > 0)
         {
             DBTransaction update = mod.getModel().groupUpdate();
-            for(Block sblock: movedBlocks){
+            for(int count = movedBlocks.size()-1; count >= 0; count--){
+        	Block sblock = movedBlocks.get(count);
+        	Block dest = sblock.getRelative(event.getDirection());
         	if (mod.isDebug())
-        	    mod.getLog().debug("PistionRetract moves "+sblock.getType()+"-Block from "+sblock.getLocation()+" to "+sblock.getRelative(event.getDirection().getOppositeFace()).getLocation());
-        	mod.getModel().moveState(sblock, event.getBlock().getRelative(event.getDirection().getOppositeFace()));
+        	    mod.getLog().debug("PistionRetract moves "+sblock.getType()+"-Block from "+sblock.getLocation()+" to "+dest.getLocation());
+        	
+        	update.moveState(sblock, dest);
             }
             update.finish();
         }
