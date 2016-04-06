@@ -1,6 +1,5 @@
 package de.jaschastarke.minecraft.limitedcreative.blockstate;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -144,19 +143,15 @@ public class BlockListener implements Listener {
             return;
         event.getBlock().setMetadata("LCBS_pistonIsAlreadyExtended", blockAlreadExtended);
         
-        Block source = event.getBlock().getRelative(event.getDirection());
         /*if (mod.isDebug())
             mod.getLog().debug("PistonExtend "+source.getType()+" "+source.getLocation()+" "+event.getDirection());*/
         
-        List<Block> movedBlocks = new ArrayList<Block>();
-        while (source != null && source.getType() != Material.AIR) {
-            movedBlocks.add(0, source); // put on top, so iterating the
-            source = source.getRelative(event.getDirection());
-        }
+        List<Block> movedBlocks = event.getBlocks();
         
         if (movedBlocks.size() > 0) {
             DBTransaction update = mod.getModel().groupUpdate();
-            for (Block sblock : movedBlocks) {
+            for(int count = movedBlocks.size()-1; count >= 0; count--){
+        	Block sblock = movedBlocks.get(count);
                 Block dest = sblock.getRelative(event.getDirection());
                 if (mod.isDebug())
                     mod.getLog().debug("PistionExtend moves "+sblock.getType()+"-Block from "+sblock.getLocation()+" to "+dest.getLocation());
@@ -173,12 +168,19 @@ public class BlockListener implements Listener {
             return;
         event.getBlock().removeMetadata("LCBS_pistonIsAlreadyExtended", mod.getPlugin());
         
-        Block dest = event.getBlock().getRelative(event.getDirection());
-        Block source = dest.getRelative(event.getDirection());
-        if (event.isSticky() && source.getType() != Material.AIR) {
-            if (mod.isDebug())
-                mod.getLog().debug("PistionRetract moves "+source.getType()+"-Block from "+source.getLocation()+" to "+dest.getLocation());
-            mod.getModel().moveState(source, source.getRelative(event.getDirection().getOppositeFace()));
+        List<Block> movedBlocks = event.getBlocks();
+        if(movedBlocks.size() > 0)
+        {
+            DBTransaction update = mod.getModel().groupUpdate();
+            for(int count = movedBlocks.size()-1; count >= 0; count--){
+        	Block sblock = movedBlocks.get(count);
+        	Block dest = sblock.getRelative(event.getDirection());
+        	if (mod.isDebug())
+        	    mod.getLog().debug("PistionRetract moves "+sblock.getType()+"-Block from "+sblock.getLocation()+" to "+dest.getLocation());
+        	
+        	update.moveState(sblock, dest);
+            }
+            update.finish();
         }
     }
 }
