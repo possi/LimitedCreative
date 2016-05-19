@@ -47,7 +47,7 @@ public class Fallback {
         @Override
         public void store(ConfigurationSection section) {
             for (int i = 0; i < inv.getSize(); i++) {
-                if (inv.getItem(i) != null && inv.getItem(i).getTypeId() != 0)
+                if (inv.getItem(i) != null && !inv.getItem(i).getType().equals(Material.AIR))
                     sectionSetItem(section, String.valueOf(i), inv.getItem(i));
             }
         }
@@ -97,7 +97,7 @@ public class Fallback {
         public static Map<Integer, ItemStack> storeInventory(PlayerInventory inv) {
             Map<Integer, ItemStack> map = new HashMap<Integer, ItemStack>();
             for (int i = 0; i < inv.getSize(); i++) {
-                if (inv.getItem(i) != null && inv.getItem(i).getTypeId() != 0) {
+                if (inv.getItem(i) != null && !inv.getItem(i).getType().equals(Material.AIR)) {
                     map.put(i, inv.getItem(i));
                 }
             }
@@ -133,13 +133,13 @@ public class Fallback {
         
         @Override
         public void store(ConfigurationSection section) {
-            if (inv.getHelmet() != null && inv.getHelmet().getTypeId() != 0)
+            if (inv.getHelmet() != null && !inv.getHelmet().getType().equals(Material.AIR))
                 Items.sectionSetItem(section, "helmet", inv.getHelmet());
-            if (inv.getChestplate() != null && inv.getChestplate().getTypeId() != 0)
+            if (inv.getChestplate() != null && !inv.getChestplate().getType().equals(Material.AIR))
                 Items.sectionSetItem(section, "chestplate", inv.getChestplate());
-            if (inv.getLeggings() != null && inv.getLeggings().getTypeId() != 0)
+            if (inv.getLeggings() != null && !inv.getLeggings().getType().equals(Material.AIR))
                 Items.sectionSetItem(section, "leggins", inv.getLeggings());
-            if (inv.getBoots() != null && inv.getBoots().getTypeId() != 0)
+            if (inv.getBoots() != null && !inv.getBoots().getType().equals(Material.AIR))
                 Items.sectionSetItem(section, "boots", inv.getBoots());
         }
 

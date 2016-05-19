@@ -22,6 +22,7 @@ import org.bukkit.entity.Player;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public class ApplicableRegions {
@@ -36,28 +37,28 @@ public class ApplicableRegions {
 
     public boolean allows(StateFlag flag) {
         extendRegionFlags();
-        boolean r = regions.allows(flag);
+        boolean r = regions.queryState(null, flag).equals(State.ALLOW);
         contractRegionFlags();
         return r;
     }
     
     public boolean allows(StateFlag flag, Player player) {
         extendRegionFlags();
-        boolean r = regions.allows(flag, mgr.getWorldGuard().wrapPlayer(player));
+        boolean r = regions.queryState(mgr.getWorldGuard().wrapPlayer(player), flag).equals(State.ALLOW);
         contractRegionFlags();
         return r;
     }
     
     public <T extends Flag<V>, V> V getFlag(T flag) {
         extendRegionFlags();
-        V r = regions.getFlag(flag);
+        V r = regions.queryValue(null, flag);
         contractRegionFlags();
         return r;
     }
     
     public <T extends Flag<V>, V> V getFlag(T flag, Player player) {
         extendRegionFlags();
-        V r = regions.getFlag(flag, mgr.getWorldGuard().wrapPlayer(player));
+        V r = regions.queryValue(mgr.getWorldGuard().wrapPlayer(player), flag);
         contractRegionFlags();
         return r;
     }

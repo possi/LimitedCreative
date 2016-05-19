@@ -74,11 +74,11 @@ public class FeatureBlockItemSpawn extends CoreModule<LimitedCreative> implement
     }
     
     public void block(Block block, Player player) {
-        if (player.getItemInHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
+        if (player.getInventory().getItemInMainHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
             block(block.getLocation(), block.getType());
         } else {
             // doesn't include silktouch
-            for (ItemStack i : block.getDrops(player.getItemInHand())) {
+            for (ItemStack i : block.getDrops(player.getInventory().getItemInMainHand())) {
                 block(block.getLocation(), i.getType());
             }
         }

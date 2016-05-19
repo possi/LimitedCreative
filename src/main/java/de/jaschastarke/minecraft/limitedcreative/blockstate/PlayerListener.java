@@ -29,7 +29,7 @@ public class PlayerListener implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block b = event.getClickedBlock();
-            if (b != null && event.getPlayer().getItemInHand().getType().equals(mod.getConfig().getTool()) && mod.getPlugin().getPermManager().hasPermission(event.getPlayer(), BlockStatePermissions.TOOL)) {
+            if (b != null && event.getPlayer().getInventory().getItemInMainHand().getType().equals(mod.getConfig().getTool()) && mod.getPlugin().getPermManager().hasPermission(event.getPlayer(), BlockStatePermissions.TOOL)) {
                 if (mod.getConfig().getIgnoredWorlds().contains(event.getClickedBlock().getWorld().getName())) {
                     event.getPlayer().sendMessage(mod.getPlugin().getLocale().trans("command.blockstate.world_ignored", event.getClickedBlock().getWorld().getName()));
                 } else {
@@ -41,7 +41,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onInteractEntity(PlayerInteractEntityEvent event) {
         Entity e = event.getRightClicked();
-        if (e != null && e instanceof ItemFrame && event.getPlayer().getItemInHand().getType().equals(mod.getConfig().getTool()) && mod.getPlugin().getPermManager().hasPermission(event.getPlayer(), BlockStatePermissions.TOOL)) {
+        if (e != null && e instanceof ItemFrame && event.getPlayer().getInventory().getItemInMainHand().getType().equals(mod.getConfig().getTool()) && mod.getPlugin().getPermManager().hasPermission(event.getPlayer(), BlockStatePermissions.TOOL)) {
             if (mod.getConfig().getIgnoredWorlds().contains(e.getWorld().getName())) {
                 event.getPlayer().sendMessage(mod.getPlugin().getLocale().trans("command.blockstate.world_ignored", e.getWorld().getName()));
             } else {

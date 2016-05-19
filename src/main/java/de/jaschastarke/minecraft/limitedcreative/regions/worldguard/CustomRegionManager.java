@@ -34,7 +34,6 @@ import org.bukkit.entity.Player;
 
 import com.sk89q.worldguard.bukkit.BukkitUtil;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.GlobalRegionManager;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -160,10 +159,7 @@ public class CustomRegionManager {
     private WorldGuardPlugin getWorldGuard() {
         return ((WorldGuardPlugin) mod.getPlugin().getServer().getPluginManager().getPlugin(WorldGuardIntegration.PLUGIN_NAME));
     }
-    
-    public GlobalRegionManager getWGGlobalManager() {
-        return getWorldGuard().getGlobalRegionManager();
-    }
+
     public RegionManager getWGManager(World world) {
         return getWorldGuard().getRegionManager(world);
     }

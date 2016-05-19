@@ -55,7 +55,7 @@ public class BlackList extends ArrayList<BlackList.Blacklisted> implements Confi
         }
         public boolean matches(Block block) {
             if (hasData) {
-                return md.equals(new MaterialData(block.getType(), block.getData()));
+                return md.equals(block.getState().getData());
             } else {
                 return block.getType().equals(md.getItemType());
             }

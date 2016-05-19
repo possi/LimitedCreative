@@ -52,7 +52,7 @@ public class BlackListEntity extends ArrayList<BlackListEntity.Blacklisted> impl
                 type = null;
             }
             if (type == null)
-                type = EntityType.fromName(rep);
+                type = EntityType.valueOf(rep);
             try {
                 if (type == null)
                     type = EntityType.valueOf(rep);

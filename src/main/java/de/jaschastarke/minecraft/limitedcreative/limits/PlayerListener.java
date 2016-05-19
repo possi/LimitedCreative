@@ -195,8 +195,8 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
         if (!event.isCancelled() && event.getPlayer().getGameMode() == GameMode.CREATIVE) {
-            if (mod.getConfig().getBlockUse().isListed(event.getPlayer().getItemInHand())) {
-                if (!checkPermission(event, NoLimitPermissions.USE(event.getPlayer().getItemInHand().getData()))) {
+            if (mod.getConfig().getBlockUse().isListed(event.getPlayer().getInventory().getItemInMainHand())) {
+                if (!checkPermission(event, NoLimitPermissions.USE(event.getPlayer().getInventory().getItemInMainHand().getData()))) {
                     event.setCancelled(true);
                     event.getPlayer().sendMessage(mod.getPlugin().getLocale().trans("blocked.use"));
                     return;

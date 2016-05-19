@@ -7,8 +7,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 
@@ -105,7 +103,7 @@ public class BlockStateCommand extends BukkitCommand implements IHelpDescribed {
         if (mod.getConfig().getLogSurvival()) {
             context.responseFormatted(ChatFormattings.INFO, L("command.blockstate.nothing_to_cleanup"));
         } else {
-            mod.getPlugin().getServer().getScheduler().runTaskAsynchronously(mod.getPlugin(), new BukkitRunnable() {
+            mod.getPlugin().getServer().getScheduler().runTaskAsynchronously(mod.getPlugin(), new Runnable() {
                 @Override
                 public void run() {
                     int countDeleted = mod.getModel().cleanUp(DBModel.Cleanup.SURVIVAL);
@@ -168,7 +166,7 @@ public class BlockStateCommand extends BukkitCommand implements IHelpDescribed {
         final Location min = selection.getMinimumPoint();
         final Location max = selection.getMaximumPoint();
         
-        mod.getPlugin().getServer().getScheduler().runTaskAsynchronously(mod.getPlugin(), new BukkitRunnable() {
+        mod.getPlugin().getServer().getScheduler().runTaskAsynchronously(mod.getPlugin(), new Runnable() {
             @Override
             public void run() {
                 if (mod.isDebug())
