@@ -1,6 +1,7 @@
 package de.jaschastarke.minecraft.limitedcreative.blockstate;
 
 import java.util.Date;
+import java.util.UUID;
 
 import javax.persistence.Column;
 //import javax.persistence.EmbeddedId;
@@ -37,7 +38,7 @@ public class BlockState {
     private GameMode gameMode;
     
     @Column(name = "player")
-    private String playerName;
+    private UUID uuid;
     
     @NotNull
     @Column(name = "cdate")
@@ -51,7 +52,7 @@ public class BlockState {
     public BlockState(BlockState copy) {
         this.location = copy.location;
         this.gameMode = copy.gameMode;
-        this.playerName = copy.playerName;
+        this.uuid = copy.uuid;
         this.date = copy.date;
         this.source = copy.source;
     }
@@ -72,24 +73,29 @@ public class BlockState {
         this.gameMode = gm;
     }
 
-    public String getPlayerName() {
-        return playerName;
+    public UUID getPlayerUUID() {
+        return uuid;
     }
     
+    public String getPlayerName() {
+        return Bukkit.getOfflinePlayer(uuid).getName();
+    }
+    
+    //TODO Rename
     public void setPlayerName(String s) {
-        playerName = s;
+        uuid = UUID.fromString(s);
     }
     
     public OfflinePlayer getPlayer() {
-        OfflinePlayer p = Bukkit.getPlayerExact(playerName);
+        OfflinePlayer p = Bukkit.getPlayer(uuid);
         if (p == null)
-            p = Bukkit.getOfflinePlayer(playerName);
+            p = Bukkit.getOfflinePlayer(uuid);
         return p;
     }
 
     public void setPlayer(OfflinePlayer player) {
         setSource(Source.PLAYER);
-        this.playerName = player.getName();
+        this.uuid = player.getUniqueId();
         if (player instanceof Player) {
             setGameMode(((Player) player).getGameMode());
         }
@@ -119,6 +125,7 @@ public class BlockState {
 
     @Override
     public String toString() {
+	String playerName = Bukkit.getOfflinePlayer(uuid).getName();
         //return blockLocation.toString() + " by " +
         return location.toString() + " by " +
             (source == Source.PLAYER ? playerName : (source.toString() + (playerName != null ? "(" + playerName + ")" : ""))) +

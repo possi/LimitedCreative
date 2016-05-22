@@ -71,9 +71,9 @@ public class InvYamlStorage extends InvConfStorage {
     
     protected File getFile(Inventory pinv, Target target) {
         if (target != default_target) {
-            return new File(dir, pinv.getPlayer().getName() + "_" + target.toString().toLowerCase() + SUFFIX);
+            return new File(dir, pinv.getPlayer().getUniqueId() + "_" + target.toString().toLowerCase() + SUFFIX);
         } else {
-            return new File(dir, pinv.getPlayer().getName() + SUFFIX);
+            return new File(dir, pinv.getPlayer().getUniqueId() + SUFFIX);
         }
     }
 }

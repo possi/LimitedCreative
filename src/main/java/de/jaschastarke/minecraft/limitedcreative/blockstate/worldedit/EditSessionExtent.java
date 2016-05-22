@@ -46,7 +46,7 @@ public class EditSessionExtent extends AbstractLoggingExtent {
                 s.setLocation(loc);
             }
             s.setGameMode(null);
-            s.setPlayerName(player.getName());
+            s.setPlayerName(player.getUniqueId().toString());
             s.setDate(new Date());
             s.setSource(Source.EDIT);
             if (mod.isDebug())

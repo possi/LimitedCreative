@@ -138,7 +138,7 @@ public class DBQueries {
             update.setString(1, s.getGameMode().name());
         else
             update.setInt(1, s.getGameMode().getValue());
-        update.setString(2, s.getPlayerName());
+        update.setString(2, s.getPlayerUUID().toString());
         update.setTimestamp(3, new java.sql.Timestamp(s.getDate().getTime()));
         if (db.getType() == Type.MySQL)
             update.setString(4, s.getSource().name());
@@ -207,7 +207,7 @@ public class DBQueries {
             insert.setString(5, s.getGameMode().name());
         else
             insert.setInt(5, s.getGameMode().getValue());
-        insert.setString(6, s.getPlayerName());
+        insert.setString(6, s.getPlayerUUID().toString());
         insert.setTimestamp(7, new java.sql.Timestamp(s.getDate().getTime()));
         if (db.getType() == Type.MySQL)
             insert.setString(8, s.getSource().name());
