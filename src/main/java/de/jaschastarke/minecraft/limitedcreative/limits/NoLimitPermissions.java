@@ -118,16 +118,16 @@ public class NoLimitPermissions extends SimplePermissionContainerNode {
         return new InventoryPermission(CHEST, invtype);
     }
     public static IDynamicPermission INTERACT(Block block) {
-        return new MaterialPermission(BASE_INTERACT, new MaterialData(block.getType(), block.getData()));
+        return new MaterialPermission(BASE_INTERACT, block.getState().getData());
     }
     public static IDynamicPermission USE(Block block) {
-        return new MaterialPermission(BASE_USE, new MaterialData(block.getType(), block.getData()));
+        return new MaterialPermission(BASE_USE, block.getState().getData());
     }
     public static IDynamicPermission USE(MaterialData m) {
         return new MaterialPermission(BASE_USE, m);
     }
     public static IDynamicPermission BREAK(Block block) {
-        return new MaterialPermission(BASE_BREAK, new MaterialData(block.getType(), block.getData()));
+        return new MaterialPermission(BASE_BREAK, block.getState().getData());
     }
 
     

@@ -17,7 +17,6 @@
  */
 package de.jaschastarke.minecraft.limitedcreative.regions.worldguard.events;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
@@ -25,11 +24,11 @@ import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.ApplicableRe
 import de.jaschastarke.minecraft.limitedcreative.regions.worldguard.CustomRegionManager;
 
 public class PlayerUpdateAreaEvent extends PlayerAreaEvent {
-    private String player;
+    private Player player;
     private String hash;
     protected CustomRegionManager mgr;
     
-    public PlayerUpdateAreaEvent(CustomRegionManager mgr, String player, String hash) {
+    public PlayerUpdateAreaEvent(CustomRegionManager mgr, Player player, String hash) {
         this.mgr = mgr;
         this.player = player;
         this.hash = hash;
@@ -46,7 +45,7 @@ public class PlayerUpdateAreaEvent extends PlayerAreaEvent {
 
     @Override
     public Player getPlayer() {
-        return Bukkit.getServer().getPlayerExact(player);
+        return player;
     }
 
     private static final HandlerList handlers = new HandlerList();
